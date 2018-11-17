@@ -59,7 +59,7 @@ http.createServer(function (req, res) {
 			break;
 	}
 
-}).listen(8080); //the server object listens on port 8080
+}).listen(9080); //the server object listens on port 9080
 
 function sendText(res, text, status = 200) {
 	res.writeHead(status, {'Content-Type': 'text/plain'});
