@@ -3,7 +3,7 @@
 
 <input maxlength="15" type="text" id="input_student"
 	onkeyup="this.value = this.value.toUpperCase();"> </input>
-<button type="button" onclick="loadDoc()">Button</button>
+<button type="button" onclick="loadDoc()">Enter</button>
 
 <div id="div_c"> </div>
 
@@ -22,4 +22,13 @@
 		xhttp.open("POST", "/validatecode", true);
 		xhttp.send(input_std);
 	}
+
+	var input = document.getElementById("input_student");
+	input.addEventListener("keyup", function keyDown(event){
+		console.log(event);
+		if(event.keyCode === 13) {
+			event.preventDefault();
+			loadDoc();
+		}
+	});
 </script>

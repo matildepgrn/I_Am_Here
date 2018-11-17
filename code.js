@@ -87,7 +87,7 @@ function startProcess() {
 }
 
 function validateCode(code_client){
-	if(current_code == code_client){
+	if(current_code == code_client && current_code != ""){
 		return true;
 	}
 	else {
