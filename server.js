@@ -1,6 +1,4 @@
 var code = require('./code');
-
-
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
@@ -18,7 +16,7 @@ var path = require('path');
 //});
 
 http.createServer(function (req, res) {
-	
+
 	console.log(req.method + " " + req.url);
 	
 	if(req.method == "POST") {

@@ -2,9 +2,10 @@ module.exports = {
 	newCode: newCode,
 	status: status,
 	stopProcess: stop,
-	validateCode: validateCode
+	validateCode: clientInput
 };
 
+var fs = require('fs');
 var running = false;
 var time_ms = 0;
 var x = null;
@@ -13,6 +14,8 @@ var NUM_CHAR = 7 // num caracteres
 var repetitions = 5; 
 var code_counter = 0;
 var current_code = '';
+var CSV_SEPARATOR = ",";
+var stream = initStream("test.csv");
 
 function newCode() {
 	startProcess();
@@ -86,6 +89,11 @@ function startProcess() {
 	startCountdown();
 }
 
+function clientInput(code_client){
+	appendToFile(code_client);
+	return validateCode(code_client);
+}
+
 function validateCode(code_client){
 	if(current_code == code_client && current_code != ""){
 		return true;
@@ -95,3 +103,38 @@ function validateCode(code_client){
 	}
 }
 
+function initStream(filename) {
+	var exists = false;
+	try {
+		fs.accessSync(filename, fs.constants.R_OK | fs.constants.W_OK);
+		exists = true;
+	} catch (err) {
+		exists = false;
+	}
+	var stream = fs.createWriteStream(filename, {flags:'a'});
+	if(exists == false) {
+		stream.write("Date" + CSV_SEPARATOR +
+			"Total_time_s" + CSV_SEPARATOR +
+			"Code_length" + CSV_SEPARATOR +
+			"Code_type" + CSV_SEPARATOR +
+			"Code_generated" + CSV_SEPARATOR +
+			"Code_input" + CSV_SEPARATOR +
+			"Correct" + CSV_SEPARATOR +
+			"Time_left_s" + "\n"
+		);
+	}
+	return stream;
+}
+
+// Date Total_time_s Code_length Code_type Code_generated Code_input Correct Time_left_s
+function appendToFile(code_client) {
+	stream.write(new Date() + CSV_SEPARATOR +
+		INTERVAL/1000 + CSV_SEPARATOR +
+		NUM_CHAR + CSV_SEPARATOR +
+		"Code_type" + CSV_SEPARATOR +
+		current_code + CSV_SEPARATOR +
+		code_client + CSV_SEPARATOR +
+		validateCode(code_client) + CSV_SEPARATOR +
+		time_ms/1000 + "\n"
+	);
+}
