@@ -2,7 +2,8 @@ module.exports = {
 	newCode: newCode,
 	status: status,
 	stopProcess: stop,
-	validateCode: clientInput
+	validateCode: clientInput,
+	customizeTest: customizeTest
 };
 
 var fs = require('fs');
@@ -11,6 +12,7 @@ var time_ms = 0;
 var x = null;
 var INTERVAL = 10*1000; // ms
 var NUM_CHAR = 7 // num caracteres
+var CODE_TYPE = "LN"; //L, N, LN
 var repetitions = 5; 
 var code_counter = 0;
 var current_code = '';
@@ -27,16 +29,39 @@ function stop() {
 	return status();
 }
 
+// letters and numbers
+var LN = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+var L = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
+var N = "0123456789";
+
 function randomCode() {
 	var text = "";
-	var possible_all = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
+	var possible = "";
+	switch(CODE_TYPE){
+		case "LN":
+			possible = LN;
+			break;
+		case "L":
+			possible = L;
+			break;
+		case "N":
+			possible = N;
+			break;
+		default:
+			break;
+	}
+	
 	for (var i = 0; i < NUM_CHAR; i++)
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 
 	return text;
 }
+
+function customizeTest(num_char, code_type){
+	console.log("customizeTest", num_char, code_type);
+	NUM_CHAR = num_char;
+	CODE_TYPE = code_type;
+} 
 
 function status() {
 	return {
@@ -131,7 +156,7 @@ function appendToFile(code_client) {
 	stream.write(new Date() + CSV_SEPARATOR +
 		INTERVAL/1000 + CSV_SEPARATOR +
 		NUM_CHAR + CSV_SEPARATOR +
-		"Code_type" + CSV_SEPARATOR +
+		CODE_TYPE + CSV_SEPARATOR +
 		current_code + CSV_SEPARATOR +
 		code_client + CSV_SEPARATOR +
 		validateCode(code_client) + CSV_SEPARATOR +

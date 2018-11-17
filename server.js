@@ -2,6 +2,7 @@ var code = require('./code');
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
+var url = require('url');
 //var mysql = require('mysql');
 
 //var con = mysql.createConnection({
@@ -24,7 +25,8 @@ http.createServer(function (req, res) {
 		return;
 	}
 
-	switch(req.url) {
+	var parsedURL = url.parse(req.url, true);
+	switch(parsedURL.pathname) {
 		case "/":
 		case "/index.html":
 			sendFile(res, 'client/index.html');
@@ -39,7 +41,8 @@ http.createServer(function (req, res) {
 			sendFile(res, 'client/student.html');
 			break;
 		case "/prof":
-			sendFile(res, 'client/prof.html');
+			styledTest(req, res, parsedURL);
+			//sendFile(res, 'client/prof.html');
 			break;
 		case "/getcode":
 			generateCode(res);
@@ -116,4 +119,15 @@ function generateCode(res) {
 
 function status(res) {
 	sendJSON(res, code.status());
+}
+
+function styledTest(req, res, parsedURL) {
+	var t = parsedURL.query.t;
+	var n = parsedURL.query.n;
+	console.log(t, n);
+	if(t == "L" || t == "N" || t== "LN" &&
+		n == 4 || n == 5 || n == 6 || n == 7) {
+		code.customizeTest(n, t);
+	}
+	sendFile(res, 'client/prof.html');
 }
