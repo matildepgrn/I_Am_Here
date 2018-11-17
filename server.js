@@ -46,6 +46,10 @@ http.createServer(function (req, res) {
 		case "/getcode":
 			generateCode(res);
 			break;
+		case "/getcode/stop":
+			var statusJson = code.stopProcess();
+			sendJSON(res, statusJson);
+			break;
 		case "/status":
 			status(res);
 			break;
@@ -99,7 +103,7 @@ function getPostData(req, res) {
 function handlePost(req, res, data) {
 	switch(req.url) {
 		case "/validatecode":
-			sendText(res, data);
+			sendText(res, code.validateCode(data) + "");
 			break;
 		default:
 			sendText(res, "File not found (POST).", 404);
@@ -108,8 +112,8 @@ function handlePost(req, res, data) {
 }
 
 function generateCode(res) {
-	var cur_code = code.newCode();
-	sendJSON(res, cur_code);
+	var statusJson = code.newCode();
+	sendJSON(res, statusJson);
 }
 
 function status(res) {

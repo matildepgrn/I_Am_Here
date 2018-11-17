@@ -1,17 +1,26 @@
 module.exports = {
 	newCode: newCode,
-	status: status
+	status: status,
+	stopProcess: stop,
+	validateCode: validateCode
 };
 
+var running = false;
 var time_ms = 0;
 var x = null;
-var INTERVAL = 7*1000;
+var INTERVAL = 10*1000; // ms
+var NUM_CHAR = 7 // num caracteres
 var repetitions = 5; 
-var code_counter = 1;
+var code_counter = 0;
 var current_code = '';
 
 function newCode() {
 	startProcess();
+	return status();
+}
+
+function stop() {
+	stopProcess();
 	return status();
 }
 
@@ -20,7 +29,7 @@ function randomCode() {
 	var possible_all = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-	for (var i = 0; i < 7; i++)
+	for (var i = 0; i < NUM_CHAR; i++)
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 
 	return text;
@@ -29,9 +38,9 @@ function randomCode() {
 function status() {
 	return {
 		current_code: current_code,
-		repetitions_left: repetitions,
 		code_counter: code_counter,
-		time_ms: time_ms
+		time_ms: time_ms/1000,
+		running: running
 	};
 }
 
@@ -47,6 +56,7 @@ function timer_function() {
 		}
 		else {
 			current_code = "EXPIRED";
+			running = false;
 		}
 	}
 }
@@ -62,9 +72,26 @@ function startCountdown() {
 	x = setInterval(timer_function, 1000);
 }
 
+function stopProcess() {
+	if(x != null) {
+		clearInterval(x);
+	}
+	running = false;
+}
+
 function startProcess() {
 	repetitions = 5; 
-	code_counter = 1;
+	code_counter = 0;
+	running = true;
 	startCountdown();
+}
+
+function validateCode(code_client){
+	if(current_code == code_client){
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 

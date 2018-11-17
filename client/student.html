@@ -1,6 +1,8 @@
 <!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<input maxlength="15" type="text" id="input_student"> </input>
+<input maxlength="15" type="text" id="input_student"
+	onkeyup="this.value = this.value.toUpperCase();"> </input>
 <button type="button" onclick="loadDoc()">Button</button>
 
 <div id="div_c"> </div>
@@ -11,6 +13,7 @@
 		xhttp.onreadystatechange = function() {
 			if(this.readyState == 4 && this.status == 200) {
 				document.getElementById("div_c").innerHTML = this.responseText;
+				document.getElementById("input_student").value = "";
 			}
 		};
 

@@ -1,36 +1,56 @@
 <!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<button type="button" onclick="loadDoc()">Button</button>
+<link rel="stylesheet" type="text/css" href="style.css">
 
-<div id="div_c">
-	Codes will appear here.
+<div id="butoes">
+<button id="b_start" type="button"
+	onclick="loadStatus('/getcode')"
+	title="Generate a new sequence">Start</button>
+<button id="b_stop" type="button"
+	onclick="loadStatus('/getcode/stop')"
+	disabled="true"
+	title="Stop current sequence">Stop</button> 
 </div>
 
-<div id="status" > </div>
+
+<p><span id="time_remaining"></span>s</p>
+<p>Code number <span id="code_counter"></span></p>
+<p><span id="randomcode"></span></p>
+
+<p id="div_c">
+	Insert the code in your browser.
+</p>
+
+<p id="status" > </p>
 
 <script>
-	function loadDoc() {
+	function loadStatus(url) {
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if(this.readyState == 4 && this.status == 200) {
-				document.getElementById("div_c").innerHTML = this.responseText;
+				//document.getElementById("status").innerHTML = this.responseText;
+				updateStatus(this.responseText);
 			}
 		};
 
-		xhttp.open("GET", "/getcode", true);
+		xhttp.open("GET", url, true);
 		xhttp.send();
 	}
-	function loadStatus() {
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if(this.readyState == 4 && this.status == 200) {
-				document.getElementById("status").innerHTML = this.responseText;
-			}
-		};
-
-		xhttp.open("GET", "/status", true);
-		xhttp.send();
+	function updateStatus(jsonStr) {
+		var json = JSON.parse(jsonStr);
+		console.log(json);
+		document.getElementById("randomcode").innerHTML = json.current_code;
+		document.getElementById("code_counter").innerHTML = json.code_counter;
+		document.getElementById("time_remaining").innerHTML = json.time_ms;
+		updateButtons(json.running);
 	}
-
-	setInterval(loadStatus, 1000);
+	function updateButtons(isStarted){
+		document.getElementById("b_start").disabled = isStarted;
+		document.getElementById("b_stop").disabled = !isStarted;
+	}
+	function loadStatusTimer() {
+		loadStatus('/status');
+	}
+	setInterval(loadStatusTimer, 1000);
 </script>
