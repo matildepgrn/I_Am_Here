@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<button type="button" onclick="loadDoc()">Button</button>
+
+<div id="div_c">
+	Codes will appear here.
+</div>
+
+<div id="status" > </div>
+
+<script>
+	function loadDoc() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				document.getElementById("div_c").innerHTML = this.responseText;
+			}
+		};
+
+		xhttp.open("GET", "/getcode", true);
+		xhttp.send();
+	}
+	function loadStatus() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				document.getElementById("status").innerHTML = this.responseText;
+			}
+		};
+
+		xhttp.open("GET", "/status", true);
+		xhttp.send();
+	}
+
+	setInterval(loadStatus, 1000);
+</script>
