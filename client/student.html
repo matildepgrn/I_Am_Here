@@ -3,7 +3,7 @@
 
 <input maxlength="15" type="text" id="input_student"
 	onkeyup="this.value = this.value.toUpperCase();"> </input>
-<button type="button" onclick="loadDoc()">Enter</button>
+<button id="botao" type="button" onclick="loadDoc()" disabled>Enter</button>
 
 <div id="div_c"> </div>
 
@@ -24,11 +24,15 @@
 	}
 
 	var input = document.getElementById("input_student");
+	var botao = document.getElementById("botao");
 	input.addEventListener("keyup", function keyDown(event){
 		console.log(event);
-		if(event.keyCode === 13) {
+		if(event.keyCode === 13 && this.value.length > 0) {
 			event.preventDefault();
 			loadDoc();
+		}
+		else {
+			botao.disabled = this.value.length <= 0;
 		}
 	});
 </script>
