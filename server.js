@@ -126,7 +126,7 @@ function styledTest(req, res, parsedURL) {
 	var n = parsedURL.query.n;
 	console.log(t, n);
 	if(t == "L" || t == "N" || t== "LN" &&
-		n == 5 || n == 6 || n == 7 || n == 8) {
+		n == 4 || n == 5 || n == 6 || n == 7 || n == 8) {
 		code.customizeTest(n, t);
 	}
 	sendFile(res, 'client/prof.html');
