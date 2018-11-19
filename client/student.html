@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="style.css">
+<div style="text-align:center">
+	<input maxlength="15" type="text" id="input_student"
+		onkeyup="this.value = this.value.toUpperCase();" autocomplete="off"> </input>
 
-<input maxlength="15" type="text" id="input_student"
-	onkeyup="this.value = this.value.toUpperCase();" autocomplete="off"> </input>
-<button id="botao" type="button" onclick="loadDoc()" disabled>Enter</button>
+	<button id="botao" type="button" onclick="loadDoc()" disabled>Enter</button>
+</div>
 
 <div id="div_c"> </div>
 

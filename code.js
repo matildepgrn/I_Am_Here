@@ -83,7 +83,7 @@ function timer_function() {
 			startCountdown();
 		}
 		else {
-			current_code = "EXPIRED";
+			current_code = "Expired";
 			running = false;
 		}
 	}

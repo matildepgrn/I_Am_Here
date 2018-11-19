@@ -9,10 +9,18 @@ a:hover{
 	text-decoration: underline;
 }
 
+#input_student {
+	width: 210px;
+	height: 40px;
+	text-align: center;
+	font-size: 24px;
+}
+
 button{
-    height:30px;
+    height:44px;
     width:100px;
     padding: 4px 7px;
+    font-size: 24px;
 }
 
 #butoes {
@@ -23,6 +31,11 @@ button{
 
 p{
 	text-align: center;
+}
+
+.expired {
+	color: DarkRed;
+	font-family: sans-serif !important;
 }
 
 #randomcode {
