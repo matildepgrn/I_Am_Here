@@ -3,7 +3,8 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 <div style="text-align:center">
 	<input maxlength="15" type="text" id="input_student"
-		onkeyup="this.value = this.value.toUpperCase();" autocomplete="off"> </input>
+		style="text-transform: uppercase"
+		autocomplete="off"> </input>
 
 	<button id="botao" type="button" onclick="loadDoc()" disabled>Enter</button>
 </div>
@@ -20,7 +21,7 @@
 			}
 		};
 
-		var input_std = document.getElementById("input_student").value;
+		var input_std = document.getElementById("input_student").value.toUpperCase();
 
 		xhttp.open("POST", "/validatecode", true);
 		xhttp.send(input_std);
