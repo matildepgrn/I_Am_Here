@@ -1,5 +1,8 @@
+var PORT = 9080;
+var HTTPS = true;
+
 var code = require('./code');
-var http = require('http');
+var http = HTTPS ? require('https') : require('http');
 var fs = require('fs');
 var path = require('path');
 var url = require('url');
@@ -16,7 +19,13 @@ var url = require('url');
 //  console.log("Connected!");
 //});
 
-http.createServer(function (req, res) {
+const options = {
+	key: fs.readFileSync('cert.key'),
+	cert: fs.readFileSync('cert.crt'),
+	ca: fs.readFileSync('cert_ca.crt')
+};
+
+http.createServer(options, function (req, res) {
 
 	console.log(req.method + " " + req.url);
 	
@@ -59,7 +68,7 @@ http.createServer(function (req, res) {
 			break;
 	}
 
-}).listen(9080); //the server object listens on port 9080
+}).listen(PORT); //the server object listens on port 9080
 
 function sendText(res, text, status = 200) {
 	res.writeHead(status, {'Content-Type': 'text/plain'});
