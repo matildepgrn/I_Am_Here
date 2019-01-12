@@ -1,5 +1,6 @@
 var PORT = 9080;
 var HTTPS = true;
+var EXTERNAL_LOGIN_URL = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id=570015174623343&redirect_uri=https://testhere.duckdns.org:9080/oauth';
 
 var code = require('./code');
 var http = HTTPS ? require('https') : require('http');
@@ -39,6 +40,11 @@ http.createServer(options, function (req, res) {
 		case "/":
 		case "/index.html":
 			sendFile(res, 'client/index.html');
+			break;
+		case "/login":
+			res.writeHead(301,
+				{Location: EXTERNAL_LOGIN_URL});
+			res.end();
 			break;
 		case "/style.css":
 			sendFile(res, 'client/style.css', 'text/css');
