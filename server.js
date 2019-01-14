@@ -7,18 +7,19 @@ var http = HTTPS ? require('https') : require('http');
 var fs = require('fs');
 var path = require('path');
 var url = require('url');
-//var mysql = require('mysql');
 
-//var con = mysql.createConnection({
-//  host: "localhost",
-//  user: "teste",
-//  password: "password"
-//});
+var mysql = require('mysql');
 
-//con.connect(function(err) {
-//  if (err) throw err;
-//  console.log("Connected!");
-//});
+var con = mysql.createConnection({
+	host: "db.tecnico.ulisboa.pt",
+	user: "ist182083",
+	password: 'nwiz3758'
+});
+
+con.connect(function(err) {
+	if (err) throw err;
+	console.log("Connected to database!");
+});
 
 const options = {
 	key: fs.readFileSync('cert.key'),
