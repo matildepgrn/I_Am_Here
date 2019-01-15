@@ -1,4 +1,5 @@
 var config = require('./default_config');
+var fenix_api = require('./fenix_api');
 
 var code = require('./code');
 var http = config.use_HTTPS ? require('https') : require('http');
@@ -8,11 +9,13 @@ var url = require('url');
 
 var mysql = require('mysql');
 var request = require('request');
+var moment = require('moment');
 
 var con = mysql.createConnection({
 	host: config.mysql_host,
 	user: config.mysql_user,
-	password: config.mysql_pw
+	password: config.mysql_pw,
+	database: config.mysql_database
 });
 
 con.connect(function(err) {
@@ -42,7 +45,7 @@ http.createServer(options, function (req, res) {
 			sendFile(res, 'client/index.html');
 			break;
 		case "/login":
-			redirectURL(res, config.EXTERNAL_LOGIN_URL);
+			fenix_api.redirectURL(res, config.EXTERNAL_LOGIN_URL);
 			break;
 		case "/style.css":
 			sendFile(res, 'client/style.css', 'text/css');
@@ -55,7 +58,6 @@ http.createServer(options, function (req, res) {
 			break;
 		case "/prof":
 			styledTest(req, res, parsedURL);
-			//sendFile(res, 'client/prof.html');
 			break;
 		case "/getcode":
 			generateCode(res);
@@ -67,23 +69,10 @@ http.createServer(options, function (req, res) {
 		case "/status":
 			status(res);
 			break;
-		case "/oauth":									//FenixEdu access token
+		case "/oauth":
 			var fenix_code = parsedURL.query.code;
-			request.post(
-				'https://fenix.tecnico.ulisboa.pt/oauth/access_token?' +
-				'client_id=' + encodeURIComponent(config.client_id) +
-				'&client_secret=' + encodeURIComponent(config.client_secret) +
-				'&redirect_uri=' + encodeURIComponent('https://testhere.duckdns.org:9080/oauth') +
-				'&code=' + encodeURIComponent(fenix_code) +
-				'&grant_type=authorization_code',
-				{ json: {key: ' '}},
-				function (error, response, body) {
-					if(!error && response.statusCode == 200) {
-						console.log(body);
-						redirectURL(res, "/student");
-					}
-				}
-			);
+			fenix_api.requestAccessToken(con, res, fenix_code);
+			
 			break;
 		default:
 			sendText(res, "File not found.", 404);
@@ -91,6 +80,19 @@ http.createServer(options, function (req, res) {
 	}
 
 }).listen(config.PORT); //the server object listens on config.PORT
+
+
+function parseCookies (req) {
+    var list = {},
+        rc = req.headers.cookie;
+
+    rc && rc.split(';').forEach(function(cookie) {
+        var parts = cookie.split('=');
+        list[parts.shift().trim()] = decodeURI(parts.join('='));
+    });
+
+    return list;
+}
 
 function sendText(res, text, status = 200) {
 	res.writeHead(status, {'Content-Type': 'text/plain'});
@@ -150,13 +152,6 @@ function generateCode(res) {
 
 function status(res) {
 	sendJSON(res, code.status());
-}
-
-function redirectURL(res, url) {
-	res.writeHead(301,
-		{Location: url}
-	);
-	res.end();
 }
 
 function styledTest(req, res, parsedURL) {

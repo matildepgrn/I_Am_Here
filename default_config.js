@@ -6,6 +6,7 @@ try {
 
 var d = {};
 
+//to override, define config.PORT in config.js - more info in README.md 
 d.PORT = config.PORT || 9080;
 d.client_id = config.client_id;
 d.client_secret = config.client_secret;
@@ -17,5 +18,6 @@ d.mysql_host = config.mysql_host;
 d.tls_cert_key = config.tls_cert_key;
 d.tls_cert_crt = config.tls_cert_crt;
 d.tls_cert_ca = config.tls_cert_ca;
+d.mysql_database = config.mysql_database;
 
 module.exports = d;
