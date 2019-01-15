@@ -1,19 +1,18 @@
-var PORT = 9080;
-var HTTPS = true;
-var EXTERNAL_LOGIN_URL = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id=570015174623343&redirect_uri=https://testhere.duckdns.org:9080/oauth';
+var config = require('./default_config');
 
 var code = require('./code');
-var http = HTTPS ? require('https') : require('http');
+var http = config.use_HTTPS ? require('https') : require('http');
 var fs = require('fs');
 var path = require('path');
 var url = require('url');
 
 var mysql = require('mysql');
+var request = require('request');
 
 var con = mysql.createConnection({
-	host: "db.tecnico.ulisboa.pt",
-	user: "ist182083",
-	password: 'nwiz3758'
+	host: config.mysql_host,
+	user: config.mysql_user,
+	password: config.mysql_pw
 });
 
 con.connect(function(err) {
@@ -22,9 +21,9 @@ con.connect(function(err) {
 });
 
 const options = {
-	key: fs.readFileSync('cert.key'),
-	cert: fs.readFileSync('cert.crt'),
-	ca: fs.readFileSync('cert_ca.crt')
+	key: config.use_HTTPS ? fs.readFileSync(config.tls_cert_key) : '',
+	cert: config.use_HTTPS ? fs.readFileSync(config.tls_cert_crt) : '',
+	ca: config.use_HTTPS ? fs.readFileSync(config.tls_cert_ca) : ''
 };
 
 http.createServer(options, function (req, res) {
@@ -43,9 +42,7 @@ http.createServer(options, function (req, res) {
 			sendFile(res, 'client/index.html');
 			break;
 		case "/login":
-			res.writeHead(301,
-				{Location: EXTERNAL_LOGIN_URL});
-			res.end();
+			redirectURL(res, config.EXTERNAL_LOGIN_URL);
 			break;
 		case "/style.css":
 			sendFile(res, 'client/style.css', 'text/css');
@@ -70,12 +67,30 @@ http.createServer(options, function (req, res) {
 		case "/status":
 			status(res);
 			break;
+		case "/oauth":									//FenixEdu access token
+			var fenix_code = parsedURL.query.code;
+			request.post(
+				'https://fenix.tecnico.ulisboa.pt/oauth/access_token?' +
+				'client_id=' + encodeURIComponent(config.client_id) +
+				'&client_secret=' + encodeURIComponent(config.client_secret) +
+				'&redirect_uri=' + encodeURIComponent('https://testhere.duckdns.org:9080/oauth') +
+				'&code=' + encodeURIComponent(fenix_code) +
+				'&grant_type=authorization_code',
+				{ json: {key: ' '}},
+				function (error, response, body) {
+					if(!error && response.statusCode == 200) {
+						console.log(body);
+						redirectURL(res, "/student");
+					}
+				}
+			);
+			break;
 		default:
 			sendText(res, "File not found.", 404);
 			break;
 	}
 
-}).listen(PORT); //the server object listens on port 9080
+}).listen(config.PORT); //the server object listens on config.PORT
 
 function sendText(res, text, status = 200) {
 	res.writeHead(status, {'Content-Type': 'text/plain'});
@@ -135,6 +150,13 @@ function generateCode(res) {
 
 function status(res) {
 	sendJSON(res, code.status());
+}
+
+function redirectURL(res, url) {
+	res.writeHead(301,
+		{Location: url}
+	);
+	res.end();
 }
 
 function styledTest(req, res, parsedURL) {
