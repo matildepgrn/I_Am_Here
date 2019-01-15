@@ -22,6 +22,7 @@ var config = {};
 config.mysql_pw = 'root';
 config.mysql_user = "root";
 config.mysql_host = "localhost";
+config.database = 'database';
 
 // Use HTTPS (default is HTTP)
 config.use_HTTPS = true;
