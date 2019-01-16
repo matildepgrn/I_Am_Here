@@ -1,21 +1,13 @@
 module.exports = {
 	requestAccessToken: requestAccessToken,
-	redirectURL: redirectURL,
-	insertIntoDB: insertIntoDB
+	getUserID: getUserID,
 };
 
 var request = require('request');
 var config = require('./default_config');
 var moment = require('moment');
 
-function redirectURL(res, url) {
-	res.writeHead(301,
-		{Location: url}
-	);
-	res.end();
-}
-
-function requestAccessToken(con, res, fenix_code){
+function requestAccessToken(res, fenix_code, callback){
 	request.post(
 		'https://fenix.tecnico.ulisboa.pt/oauth/access_token?' +
 		'client_id=' + encodeURIComponent(config.client_id) +
@@ -24,43 +16,29 @@ function requestAccessToken(con, res, fenix_code){
 		'&code=' + encodeURIComponent(fenix_code) +
 		'&grant_type=authorization_code',
 		{ json: {key: ' '}},
+
 			function (error, response, body) {
 				if(!error && response.statusCode == 200) {
-					console.log(body);
-					console.log(response);
-					redirectURL(res, "/student");
-
-					insertIntoDB(con, body);
-						
-					}
+					callback(error, body.access_token, body.refresh_token);
+				} else { //TODO handle this better
+					callback(error);
+					console.log('Erro.');
 				}
-			);
+			}
+		);
 
 }
 
-function insertIntoDB(con, body) {
+function getUserID(access_token, callback) {
 	request
-		({url:'https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person?access_token=' + encodeURIComponent(body.access_token), json: true}
-			, function(error1, response1, body1) {
-				if(response1.statusCode == 200) {
-					var user_id = body1.username;
-						
-					var sql = "REPLACE INTO User (ist_id, access_token, refresh_token, creation) VALUES (" +
-						"'" + user_id + "'" + "," +
-						"'" + body.access_token + "'" + "," +
-						"'" + body.refresh_token + "'" + "," +
-						"'" + moment().format('YYYY-MM-DD HH:mm:ss') + "'" + ")";
-
-						con.query(sql, function (err, result) {
-							if (err){
-								console.log("Error in the insertion of a user.");
-							}
-							else{
-								console.log("1 user inserted.");
-							}
-						});
-					
+		({url:'https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person?access_token=' + encodeURIComponent(access_token), json: true}
+			, function(error, response, body) {
+				if(response.statusCode == 200) {
+					var user_id = body.username;
+					callback(error, user_id);
+				} else { //TODO handle this better
+					console.log('Error.');
+					callback(error);
 				}
 			});
-
 }

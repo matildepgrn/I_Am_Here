@@ -1,5 +1,6 @@
 var config = require('./default_config');
-var fenix_api = require('./fenix_api');
+var database = require('./database/Database');
+var Service = require('./Service');
 
 var code = require('./code');
 var http = config.use_HTTPS ? require('https') : require('http');
@@ -11,17 +12,8 @@ var mysql = require('mysql');
 var request = require('request');
 var moment = require('moment');
 
-var con = mysql.createConnection({
-	host: config.mysql_host,
-	user: config.mysql_user,
-	password: config.mysql_pw,
-	database: config.mysql_database
-});
-
-con.connect(function(err) {
-	if (err) throw err;
-	console.log("Connected to database!");
-});
+var service = new Service();
+var db = new database(150, config.mysql_host, config.mysql_user, config.mysql_pw, config.mysql_database);
 
 const options = {
 	key: config.use_HTTPS ? fs.readFileSync(config.tls_cert_key) : '',
@@ -45,7 +37,7 @@ http.createServer(options, function (req, res) {
 			sendFile(res, 'client/index.html');
 			break;
 		case "/login":
-			fenix_api.redirectURL(res, config.EXTERNAL_LOGIN_URL);
+			redirectURL(res, config.EXTERNAL_LOGIN_URL);
 			break;
 		case "/style.css":
 			sendFile(res, 'client/style.css', 'text/css');
@@ -71,7 +63,9 @@ http.createServer(options, function (req, res) {
 			break;
 		case "/oauth":
 			var fenix_code = parsedURL.query.code;
-			fenix_api.requestAccessToken(con, res, fenix_code);
+			service.getAccessToken(db, res, fenix_code);
+			//TODO
+			redirectURL(res, "/student");
 			
 			break;
 		default:
@@ -81,6 +75,12 @@ http.createServer(options, function (req, res) {
 
 }).listen(config.PORT); //the server object listens on config.PORT
 
+function redirectURL(res, url) {
+	res.writeHead(301,
+		{Location: url}
+	);
+	res.end();
+}
 
 function parseCookies (req) {
     var list = {},
