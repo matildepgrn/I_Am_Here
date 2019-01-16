@@ -1,13 +1,13 @@
 module.exports = {
 	requestAccessToken: requestAccessToken,
-	getUserID: getUserID,
+	getUserInfo: getUserInfo,
 };
 
 var request = require('request');
 var config = require('./default_config');
 var moment = require('moment');
 
-function requestAccessToken(res, fenix_code, callback){
+function requestAccessToken(fenix_code, callback){
 	request.post(
 		'https://fenix.tecnico.ulisboa.pt/oauth/access_token?' +
 		'client_id=' + encodeURIComponent(config.client_id) +
@@ -22,23 +22,48 @@ function requestAccessToken(res, fenix_code, callback){
 					callback(error, body.access_token, body.refresh_token);
 				} else { //TODO handle this better
 					callback(error);
-					console.log('Erro.');
+					console.log('Erro no requestAccessToken().', response.statusCode, error);
 				}
 			}
 		);
 
 }
 
-function getUserID(access_token, callback) {
+function getUserInfo(access_token, refresh_token, callback) {
 	request
 		({url:'https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person?access_token=' + encodeURIComponent(access_token), json: true}
 			, function(error, response, body) {
 				if(response.statusCode == 200) {
-					var user_id = body.username;
-					callback(error, user_id);
+					callback(error, body);
+				} else if(response.statusCode == 401 && body
+					&& body.error && body.error == 'accessTokenExpired') {
+						console.log('Error - getUserInfo: Requires new access token.');
 				} else { //TODO handle this better
-					console.log('Error.');
+					console.log('Erro no getUserInfo().', response.statusCode, error);
 					callback(error);
 				}
 			});
 }
+
+function refreshAccessToken(refresh_token, callback){
+	request.post(
+		'https://fenix.tecnico.ulisboa.pt/oauth/refresh_token?' +
+		'client_id=' + encodeURIComponent(config.client_id) +
+		'&client_secret=' + encodeURIComponent(config.client_secret) +
+		'&refresh_token=' + encodeURIComponent(refresh_token) +
+		'&grant_type=refresh_token',
+		{ json: {key: ' '}},
+
+			function (error, response, body) {
+				if(!error && response.statusCode == 200) {
+					callback(error, body.access_token);
+				} else { //TODO handle this better
+					callback(error);
+					console.log('Erro no refreshAccessToken().', response.statusCode, error);
+				}
+			}
+		);
+
+}
+
+//TODO verify roles[x].type (verificar se algum x tem "TEACHER")

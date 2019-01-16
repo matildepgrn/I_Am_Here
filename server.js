@@ -11,6 +11,7 @@ var url = require('url');
 var mysql = require('mysql');
 var request = require('request');
 var moment = require('moment');
+var Cookies = require('cookies');
 
 var service = new Service();
 var db = new database(150, config.mysql_host, config.mysql_user, config.mysql_pw, config.mysql_database);
@@ -22,6 +23,8 @@ const options = {
 };
 
 http.createServer(options, function (req, res) {
+  	
+  	var cookies = new Cookies(req, res);
 
 	console.log(req.method + " " + req.url);
 	
@@ -37,7 +40,7 @@ http.createServer(options, function (req, res) {
 			sendFile(res, 'client/index.html');
 			break;
 		case "/login":
-			redirectURL(res, config.EXTERNAL_LOGIN_URL);
+			goToLogin(res, cookies, parsedURL);
 			break;
 		case "/style.css":
 			sendFile(res, 'client/style.css', 'text/css');
@@ -46,10 +49,23 @@ http.createServer(options, function (req, res) {
 			sendFile(res, 'client/script.js');
 			break;
 		case "/student":
-			sendFile(res, 'client/student.html');
-			break;
 		case "/prof":
-			styledTest(req, res, parsedURL);
+			verifyLogin(res, cookies, parsedURL,
+				function(ist_id){
+					switch(parsedURL.pathname) {
+						case "/student":
+							sendFile(res, 'client/student.html');
+							break;
+						case "/prof":
+							styledTest(req, res, parsedURL);
+							break;
+						default:
+							console.log('This sould not happen');
+							sendText(res, "Error.", 501);
+							break;
+					}
+				} 
+			);
 			break;
 		case "/getcode":
 			generateCode(res);
@@ -63,10 +79,16 @@ http.createServer(options, function (req, res) {
 			break;
 		case "/oauth":
 			var fenix_code = parsedURL.query.code;
-			service.getAccessToken(db, res, fenix_code);
-			//TODO
-			redirectURL(res, "/student");
-			
+			service.getAccessToken(db, res, fenix_code,
+				function(iamhere_token){
+					cookies.set('login', iamhere_token);
+					var last_url = cookies.get('last_url');
+					if(last_url) {
+						redirectURL(res, last_url);
+					} else {
+						redirectURL(res, "/student");	
+					}
+				});
 			break;
 		default:
 			sendText(res, "File not found.", 404);
@@ -82,17 +104,27 @@ function redirectURL(res, url) {
 	res.end();
 }
 
-function parseCookies (req) {
-    var list = {},
-        rc = req.headers.cookie;
 
-    rc && rc.split(';').forEach(function(cookie) {
-        var parts = cookie.split('=');
-        list[parts.shift().trim()] = decodeURI(parts.join('='));
-    });
-
-    return list;
+function goToLogin(res, cookies, parsedURL) {
+	cookies.set('last_url', parsedURL.pathname);
+	redirectURL(res, config.EXTERNAL_LOGIN_URL);	
 }
+
+function verifyLogin(res, cookies, parsedURL, callback) {
+	var token = cookies.get('login');
+	service.verifyLogin(db, token,
+		function(ist_id){
+			if(ist_id != null){
+				callback(ist_id);
+			}
+			else {
+				goToLogin(res, cookies, parsedURL);
+			}
+		}
+	);
+}
+
+
 
 function sendText(res, text, status = 200) {
 	res.writeHead(status, {'Content-Type': 'text/plain'});

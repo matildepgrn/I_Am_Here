@@ -7,7 +7,17 @@ CREATE TABLE User (
 	access_token 		varchar(255),
 	refresh_token 		varchar(255),
 	iamhere_token		varchar(255),
+	name				varchar(255),
 	creation			timestamp,
+
+	PRIMARY KEY(ist_id)
+);
+
+CREATE TABLE Login_history (
+	ist_id				varchar(255) NOT NULL,
+	access_token 		varchar(255),
+	iamhere_token		varchar(255),
+	login			timestamp,
 
 	PRIMARY KEY(ist_id)
 );
