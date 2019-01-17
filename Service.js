@@ -17,7 +17,7 @@ Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
 		}
 	);
 }
-
+//TODO
 Service.prototype.verifyLogin = function(db, iamhere_token, callback) {
 	db.getUserByToken(iamhere_token,
 		function(error, ist_id) {

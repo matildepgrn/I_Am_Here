@@ -37,13 +37,13 @@ http.createServer(options, function (req, res) {
 	switch(parsedURL.pathname) {
 		case "/":
 		case "/index.html":
-			sendFile(res, 'client/index.html');
+			sendFile(res, 'index.html');
 			break;
 		case "/login":
 			goToLogin(res, cookies, parsedURL);
 			break;
 		case "/style.css":
-			sendFile(res, 'client/style.css', 'text/css');
+			sendFile(res, 'style.css', 'text/css');
 			break;
 		case "/script.js":
 			sendFile(res, 'client/script.js');
@@ -123,7 +123,6 @@ function verifyLogin(res, cookies, parsedURL, callback) {
 		}
 	);
 }
-
 
 
 function sendText(res, text, status = 200) {
