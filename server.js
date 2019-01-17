@@ -47,6 +47,7 @@ http.createServer(options, function (req, res) {
 			);
 			break;
 		case "/login":
+			disableCache(res);
 			goToLogin(res, cookies, parsedURL);
 			break;
 		case "/style.css":
@@ -56,6 +57,7 @@ http.createServer(options, function (req, res) {
 			sendFile(res, 'client/script.js');
 			break;
 		case "/logout":
+			disableCache(res);
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id){
 					service.removeIAmHereToken(db, ist_id,
@@ -75,6 +77,7 @@ http.createServer(options, function (req, res) {
 			);
 			break;
 		case "/api/name":
+			disableCache(res);
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id){
 					service.getUserName(db, ist_id,
@@ -117,9 +120,6 @@ http.createServer(options, function (req, res) {
 		case "/status":
 			status(res);
 			break;
-		case "/static.html":
-			sendFile(res, 'static.html');
-			break;
 		case "/oauth":
 			var fenix_code = parsedURL.query.code;
 			service.getAccessToken(db, res, fenix_code,
@@ -131,7 +131,7 @@ http.createServer(options, function (req, res) {
 					} else if(last_url) {
 						redirectURL(res, last_url);
 					} else {
-						redirectURL(res, "/static.html");	
+						redirectURL(res, "/");	
 					}
 				});
 			break;
@@ -141,6 +141,11 @@ http.createServer(options, function (req, res) {
 	}
 
 }).listen(config.PORT); //the server object listens on config.PORT
+
+function disableCache(res) {
+	res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+}
+
 
 function redirectURL(res, url) {
 	console.log("redirecting to: ", url);
