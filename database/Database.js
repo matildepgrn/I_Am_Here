@@ -53,11 +53,15 @@ database.prototype.getUserByToken = function(iamhere_token, callback) {
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
-			console.log("Error getting the token.");
+			console.log("Error getting the ist_id.");
 			callback(err);
 		}
-		else{
-			console.log("1 token sent");
+		else if(rows.length < 1) {
+			console.log("getUserByToken: empty row.", rows);
+			callback(err);
+		}
+		else {
+			console.log("1 ist_id sent");
 			callback(err, rows[0].ist_id);
 		}
 	})
@@ -78,6 +82,27 @@ database.prototype.getUserName = function(ist_id, callback) {
 		}
 	})
 };
+
+database.prototype.removeIAmHereToken = function(ist_id, callback) {
+	var sql = "UPDATE User SET iamhere_token = null WHERE ist_id = ?";
+	var arg = [ist_id];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error updating the iamhere_token.");
+			callback(err, false);
+		}
+		else{
+			console.log("iamhere_token removed.");
+			callback(err, true);
+		}
+	})
+};
+
+
+
+
+
 
 function randomInt(size){
 	return crypto.randomBytes(size).toString('hex');

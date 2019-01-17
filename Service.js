@@ -37,5 +37,14 @@ Service.prototype.getUserName = function(db, ist_id, callback) {
 	); 
 }
 
+Service.prototype.removeIAmHereToken = function(db, ist_id, callback) {
+	db.removeIAmHereToken(ist_id,
+		function(error, success) {
+			console.log('removeIAmHereToken: response = ', success);
+			callback(error, success);
+		}
+	); 
+}
+
 
 module.exports = Service;

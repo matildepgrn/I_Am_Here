@@ -55,6 +55,25 @@ http.createServer(options, function (req, res) {
 		case "/script.js":
 			sendFile(res, 'client/script.js');
 			break;
+		case "/logout":
+			isLoggedIn(res, cookies, parsedURL,
+				function(ist_id){
+					service.removeIAmHereToken(db, ist_id,
+						function(error, success){
+							if(success) {  
+								redirectURL(res, "/");
+							} else {
+								console.log("Error logging out.", ist_id, error);
+								sendText(res, "Error logging out.");
+							}
+						}
+					);
+				},
+				function(){
+					redirectURL(res, "/");
+				}
+			);
+			break;
 		case "/api/name":
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id){
