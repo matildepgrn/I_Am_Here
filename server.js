@@ -37,7 +37,14 @@ http.createServer(options, function (req, res) {
 	switch(parsedURL.pathname) {
 		case "/":
 		case "/index.html":
-			sendFile(res, 'index.html');
+			isLoggedIn(res, cookies, parsedURL,
+				function(ist_id){
+					sendFile(res, 'student.html');
+				},
+				function(){
+					sendFile(res, 'index.html');
+				}
+			);
 			break;
 		case "/login":
 			goToLogin(res, cookies, parsedURL);
@@ -48,9 +55,23 @@ http.createServer(options, function (req, res) {
 		case "/script.js":
 			sendFile(res, 'client/script.js');
 			break;
+		case "/api/name":
+			isLoggedIn(res, cookies, parsedURL,
+				function(ist_id){
+					service.getUserName(db, ist_id,
+						function(name){
+							sendText(res, name);
+						}
+					);
+				},
+				function(){
+					sendText(res, "Not logged in", 403);
+				}
+			);
+			break;
 		case "/student":
 		case "/prof":
-			verifyLogin(res, cookies, parsedURL,
+			makeUserLogin(res, cookies, parsedURL,
 				function(ist_id){
 					switch(parsedURL.pathname) {
 						case "/student":
@@ -77,16 +98,21 @@ http.createServer(options, function (req, res) {
 		case "/status":
 			status(res);
 			break;
+		case "/static.html":
+			sendFile(res, 'static.html');
+			break;
 		case "/oauth":
 			var fenix_code = parsedURL.query.code;
 			service.getAccessToken(db, res, fenix_code,
 				function(iamhere_token){
 					cookies.set('login', iamhere_token);
 					var last_url = cookies.get('last_url');
-					if(last_url) {
+					if(last_url && last_url == "/login") {
+						redirectURL(res, "/");
+					} else if(last_url) {
 						redirectURL(res, last_url);
 					} else {
-						redirectURL(res, "/student");	
+						redirectURL(res, "/static.html");	
 					}
 				});
 			break;
@@ -98,6 +124,7 @@ http.createServer(options, function (req, res) {
 }).listen(config.PORT); //the server object listens on config.PORT
 
 function redirectURL(res, url) {
+	console.log("redirecting to: ", url);
 	res.writeHead(301,
 		{Location: url}
 	);
@@ -110,20 +137,33 @@ function goToLogin(res, cookies, parsedURL) {
 	redirectURL(res, config.EXTERNAL_LOGIN_URL);	
 }
 
-function verifyLogin(res, cookies, parsedURL, callback) {
+function isLoggedIn(res, cookies, parsedURL, callback_true, callback_false) {
 	var token = cookies.get('login');
 	service.verifyLogin(db, token,
 		function(ist_id){
 			if(ist_id != null){
-				callback(ist_id);
+				callback_true(ist_id);
 			}
 			else {
-				goToLogin(res, cookies, parsedURL);
+				callback_false();
 			}
 		}
 	);
 }
 
+
+function makeUserLogin(res, cookies, parsedURL, callback) {
+	isLoggedIn(res, cookies, parsedURL,
+		//callback_true
+		function(ist_id){
+			callback(ist_id);
+		},
+		//callback_false
+		function(){
+			goToLogin(res, cookies, parsedURL);
+		}
+	);
+}
 
 function sendText(res, text, status = 200) {
 	res.writeHead(status, {'Content-Type': 'text/plain'});

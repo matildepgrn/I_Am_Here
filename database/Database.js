@@ -63,6 +63,22 @@ database.prototype.getUserByToken = function(iamhere_token, callback) {
 	})
 };
 
+database.prototype.getUserName = function(ist_id, callback) {
+	var sql = "SELECT name FROM User WHERE ist_id = ?";
+	var arg = [ist_id];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error getting the user name.");
+			callback(err);
+		}
+		else{
+			console.log("1 user name sent");
+			callback(err, rows[0].name);
+		}
+	})
+};
+
 function randomInt(size){
 	return crypto.randomBytes(size).toString('hex');
 }

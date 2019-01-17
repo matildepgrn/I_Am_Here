@@ -38,6 +38,7 @@ function getUserInfo(access_token, refresh_token, callback) {
 				} else if(response.statusCode == 401 && body
 					&& body.error && body.error == 'accessTokenExpired') {
 						console.log('Error - getUserInfo: Requires new access token.');
+						//TODO
 				} else { //TODO handle this better
 					console.log('Erro no getUserInfo().', response.statusCode, error);
 					callback(error);
@@ -59,11 +60,10 @@ function refreshAccessToken(refresh_token, callback){
 					callback(error, body.access_token);
 				} else { //TODO handle this better
 					callback(error);
-					console.log('Erro no refreshAccessToken().', response.statusCode, error);
+					console.log('Erro no refreshAccessToken().', response.statusCode, error, body);
 				}
 			}
 		);
 
 }
-
 //TODO verify roles[x].type (verificar se algum x tem "TEACHER")

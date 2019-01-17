@@ -4,6 +4,8 @@ ul {
 	padding: 0;
 	overflow: hidden;
 	background-color: #f3f3f3; /*#333;*/
+	box-shadow: 1px 1px 3px #ccc;
+	user-select: none;
 }
 
 li {
@@ -45,6 +47,7 @@ li {
 	display: inline-block;
 	text-decoration: none;
 	cursor: pointer;
+	border-radius: 5px;
 }
 
 .button:hover {
@@ -74,4 +77,9 @@ li a:hover {
 	background-color: #595d5f;
 	opacity: 1;
 	color: white;
+}
+
+.name {
+	font-size: 12px;
+	padding-top: 17px !important;
 }
