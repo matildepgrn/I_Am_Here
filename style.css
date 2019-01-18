@@ -13,6 +13,22 @@ li {
 
 }
 
+input[type="radio"] {
+	margin: 6px;
+}
+
+td {
+	padding: 4px;
+}
+
+#attendance-button {
+	margin-top: 25px;
+}
+
+.current {
+	font-weight: bold;
+}
+
 .logoname {
 	font-weight: bold;
 	background-color: #008CBA;

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+
+<ul>
+  <li style="float:left"><span class="logoname" >I Am Here!</span></li>
+  <li style="float:left"><a href="professor.html">Home</a></li>
+  <li style="float:left"><a href="professor_classes.html">Classes</a></li>
+  <li style="float:left" class="current"><a href="professor_attendance.html">Attendance</a></li>
+
+  <li style="float:right"><a href="/logout">Log Out</a></li>
+  <li style="float:right"><span class="name" id="IST_NAME">Name</span></li>
+</ul>
+
+<div class="container">
+  <center class="center">
+    <h1>
+      Personalize the attendance checking:
+    </h1>
+
+    <table>
+      <tr>
+        <td>Type:</td>
+        <td>
+          <input type="radio" name="codetype" value="Letters" checked>Letters
+          <input type="radio" name="codetype" value="Numbers">Numbers
+          <input type="radio" name="codetype" value="LettersNumbers">Letters and Numbers
+        </td>
+      </tr>
+
+      <tr>
+        <td>Length:</td>
+        <td>
+          <select required>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6" selected="selected">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            </select>
+        </td>
+      </tr>
+      
+      <tr>  
+        <td>Time for each code:</td>
+        <td>
+          <select required>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10" selected="selected">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+          </select>
+        </td>
+      </tr>
+      
+    </table>
+
+    <button class="button" id="attendance-button" onclick="window.location.replace('#')">
+        Start attendance!
+    </button>
+
+
+  </center>
+</div>
+
+
+<script>
+
+function loadName(url) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if(this.readyState == 4 && this.status == 200) {
+      document.getElementById("IST_NAME").innerHTML = this.responseText;
+    }
+  };
+
+  xhttp.open("GET", url, true);
+  xhttp.send();
+}
+
+loadName("/api/name");
+
+</script>

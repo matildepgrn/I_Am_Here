@@ -53,6 +53,18 @@ http.createServer(options, function (req, res) {
 		case "/style.css":
 			sendFile(res, 'style.css', 'text/css');
 			break;
+		case "/professor_attendance.html":
+			sendFile(res, 'professor_attendance.html');
+			break;
+		case "/professor.html":
+			sendFile(res, 'professor.html');
+			break;
+		case "/student.html":
+			sendFile(res, 'student.html');
+			break;
+		case "/student_attendance.html":
+			sendFile(res, 'student_attendance.html');
+			break;
 		case "/script.js":
 			sendFile(res, 'client/script.js');
 			break;
@@ -92,7 +104,7 @@ http.createServer(options, function (req, res) {
 			);
 			break;
 		case "/student":
-		case "/prof":
+		case "/professor":
 			makeUserLogin(res, cookies, parsedURL,
 				function(ist_id){
 					switch(parsedURL.pathname) {
