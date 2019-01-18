@@ -24,6 +24,7 @@
 		</h1>
 
 		<table>
+		<form id="formId" method="post">
 			<tr title="Type of code">
 				<td>Type:</td>
 				<td>
@@ -36,7 +37,7 @@
 			<tr title="Number of characters of each code">
 				<td>Length:</td>
 				<td>
-					<select required>
+					<select name="codelength" required>
 						<option value="4">4</option>
 						<option value="5">5</option>
 						<option value="6" selected="selected">6</option>
@@ -49,7 +50,7 @@
 			<tr title="Time to type each code">	
 				<td>Time for each code:</td>
 				<td>
-					<select required>
+					<select name="time" required>
 						<option value="8">8</option>
 						<option value="9">9</option>
 						<option value="10" selected="selected">10</option>
@@ -62,7 +63,7 @@
 			<tr title="Number of consecutive codes that the students will need to type">	
 				<td>Consecutive codes:</td>
 				<td>
-					<select required>
+					<select name="consecutivecodes" required>
 						<option value="3" selected="selected">3</option>
 						<option value="4">4</option>
 						<option value="5">5</option>
@@ -70,7 +71,7 @@
 					</select>
 				</td>
 			</tr>
-			
+		</form>
 		</table>
 
     <div style="text-align: center">
@@ -163,6 +164,19 @@ function updateButtons(isStarted){
 
 function loadStatusTimer() {
 	loadStatus('/status');
+}
+
+function sendForm(){
+	var formEl = document.getElementById("formId");
+	var data = new FormData(formEl);
+	var o = {};
+
+	for(var e of data) {
+		o[e[0]] = e[1];
+	}
+	console.log(o);
+	
+	var json = JSON.stringify(o);
 }
 
 loadName("/api/name");

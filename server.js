@@ -111,7 +111,7 @@ http.createServer(options, function (req, res) {
 						case "/student":
 							sendFile(res, 'client/student.html');
 							break;
-						case "/prof":
+						case "/professor_attendance":
 							styledTest(req, res, parsedURL);
 							break;
 						default:
@@ -264,7 +264,7 @@ function status(res) {
 function styledTest(req, res, parsedURL) {
 	var t = parsedURL.query.t;
 	var n = parsedURL.query.n;
-	console.log(t, n);
+
 	if(t == "L" || t == "N" || t== "LN" &&
 		n == 4 || n == 5 || n == 6 || n == 7 || n == 8) {
 		code.customizeTest(n, t);
