@@ -9,92 +9,160 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
 
 <ul>
-  <li style="float:left"><span class="logoname" >I Am Here!</span></li>
-  <li style="float:left"><a href="professor.html">Home</a></li>
-  <li style="float:left"><a href="professor_classes.html">Classes</a></li>
-  <li style="float:left" class="current"><a href="professor_attendance.html">Attendance</a></li>
+	<li style="float:left"><span class="logoname" >I Am Here!</span></li>
+	<li style="float:left"><a href="professor.html">Home</a></li>
+	<li style="float:left"><a href="professor_classes.html">Classes</a></li>
+	<li style="float:left" class="current"><a href="professor_attendance.html">Attendance</a></li>
 
-  <li style="float:right"><a href="/logout">Log Out</a></li>
-  <li style="float:right"><span class="name" id="IST_NAME">Name</span></li>
+	<li style="float:right"><a href="/logout">Log Out</a></li>
+	<li style="float:right"><span class="name" id="IST_NAME">Name</span></li>
 </ul>
 
-<div class="container">
-  <center class="center">
-    <h1>
-      Personalize the attendance checking:
-    </h1>
+<div class="container center" id="attendance_personalization">
+		<h1>
+			Personalize the attendance checking:
+		</h1>
 
-    <table>
-      <tr title="Type of code">
-        <td>Type:</td>
-        <td>
-          <input type="radio" name="codetype" value="Letters" checked>Letters
-          <input type="radio" name="codetype" value="Numbers">Numbers
-          <input type="radio" name="codetype" value="LettersNumbers">Letters and Numbers
-        </td>
-      </tr>
+		<table>
+			<tr title="Type of code">
+				<td>Type:</td>
+				<td>
+					<input type="radio" name="codetype" value="Letters" checked>Letters
+					<input type="radio" name="codetype" value="Numbers">Numbers
+					<input type="radio" name="codetype" value="LettersNumbers">Letters and Numbers
+				</td>
+			</tr>
 
-      <tr title="Number of characters of each code">
-        <td>Length:</td>
-        <td>
-          <select required>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6" selected="selected">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            </select>
-        </td>
-      </tr>
-      
-      <tr title="Time to type each code">  
-        <td>Time for each code:</td>
-        <td>
-          <select required>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10" selected="selected">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-          </select>
-        </td>
-      </tr>
+			<tr title="Number of characters of each code">
+				<td>Length:</td>
+				<td>
+					<select required>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6" selected="selected">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						</select>
+				</td>
+			</tr>
+			
+			<tr title="Time to type each code">	
+				<td>Time for each code:</td>
+				<td>
+					<select required>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10" selected="selected">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+					</select>
+				</td>
+			</tr>
 
-      <tr title="Number of consecutive codes that the students will need to type">  
-        <td>Consecutive codes:</td>
-        <td>
-          <select required>
-            <option value="3" selected="selected">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-          </select>
-        </td>
-      </tr>
-      
-    </table>
+			<tr title="Number of consecutive codes that the students will need to type">	
+				<td>Consecutive codes:</td>
+				<td>
+					<select required>
+						<option value="3" selected="selected">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+					</select>
+				</td>
+			</tr>
+			
+		</table>
 
-    <button class="button" id="attendance-button" onclick="window.location.replace('#')">
-        Start attendance!
-    </button>
+    <div style="text-align: center">
+      <button class="Bigbutton" id="attendance-button"
+        onclick="startAttendance()" title="Generate a new sequence">
+          Start attendance!
+      </button>
+    </div>
+		
 
+</div>
 
-  </center>
+<div class="container center" id="attendance_info" style="display:none">
+  <button id="b_start" type="button"
+    disabled="true"
+    onclick="loadStatus('/getcode')"
+    title="Generate a new sequence">Start</button>
+  <button id="b_stop" type="button"
+    onclick="loadStatus('/getcode/stop')"
+    title="Stop current sequence">Stop</button>
+
+	<p><span id="time_remaining"></span>s</p>
+	<p>Code number <span id="code_counter"></span></p>
+	<p><span id="randomcode"></span></p>
+
+	<p id="span_c">
+		Insert the code in your browser.
+	</p>
+
+	<p id="status"> </p>
 </div>
 
 
 <script>
 
 function loadName(url) {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if(this.readyState == 4 && this.status == 200) {
-      document.getElementById("IST_NAME").innerHTML = this.responseText;
-    }
-  };
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4 && this.status == 200) {
+			document.getElementById("IST_NAME").innerHTML = this.responseText;
+		}
+	};
 
-  xhttp.open("GET", url, true);
-  xhttp.send();
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+function startAttendance() {
+  setInterval(loadStatusTimer, 1000);
+  loadStatus('/getcode');
+}
+
+function loadStatus(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4 && this.status == 200) {
+			//document.getElementById("status").innerHTML = this.responseText;
+			updateStatus(this.responseText);
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+function updateStatus(jsonStr) {
+	var json = JSON.parse(jsonStr);
+	console.log(json);
+	var code_element = document.getElementById("randomcode");
+	code_element.innerHTML = json.current_code;
+	if(json.current_code == "Expired") {
+		code_element.className = "expired"; // EXPIRED class
+	} else {
+		code_element.className = "";
+	}
+	document.getElementById("code_counter").innerHTML = json.code_counter;
+	document.getElementById("time_remaining").innerHTML = json.time_ms;
+	updateButtons(json.running);
+  switchView();
+}
+
+function switchView(){
+  document.getElementById("attendance_info").style.display = "";
+  document.getElementById("attendance_personalization").style.display = "none";
+}
+
+function updateButtons(isStarted){
+	document.getElementById("b_start").disabled = isStarted;
+	document.getElementById("b_stop").disabled = !isStarted;
+}
+
+function loadStatusTimer() {
+	loadStatus('/status');
 }
 
 loadName("/api/name");

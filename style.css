@@ -40,6 +40,10 @@ td {
 	position: relative; 
 }
 
+#attendance_info{
+	text-align: center;
+}
+
 .center {
 	margin: 0;
 	position: absolute;
@@ -49,7 +53,26 @@ td {
 	transform: translate(-50%, -50%);
 }
 
-.button {
+.expired {
+	color: DarkRed;
+	font-family: sans-serif !important;
+}
+
+.butoes {
+	text-align: center;
+}
+
+#randomcode {
+	font-size: 100px;
+	font-family: monospace;
+	text-align: center;
+}
+
+button:disabled {
+	opacity: 0.5;
+}
+
+.Bigbutton {
 	background-color: white;
 	border-color:#008CBA;
 	border-width: 3px;
@@ -58,17 +81,30 @@ td {
 	text-align: center;
 	font-size: 24px;
 	margin: 4px 2px;
-	opacity: 0.8;
+	opacity: 1;
 	transition: 0.3s;
 	display: inline-block;
 	text-decoration: none;
-	cursor: pointer;
 	border-radius: 5px;
 }
 
-.button:hover {
+#input_student {
+	width: 210px;
+	height: 40px;
+	font-size: 24px;
+}
+
+#enter_button{
+    height:40px;
+    width:100px;
+    padding: 4px 7px;
+    font-size: 17px;
+}
+
+.Bigbutton:hover:enabled {
 	background-color: #008CBA;
 	color: white;
+	cursor: pointer;
 }
 
 .intro {
