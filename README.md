@@ -11,6 +11,7 @@ Install the dependencies:
 $ npm install mysql
 $ npm install require
 ```
+And download the file [qrcode.min.js](https://raw.githubusercontent.com/davidshimjs/qrcodejs/master/qrcode.min.js), from [davidshimjs/qrcodejs](https://github.com/davidshimjs/qrcodejs), into the project's root directory.
 
 #### Config file
 Edit **config.js** according with your credentials.
