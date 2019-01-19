@@ -46,6 +46,9 @@ http.createServer(options, function (req, res) {
 				}
 			);
 			break;
+		case "/qrcode.min.js":
+			sendFile(res, 'qrcode.min.js', 'application/javascrip');
+			break;
 		case "/login":
 			disableCache(res);
 			goToLogin(res, cookies, parsedURL);
@@ -252,9 +255,11 @@ function handlePost(req, res, data) {
 			service.getAttendanceRandomID(db, json.code_type, json.code_length, json.time, json.consecutivecodes,
 				function(error, randomID) {
 					var json_res = {};
-					console.log("Aqui:", error, randomID);
+					json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;
 					json_res.randomID = randomID;
+
 					sendJSON(res, json_res);
+					code.customizeTest(json.code_length, json.code_type, json.time, json.consecutivecodes);
 				}
 			);
 			break;

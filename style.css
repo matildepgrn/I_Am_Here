@@ -35,12 +35,22 @@ td {
 	color: #f3f3f3;
 }
 
+#attendance_qrcode {
+	width: 512px;
+	height: 512px;
+	margin: auto;
+}
+
 .container { 
 	height: 300px;
 	position: relative; 
 }
 
 #attendance_info{
+	text-align: center;
+}
+
+.text-center {
 	text-align: center;
 }
 

@@ -3,4 +3,5 @@ cert.key
 cert_ca.crt
 node_modules/
 config.js
+qrcode.min.js
 

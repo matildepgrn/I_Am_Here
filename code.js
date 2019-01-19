@@ -57,10 +57,12 @@ function randomCode() {
 	return text;
 }
 
-function customizeTest(num_char, code_type){
-	console.log("customizeTest", num_char, code_type);
+function customizeTest(num_char, code_type, time, consecutive_codes){
+	console.log("customizeTest", num_char, code_type, time, consecutive_codes);
 	NUM_CHAR = num_char;
 	CODE_TYPE = code_type;
+	INTERVAL = time*1000;
+	repetitions = consecutive_codes;
 } 
 
 function status() {

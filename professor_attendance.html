@@ -18,7 +18,8 @@
 	<li style="float:right"><span class="name" id="IST_NAME">Name</span></li>
 </ul>
 
-<div class="container center" id="attendance_personalization">
+<div class="center">
+<div class="container" id="attendance_personalization">
 		<h1>
 			Personalize the attendance checking:
 		</h1>
@@ -28,9 +29,9 @@
 			<tr title="Type of code">
 				<td>Type:</td>
 				<td>
-					<input type="radio" name="code_type" value="Letters" checked>Letters
-					<input type="radio" name="code_type" value="Numbers">Numbers
-					<input type="radio" name="code_type" value="LettersNumbers">Letters and Numbers
+					<input type="radio" name="code_type" value="L" checked>Letters
+					<input type="radio" name="code_type" value="N">Numbers
+					<input type="radio" name="code_type" value="LN">Letters and Numbers
 				</td>
 			</tr>
 
@@ -76,23 +77,23 @@
 
     <div style="text-align: center">
       <button class="Bigbutton" id="attendance-button"
-        onclick="sendForm()" title="Generate a new sequence">
+        onclick="sendForm()" title="Create a session">
           Create session
       </button>
     </div>
-		
+</div>
+
+<div id="attendance_links" style="display:none">
+	
+	<div class="text-center" id="attendance_qrcode">
+	</div>
+
+	<h2 class="text-center" id="attendance_link">
+	</h2>
 
 </div>
 
-<div class="container center" id="attendance_info" style="display:none">
-  <button id="b_start" type="button"
-    disabled="true"
-    onclick="loadStatus('/getcode')"
-    title="Generate a new sequence">Start</button>
-  <button id="b_stop" type="button"
-    onclick="loadStatus('/getcode/stop')"
-    title="Stop current sequence">Stop</button>
-
+<div id="attendance_info" style="display:none">
 	<p><span id="time_remaining"></span>s</p>
 	<p>Code number <span id="code_counter"></span></p>
 	<p><span id="randomcode"></span></p>
@@ -104,8 +105,33 @@
 	<p id="status"> </p>
 </div>
 
+<div class="text-center" id="buttons_startstop" style="display:none">
+	<button id="b_start" type="button"
+    onclick="switchView(2); startAttendance()"
+    title="Generate a new sequence">Start</button>
+  <button id="b_stop" type="button"
+    disabled="true"
+    onclick="loadStatus('/getcode/stop'); stopTimer(); switchView(1)"
+    title="Stop current sequence">Stop</button>
+</div>
+
+</div> <!-- final do container -->
+
+
+<script src="/qrcode.min.js"></script>
 
 <script>
+
+function generateQRCode(url) {
+	var qrcode = new QRCode("attendance_qrcode", {
+		text: url,
+		width: 512,
+		height: 512,
+		colorDark : "#000000",
+		colorLight : "#ffffff",
+		correctLevel : QRCode.CorrectLevel.H
+	});
+}
 
 function loadName(url) {
 	var xhttp = new XMLHttpRequest();
@@ -119,9 +145,17 @@ function loadName(url) {
 	xhttp.send();
 }
 
+var timer;
+
 function startAttendance() {
-  setInterval(loadStatusTimer, 1000);
+  timer = setInterval(loadStatusTimer, 1000);
   loadStatus('/getcode');
+}
+
+function stopTimer() {
+	if(timer) {
+		clearInterval(timer);	
+	}
 }
 
 function loadStatus(url) {
@@ -149,12 +183,33 @@ function updateStatus(jsonStr) {
 	document.getElementById("code_counter").innerHTML = json.code_counter;
 	document.getElementById("time_remaining").innerHTML = json.time_ms;
 	updateButtons(json.running);
-  switchView();
 }
 
-function switchView(){
-  document.getElementById("attendance_info").style.display = "";
-  document.getElementById("attendance_personalization").style.display = "none";
+function switchView(arg){
+	switch(arg) {
+		case 0:
+			document.getElementById("attendance_personalization").style.display = "";
+			document.getElementById("buttons_startstop").style.display = "none";
+  			document.getElementById("attendance_links").style.display = "none";
+  			document.getElementById("attendance_info").style.display = "none";
+			break;
+		case 1:
+			document.getElementById("attendance_personalization").style.display = "none";
+			document.getElementById("buttons_startstop").style.display = "";
+  			document.getElementById("attendance_links").style.display = "";
+  			document.getElementById("attendance_info").style.display = "none";
+			break;
+		case 2:
+			document.getElementById("attendance_personalization").style.display = "none";
+			document.getElementById("buttons_startstop").style.display = "";
+  			document.getElementById("attendance_links").style.display = "none";
+  			document.getElementById("attendance_info").style.display = "";
+			break;
+		default:
+			console.log("unknown arg", arg);
+			break;
+
+	}
 }
 
 function updateButtons(isStarted){
@@ -182,7 +237,10 @@ function sendForm(){
 	var url = "/api/createAttendanceSession"
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4 && this.status == 200) {
-			console.log(this.responseText);
+			var json = JSON.parse(this.responseText);
+			generateQRCode(json.url);
+			document.getElementById("attendance_link").innerHTML = json.url;
+			switchView(1);
 		}
 	};
 
