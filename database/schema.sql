@@ -65,11 +65,13 @@ CREATE TABLE Schedule (
 
 CREATE TABLE Attendance (
 	attendanceID		int AUTO_INCREMENT,
+	randomID			int,
 	scheduleID			varchar(255),
 	code_type			varchar(255),
 	code_length			int,
 	total_time_s		int,
 	consecutive_codes	int,
+	open				boolean,
 
 	PRIMARY KEY(attendanceID),
 	FOREIGN KEY(scheduleID) REFERENCES Schedule(scheduleID)

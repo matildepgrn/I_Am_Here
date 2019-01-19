@@ -246,6 +246,18 @@ function handlePost(req, res, data) {
 		case "/validatecode":
 			sendText(res, code.validateCode(data) + "");
 			break;
+		case "/api/createAttendanceSession":
+			console.log(data);
+			var json = JSON.parse(data);
+			service.getAttendanceRandomID(db, json.code_type, json.code_length, json.time, json.consecutivecodes,
+				function(error, randomID) {
+					var json_res = {};
+					console.log("Aqui:", error, randomID);
+					json_res.randomID = randomID;
+					sendJSON(res, json_res);
+				}
+			);
+			break;
 		default:
 			sendText(res, "File not found (POST).", 404);
 			break;

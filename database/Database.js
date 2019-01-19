@@ -99,6 +99,23 @@ database.prototype.removeIAmHereToken = function(ist_id, callback) {
 	})
 };
 
+database.prototype.generateRandomAttendanceCode = function(code_type, code_length, total_time_s, consecutive_codes, callback) {
+	var sql = "INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes) VALUES(?, ?, ?, ?, ?)";
+	var randomID = Math.floor(Math.random() * Math.floor(999999));
+	var arg = [randomID, code_type, code_length, total_time_s, consecutive_codes];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error updating the randomID.");
+			callback(err);
+		}
+		else{
+			console.log("randomID updated.");
+			callback(err, randomID);
+		}
+	})
+};
+
 
 
 

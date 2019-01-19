@@ -28,16 +28,16 @@
 			<tr title="Type of code">
 				<td>Type:</td>
 				<td>
-					<input type="radio" name="codetype" value="Letters" checked>Letters
-					<input type="radio" name="codetype" value="Numbers">Numbers
-					<input type="radio" name="codetype" value="LettersNumbers">Letters and Numbers
+					<input type="radio" name="code_type" value="Letters" checked>Letters
+					<input type="radio" name="code_type" value="Numbers">Numbers
+					<input type="radio" name="code_type" value="LettersNumbers">Letters and Numbers
 				</td>
 			</tr>
 
 			<tr title="Number of characters of each code">
 				<td>Length:</td>
 				<td>
-					<select name="codelength" required>
+					<select name="code_length" required>
 						<option value="4">4</option>
 						<option value="5">5</option>
 						<option value="6" selected="selected">6</option>
@@ -76,8 +76,8 @@
 
     <div style="text-align: center">
       <button class="Bigbutton" id="attendance-button"
-        onclick="startAttendance()" title="Generate a new sequence">
-          Start attendance!
+        onclick="sendForm()" title="Generate a new sequence">
+          Create session
       </button>
     </div>
 		
@@ -177,6 +177,17 @@ function sendForm(){
 	console.log(o);
 	
 	var json = JSON.stringify(o);
+
+	var xhttp = new XMLHttpRequest();
+	var url = "/api/createAttendanceSession"
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4 && this.status == 200) {
+			console.log(this.responseText);
+		}
+	};
+
+	xhttp.open("POST", url, true);
+	xhttp.send(json);
 }
 
 loadName("/api/name");

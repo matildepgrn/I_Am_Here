@@ -37,6 +37,17 @@ Service.prototype.getUserName = function(db, ist_id, callback) {
 	); 
 }
 
+Service.prototype.getAttendanceRandomID = function(db, code_type, code_length, total_time_s, consecutive_codes, callback) {
+	db.generateRandomAttendanceCode(code_type, code_length, total_time_s, consecutive_codes,
+		function(error, randomID) {
+			console.log('getAttendanceRandomID: randomID = ', randomID);
+			callback(error, randomID);
+		}
+	); 
+}
+
+
+
 Service.prototype.removeIAmHereToken = function(db, ist_id, callback) {
 	db.removeIAmHereToken(ist_id,
 		function(error, success) {
