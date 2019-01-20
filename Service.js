@@ -2,14 +2,27 @@ var fenix_api = require('./fenix_api');
 
 var Service = function() {};
 
+Service.prototype.validateCode = function(db, res, code, client_code, ist_id, callback) {
+	callback(code.validateCode(client_code));
+	
+}
+
 Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
 	fenix_api.requestAccessToken(fenix_code, 
 		function(error, access_token, refresh_token) {
 			fenix_api.getUserInfo(access_token, refresh_token,
-				function(error, info) {
+				function(error, info, isProfessor) {
 					db.insertUser(info.username, access_token, refresh_token, info.name,
 						function(error, iamhere_token){
-							callback(iamhere_token);
+							if(isProfessor) {
+								db.insertProfessor(info.username,
+									function(error){
+										callback(iamhere_token);
+									}
+								);
+							}else{
+								callback(iamhere_token);
+							}
 						}
 					);
 				}

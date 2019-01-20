@@ -29,12 +29,6 @@ CREATE TABLE Professor (
 	FOREIGN KEY(ist_id) REFERENCES User(ist_id)
 );
 
-CREATE TABLE Student (
-	ist_id				varchar(255),
-	
-	FOREIGN KEY(ist_id) REFERENCES User(ist_id)
-);
-
 CREATE TABLE Course (
 	courseID			varchar(255),
 	courseName			varchar(255),

@@ -32,6 +32,20 @@ database.prototype.insertUser = function(user_id, access_token, refresh_token, n
 	});
 }
 
+database.prototype.insertProfessor = function(user_id, callback) {
+	var sql = "REPLACE INTO Professor (ist_id) VALUES (?);";
+	var args = [user_id];
+	this.pool.query(sql, args, function (err, result) {
+		if (err){
+			console.log("Error in the insertion of a professor.");
+		}
+		else{
+			console.log("1 professor inserted.");
+		}
+		callback(err);
+	});
+}
+
 database.prototype.updateAccessToken = function(access_token, refresh_token, newAccessToken, callback) {
 	var sql = "UPDATE User SET access_token = ? WHERE access_token = ? AND refresh_token = ?;";
 	var args = [newAccessToken, access_token, refresh_token];
@@ -116,6 +130,23 @@ database.prototype.generateRandomAttendanceCode = function(code_type, code_lengt
 	})
 };
 
+database.prototype.insertCode = function(date_input, ist_id, code_generated, code_input, code_generated, time_taken_s) {
+	var sql = "INSERT INTO Code(date_input, ist_id, code_input, correct, code_generated, time_taken_s VALUES(?,?,?,?,?,?)";
+	var correct = (code_generated == code_input);
+
+	var arg = [moment().format('YYYY-MM-DD HH:mm:ss'), ist_id, code_input, correct, code_generated, time_taken_s];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error inserting code.");
+			callback(err);
+		}
+		else{
+			console.log("code inserted.");
+			callback(err);
+		}
+	})
+};
 
 
 

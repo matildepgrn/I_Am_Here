@@ -28,12 +28,13 @@ http.createServer(options, function (req, res) {
 
 	console.log(req.method + " " + req.url);
 	
+	var parsedURL = url.parse(req.url, true);
+
 	if(req.method == "POST") {
-		getPostData(req, res);
+		getPostData(req, res, cookies, parsedURL);
 		return;
 	}
 
-	var parsedURL = url.parse(req.url, true);
 	switch(parsedURL.pathname) {
 		case "/":
 		case "/index.html":
@@ -45,6 +46,9 @@ http.createServer(options, function (req, res) {
 					sendFile(res, 'index.html');
 				}
 			);
+			break;
+		case "/a":
+			sendFile(res, 'student.html');
 			break;
 		case "/qrcode.min.js":
 			sendFile(res, 'qrcode.min.js', 'application/javascrip');
@@ -64,9 +68,6 @@ http.createServer(options, function (req, res) {
 			break;
 		case "/student.html":
 			sendFile(res, 'student.html');
-			break;
-		case "/student_attendance.html":
-			sendFile(res, 'student_attendance.html');
 			break;
 		case "/script.js":
 			sendFile(res, 'client/script.js');
@@ -229,7 +230,7 @@ function sendJSON(res, json, status = 200) {
 	res.end();
 }
 
-function getPostData(req, res) {
+function getPostData(req, res, cookies, parsedURL) {
 	var data = '';
 	req.on('data', chunk => {
 		if(data.length > 512) {
@@ -240,14 +241,27 @@ function getPostData(req, res) {
 	});
 	req.on('end', () => {
 		console.log(data);
-		handlePost(req, res, data);
+		handlePost(req, res, cookies, parsedURL, data);
 	});
 }
 
-function handlePost(req, res, data) {
+function handlePost(req, res, cookies, parsedURL, data) {
 	switch(req.url) {
-		case "/validatecode":
-			sendText(res, code.validateCode(data) + "");
+		case "/api/validatecode":
+			isLoggedIn(res, cookies, parsedURL,
+				function(ist_id) {
+					var json = JSON.parse(data);
+					var client_code = json.input_code;
+					service.validateCode(db, res, code, client_code, ist_id,
+						function(result) {
+							sendText(res, '' + result); //TODO
+						}
+					);
+				},
+				function() {
+					sendText(res, "Not logged in", 403);
+				}
+			);
 			break;
 		case "/api/createAttendanceSession":
 			console.log(data);
