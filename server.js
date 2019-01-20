@@ -99,7 +99,7 @@ http.createServer(options, function (req, res) {
 		case "/a":
 		case "/student":
 		case "/professor":
-		case "/professor_attendance":
+		case "/professor/attendance":
 			makeUserLogin(res, cookies, parsedURL,
 				function(ist_id){
 					switch(parsedURL.pathname) {
@@ -112,7 +112,7 @@ http.createServer(options, function (req, res) {
 						case "/professor":
 							sendFile(res, 'professor.html');
 							break;
-						case "/professor_attendance":
+						case "/professor/attendance":
 							sendFile(res, 'professor_attendance.html');
 							break;
 						default:
