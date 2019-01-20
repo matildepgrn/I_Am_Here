@@ -1,32 +1,28 @@
-module.exports = {
-	newCode: newCode,
-	status: status,
-	stopProcess: stop,
-	validateCode: clientInput,
-	customizeTest: customizeTest
+var fs = require('fs');
+
+var Code = function() {
+	this.running = false;
+	this.time_ms = 0;
+	this.x = null;
+	this.INTERVAL = 10*1000; // ms
+	this.NUM_CHAR = 7 // num caracteres
+	this.CODE_TYPE = "LN"; //L, N, LN
+	//this.repetitions = 5;
+	this.current_code = '';
+	this.code_counter = 0;
 };
 
-var fs = require('fs');
-var running = false;
-var time_ms = 0;
-var x = null;
-var INTERVAL = 10*1000; // ms
-var NUM_CHAR = 7 // num caracteres
-var CODE_TYPE = "LN"; //L, N, LN
-var repetitions = 5; 
-var code_counter = 0;
-var current_code = '';
 var CSV_SEPARATOR = ",";
 var stream = initStream("test.csv");
 
-function newCode() {
-	startProcess();
-	return status();
+Code.prototype.newCode = function() {
+	this.startProcess();
+	return this.status();
 }
 
-function stop() {
-	stopProcess();
-	return status();
+Code.prototype.stop = function() {
+	this.stopProcess();
+	return this.status();
 }
 
 // letters and numbers
@@ -34,10 +30,10 @@ var LN = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 var L = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
 var N = "0123456789";
 
-function randomCode() {
+Code.prototype.randomCode = function() {
 	var text = "";
 	var possible = "";
-	switch(CODE_TYPE){
+	switch(this.CODE_TYPE){
 		case "LN":
 			possible = LN;
 			break;
@@ -51,38 +47,38 @@ function randomCode() {
 			break;
 	}
 	
-	for (var i = 0; i < NUM_CHAR; i++)
+	for (var i = 0; i < this.NUM_CHAR; i++)
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 
 	return text;
 }
 
-function customizeTest(num_char, code_type, time, consecutive_codes){
+Code.prototype.customizeTest = function(num_char, code_type, time, consecutive_codes){
 	console.log("customizeTest", num_char, code_type, time, consecutive_codes);
-	NUM_CHAR = num_char;
-	CODE_TYPE = code_type;
-	INTERVAL = time*1000;
-	repetitions = consecutive_codes;
+	this.NUM_CHAR = num_char;
+	this.CODE_TYPE = code_type;
+	this.INTERVAL = time*1000;
+	this.repetitions = consecutive_codes;
 } 
 
-function status() {
+Code.prototype.status = function() {
 	return {
-		current_code: current_code,
-		code_counter: code_counter,
-		time_ms: time_ms/1000,
-		running: running
+		current_code: this.current_code,
+		code_counter: this.code_counter,
+		time_ms: this.time_ms/1000,
+		running: this.running
 	};
 }
 
-function timer_function() {
-	time_ms = time_ms - 1*1000;
+Code.prototype.timer_function = function() {
+	this.time_ms = this.time_ms - 1*1000;
 
-	if (time_ms <= 0) {
-		clearInterval(x);
-		x = null;
+	if (this.time_ms <= 0) {
+		clearInterval(this.x);
+		this.x = null;
 		
 		//if(repetitions-- > 1) {
-		startCountdown();
+		this.startCountdown();
 		//}
 		//else {
 		//	current_code = "Expired";
@@ -91,38 +87,39 @@ function timer_function() {
 	}
 }
 
-function startCountdown() {
-	if(x != null) {
-		clearInterval(x);
+Code.prototype.startCountdown = function() {
+	if(this.x != null) {
+		clearInterval(this.x);
 	}
 
-	time_ms = INTERVAL;
-	current_code = randomCode();
-	code_counter++;
-	x = setInterval(timer_function, 1000);
+	this.time_ms = this.INTERVAL;
+	this.current_code = this.randomCode();
+	this.code_counter++;
+	var that = this;
+	this.x = setInterval(function(){that.timer_function()}, 1000);
 }
 
-function stopProcess() {
-	if(x != null) {
-		clearInterval(x);
+Code.prototype.stopProcess = function() {
+	if(this.x != null) {
+		clearInterval(this.x);
 	}
-	running = false;
+	this.running = false;
+	return this.status();
 }
 
-function startProcess() {
-	repetitions = 5; 
-	code_counter = 0;
-	running = true;
-	startCountdown();
+Code.prototype.startProcess = function() {
+	this.code_counter = 0;
+	this.running = true;
+	this.startCountdown();
 }
 
-function clientInput(code_client){
+Code.prototype.clientInput = function(code_client){
 	appendToFile(code_client);
-	return validateCode(code_client);
+	return this.validateCode(code_client);
 }
 
-function validateCode(code_client){
-	if(current_code == code_client && current_code != ""){
+Code.prototype.validateCode = function(code_client){
+	if(this.current_code == code_client && this.current_code != ""){
 		return true;
 	}
 	else {
@@ -156,12 +153,14 @@ function initStream(filename) {
 // Date Total_time_s Code_length Code_type Code_generated Code_input Correct Time_left_s
 function appendToFile(code_client) {
 	stream.write(new Date() + CSV_SEPARATOR +
-		INTERVAL/1000 + CSV_SEPARATOR +
-		NUM_CHAR + CSV_SEPARATOR +
-		CODE_TYPE + CSV_SEPARATOR +
-		current_code + CSV_SEPARATOR +
+		this.INTERVAL/1000 + CSV_SEPARATOR +
+		this.NUM_CHAR + CSV_SEPARATOR +
+		this.CODE_TYPE + CSV_SEPARATOR +
+		this.current_code + CSV_SEPARATOR +
 		code_client + CSV_SEPARATOR +
 		validateCode(code_client) + CSV_SEPARATOR +
-		time_ms/1000 + "\n"
+		this.time_ms/1000 + "\n"
 	);
 }
+
+module.exports = Code;

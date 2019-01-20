@@ -2,7 +2,7 @@ var config = require('./default_config');
 var database = require('./database/Database');
 var Service = require('./Service');
 
-var code = require('./code');
+var Code = require('./Code');
 var http = config.use_HTTPS ? require('https') : require('http');
 var fs = require('fs');
 var path = require('path');
@@ -13,6 +13,7 @@ var request = require('request');
 var moment = require('moment');
 var Cookies = require('cookies');
 
+var code = new Code();
 var service = new Service();
 var db = new database(150, config.mysql_host, config.mysql_user, config.mysql_pw, config.mysql_database);
 
