@@ -81,13 +81,13 @@ function timer_function() {
 		clearInterval(x);
 		x = null;
 		
-		if(repetitions-- > 1) {
-			startCountdown();
-		}
-		else {
-			current_code = "Expired";
-			running = false;
-		}
+		//if(repetitions-- > 1) {
+		startCountdown();
+		//}
+		//else {
+		//	current_code = "Expired";
+		//	running = false;
+		//}
 	}
 }
 

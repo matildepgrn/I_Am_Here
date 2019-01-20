@@ -84,6 +84,7 @@
 </div>
 
 <div id="attendance_links" style="display:none">
+	<a onclick="switchView(0)"  class="previous round">&#8249;</a>
 	
 	<div class="text-center" id="attendance_qrcode">
 	</div>
@@ -94,8 +95,10 @@
 </div>
 
 <div id="attendance_info" style="display:none">
-	<p><span id="time_remaining"></span>s</p>
-	<p>Code number <span id="code_counter"></span></p>
+	<a onclick="switchView(1)" class="previous round">&#8249;</a>
+
+	<h4>Time remaining: <span id="time_remaining"></span>s</h4>
+	<h2>Consecutive codes required: <span id="view_consecutivecodes"></span></h2>
 	<p><span id="randomcode"></span></p>
 
 	<p id="span_c">
@@ -122,15 +125,23 @@
 
 <script>
 
+var qrcode;
+
 function generateQRCode(url) {
-	var qrcode = new QRCode("attendance_qrcode", {
-		text: url,
-		width: 512,
-		height: 512,
-		colorDark : "#000000",
-		colorLight : "#ffffff",
-		correctLevel : QRCode.CorrectLevel.H
-	});
+	if(qrcode) {
+		qrcode.clear();
+		qrcode.makeCode(url);
+	}
+	else {
+		qrcode = new QRCode("attendance_qrcode", {
+			text: url,
+			width: 512,
+			height: 512,
+			colorDark : "#000000",
+			colorLight : "#ffffff",
+			correctLevel : QRCode.CorrectLevel.H
+		});
+	}
 }
 
 function loadName(url) {
@@ -180,7 +191,6 @@ function updateStatus(jsonStr) {
 	} else {
 		code_element.className = "";
 	}
-	document.getElementById("code_counter").innerHTML = json.code_counter;
 	document.getElementById("time_remaining").innerHTML = json.time_ms;
 	updateButtons(json.running);
 }
@@ -229,9 +239,8 @@ function sendForm(){
 	for(var e of data) {
 		o[e[0]] = e[1];
 	}
-	console.log(o);
 	
-	var json = JSON.stringify(o);
+	var json_string = JSON.stringify(o);
 
 	var xhttp = new XMLHttpRequest();
 	var url = "/api/createAttendanceSession"
@@ -240,12 +249,13 @@ function sendForm(){
 			var json = JSON.parse(this.responseText);
 			generateQRCode(json.url);
 			document.getElementById("attendance_link").innerHTML = json.url;
+			document.getElementById("view_consecutivecodes").innerHTML = o.consecutivecodes;
 			switchView(1);
 		}
 	};
 
 	xhttp.open("POST", url, true);
-	xhttp.send(json);
+	xhttp.send(json_string);
 }
 
 loadName("/api/name");
