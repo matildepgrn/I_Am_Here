@@ -48,9 +48,6 @@ http.createServer(options, function (req, res) {
 				}
 			);
 			break;
-		case "/a":
-			sendFile(res, 'student.html');
-			break;
 		case "/qrcode.min.js":
 			sendFile(res, 'qrcode.min.js', 'application/javascrip');
 			break;
@@ -60,15 +57,6 @@ http.createServer(options, function (req, res) {
 			break;
 		case "/style.css":
 			sendFile(res, 'style.css', 'text/css');
-			break;
-		case "/professor_attendance.html":
-			sendFile(res, 'professor_attendance.html');
-			break;
-		case "/professor.html":
-			sendFile(res, 'professor.html');
-			break;
-		case "/student.html":
-			sendFile(res, 'student.html');
 			break;
 		case "/script.js":
 			sendFile(res, 'client/script.js');
@@ -108,16 +96,24 @@ http.createServer(options, function (req, res) {
 				}
 			);
 			break;
+		case "/a":
 		case "/student":
 		case "/professor":
+		case "/professor_attendance":
 			makeUserLogin(res, cookies, parsedURL,
 				function(ist_id){
 					switch(parsedURL.pathname) {
+						case "/a":
+							sendFile(res, 'student.html');
+							break;
 						case "/student":
-							sendFile(res, 'client/student.html');
+							sendFile(res, 'student.html');
+							break;
+						case "/professor":
+							sendFile(res, 'professor.html');
 							break;
 						case "/professor_attendance":
-							styledTest(req, res, parsedURL);
+							sendFile(res, 'professor_attendance.html');
 							break;
 						default:
 							console.log('This sould not happen');
@@ -174,6 +170,7 @@ function redirectURL(res, url) {
 
 
 function goToLogin(res, cookies, parsedURL) {
+	console.log("goToLogin: setting cookie");
 	cookies.set('last_url', parsedURL.pathname);
 	redirectURL(res, config.EXTERNAL_LOGIN_URL);	
 }
@@ -192,15 +189,17 @@ function isLoggedIn(res, cookies, parsedURL, callback_true, callback_false) {
 	);
 }
 
-
 function makeUserLogin(res, cookies, parsedURL, callback) {
+	console.log("Make user login: ", parsedURL.pathname);
 	isLoggedIn(res, cookies, parsedURL,
 		//callback_true
 		function(ist_id){
+			console.log("IsLogged in as: ", ist_id);
 			callback(ist_id);
 		},
 		//callback_false
 		function(){
+			console.log("isNOTlogged in.");
 			goToLogin(res, cookies, parsedURL);
 		}
 	);
