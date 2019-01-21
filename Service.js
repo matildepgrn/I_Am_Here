@@ -3,8 +3,15 @@ var fenix_api = require('./fenix_api');
 var Service = function() {};
 
 Service.prototype.validateCode = function(db, res, code, client_code, ist_id, callback) {
-	callback(code.validateCode(client_code));
-	
+	code.clientInput(client_code, ist_id, 
+		function(error, result) {
+			if(error){
+				callback(error);
+			} else {
+				callback(error, result);
+			}
+		}
+	);
 }
 
 Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {

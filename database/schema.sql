@@ -3,11 +3,11 @@ use ist182083;
 drop table if exists Evaluation;
 drop table if exists Code;
 drop table if exists Fingerprint;
+drop table if exists CodeAttendance;
 drop table if exists Attendance;
 drop table if exists Schedule;
 drop table if exists Class;
 drop table if exists Course;
-drop table if exists Student;
 drop table if exists Professor;
 drop table if exists User;
 
@@ -48,8 +48,8 @@ CREATE TABLE Class (
 );
 
 CREATE TABLE Schedule (
-	classID				varchar(255),
 	scheduleID			varchar(255),
+	classID				varchar(255),
 	nr_attendance		int,
 	date_time			timestamp,
 
@@ -71,6 +71,15 @@ CREATE TABLE Attendance (
 	FOREIGN KEY(scheduleID) REFERENCES Schedule(scheduleID)
 );
 
+CREATE TABLE CodeAttendance (
+	server_code			VARCHAR(255),
+	attendanceID		int,
+	sequence			int,
+
+	PRIMARY KEY(server_code),
+	FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID)
+);
+
 CREATE TABLE Fingerprint (
 	fingerprintID		int AUTO_INCREMENT,
 	attendanceID 		int,
@@ -86,7 +95,7 @@ CREATE TABLE Code (
 	date_input			timestamp,
 	ist_id 				varchar(255),
 	attendanceID 		int,
-	correct 			varchar(255),
+	correct 			boolean,
 	code_generated 		varchar(255),
 	code_input 			varchar(255),
 	time_taken_s 		int,

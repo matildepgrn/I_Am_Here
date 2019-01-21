@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-var Code = function() {
+var Code = function(db) {
 	this.running = false;
 	this.time_ms = 0;
 	this.x = null;
@@ -10,6 +10,7 @@ var Code = function() {
 	//this.repetitions = 5;
 	this.current_code = '';
 	this.code_counter = 0;
+	this.db = db;
 };
 
 var CSV_SEPARATOR = ",";
@@ -93,10 +94,17 @@ Code.prototype.startCountdown = function() {
 	}
 
 	this.time_ms = this.INTERVAL;
-	this.current_code = this.randomCode();
-	this.code_counter++;
+	this.nextCode();
 	var that = this;
 	this.x = setInterval(function(){that.timer_function()}, 1000);
+}
+
+Code.prototype.nextCode = function() {
+	this.current_code = this.randomCode();
+	this.code_counter++;
+	this.db.insertCodeServer(this.current_code, this.code_counter,
+		function(err) {}
+	);
 }
 
 Code.prototype.stopProcess = function() {
@@ -113,9 +121,16 @@ Code.prototype.startProcess = function() {
 	this.startCountdown();
 }
 
-Code.prototype.clientInput = function(code_client){
-	appendToFile(code_client);
-	return this.validateCode(code_client);
+Code.prototype.clientInput = function(code_client, ist_id, callback){
+	var result = this.validateCode(code_client);
+	console.log("clientInput", result);
+
+	this.db.insertCode(ist_id, this.current_code, code_client, this.time_ms/1000,
+		function(error, code_client) {
+			console.log('clientInput: code = ', code_client);
+			callback(error, result);
+		}
+	);
 }
 
 Code.prototype.validateCode = function(code_client){

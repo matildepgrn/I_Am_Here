@@ -130,8 +130,8 @@ database.prototype.generateRandomAttendanceCode = function(code_type, code_lengt
 	})
 };
 
-database.prototype.insertCode = function(date_input, ist_id, code_generated, code_input, code_generated, time_taken_s) {
-	var sql = "INSERT INTO Code(date_input, ist_id, code_input, correct, code_generated, time_taken_s VALUES(?,?,?,?,?,?)";
+database.prototype.insertCode = function(ist_id, code_generated, code_input, time_taken_s, callback) {
+	var sql = "INSERT INTO Code(date_input, ist_id, code_input, correct, code_generated, time_taken_s) VALUES(?,?,?,?,?,?)";
 	var correct = (code_generated == code_input);
 
 	var arg = [moment().format('YYYY-MM-DD HH:mm:ss'), ist_id, code_input, correct, code_generated, time_taken_s];
@@ -142,14 +142,43 @@ database.prototype.insertCode = function(date_input, ist_id, code_generated, cod
 			callback(err);
 		}
 		else{
-			console.log("code inserted.");
+			console.log("Code inserted.");
+			callback(err, code_input);
+		}
+	})
+};
+
+database.prototype.insertCodeServer = function(server_code, sequence, callback) {
+	var sql = "INSERT INTO CodeAttendance(server_code, sequence) VALUES(?,?)";
+	var arg = [server_code, sequence];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error inserting server code.");
+			callback(err);
+		}
+		else{
+			console.log("Server code inserted.");
 			callback(err);
 		}
 	})
 };
 
 
+//TODO - fazer uma stored procedure
+database.prototype.verifyAttendance = function (ist_id, attendanceID, consecutive_codes) {
+	var sql = "SELECT COUNT(*) FROM CODE WHERE attendanceID = ? AND ist_id = ? AND correct = true VALUES(?,?)";
+	var arg = [attendanceID, ist_id];
 
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			callback(err);
+		} else {
+			callback(err);
+		}
+	})
+
+}
 
 
 function randomInt(size){

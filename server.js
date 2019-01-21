@@ -13,9 +13,9 @@ var request = require('request');
 var moment = require('moment');
 var Cookies = require('cookies');
 
-var code = new Code();
 var service = new Service();
 var db = new database(150, config.mysql_host, config.mysql_user, config.mysql_pw, config.mysql_database);
+var code = new Code(db);
 
 const options = {
 	key: config.use_HTTPS ? fs.readFileSync(config.tls_cert_key) : '',
@@ -253,7 +253,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 					var json = JSON.parse(data);
 					var client_code = json.input_code;
 					service.validateCode(db, res, code, client_code, ist_id,
-						function(result) {
+						function(error, result) {
 							sendText(res, '' + result); //TODO
 						}
 					);
