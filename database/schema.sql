@@ -76,7 +76,7 @@ CREATE TABLE CodeAttendance (
 	attendanceID		int,
 	sequence			int,
 
-	PRIMARY KEY(server_code),
+	PRIMARY KEY(attendanceID, sequence),
 	FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID)
 );
 
@@ -96,13 +96,13 @@ CREATE TABLE Code (
 	ist_id 				varchar(255),
 	attendanceID 		int,
 	correct 			boolean,
-	code_generated 		varchar(255),
+	sequence			int,
 	code_input 			varchar(255),
 	time_taken_s 		int,
 
 	PRIMARY KEY(codeID),
 	FOREIGN KEY(ist_id) REFERENCES User(ist_id),
-	FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID)
+	FOREIGN KEY(attendanceID, sequence) REFERENCES CodeAttendance(attendanceID, sequence)
 );
 
 CREATE TABLE Evaluation (

@@ -122,10 +122,11 @@ Code.prototype.startProcess = function() {
 }
 
 Code.prototype.clientInput = function(code_client, ist_id, callback){
+	console.log(code_client);
 	var result = this.validateCode(code_client);
 	console.log("clientInput", result);
 
-	this.db.insertCode(ist_id, this.current_code, code_client, this.time_ms/1000,
+	this.db.insertCode(ist_id, this.current_code, code_client, this.time_ms/1000, this.code_counter, 
 		function(error, code_client) {
 			console.log('clientInput: code = ', code_client);
 			callback(error, result);

@@ -134,21 +134,20 @@ database.prototype.generateRandomAttendanceCode = function(code_type, code_lengt
 	})
 };
 
-database.prototype.insertCode = function(ist_id, code_generated, code_input, time_taken_s, callback) {
-	var sql = "INSERT INTO Code(date_input, ist_id, code_input, correct, code_generated, time_taken_s) VALUES(?,?,?,?,?,?);";
+database.prototype.insertCode = function(ist_id, code_generated, code_input, time_taken_s, sequence, callback) {
+	var sql = "INSERT INTO Code(date_input, ist_id, code_input, correct, time_taken_s, sequence) VALUES(?,?,?,?,?,?);";
 	var correct = (code_generated == code_input);
 
-	var arg = [moment().format('YYYY-MM-DD HH:mm:ss'), ist_id, code_input, correct, code_generated, time_taken_s];
+	var arg = [moment().format('YYYY-MM-DD HH:mm:ss'), ist_id, code_input, correct, time_taken_s, sequence];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
-			console.log("Error inserting code.");
-			callback(err);
+			console.log("Error inserting code:", err);
 		}
 		else{
 			console.log("Code inserted.");
-			callback(err, code_input);
 		}
+		callback(err, code_input);
 	})
 };
 
