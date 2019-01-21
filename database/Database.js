@@ -17,12 +17,16 @@ var database = function(connectionLimit, host, user, password, database) {
 //checkLogin
 
 database.prototype.insertUser = function(user_id, access_token, refresh_token, name, callback) {
-	var sql = "REPLACE INTO User (ist_id, access_token, refresh_token, name, iamhere_token, creation) VALUES (?,?,?,?,?,?);";
+	var sql = "INSERT INTO User (ist_id, access_token, refresh_token, name, iamhere_token, creation) VALUES (?,?,?,?,?,?) \
+	ON DUPLICATE KEY UPDATE access_token = ?, refresh_token = ?, name = ?, iamhere_token =?, creation = ?;";
 	var iamhere_token = randomInt(32);
-	var args = [user_id, access_token, refresh_token, name, iamhere_token, moment().format('YYYY-MM-DD HH:mm:ss')];
+	var creation = moment().format('YYYY-MM-DD HH:mm:ss');
+	var args = [user_id, access_token, refresh_token, name, iamhere_token, creation,
+					access_token, refresh_token, name, iamhere_token, creation];
+
 	this.pool.query(sql, args, function (err, result) {
 		if (err){
-			console.log("Error in the insertion of a user.");
+			console.log("Error in the insertion of a user:", err);
 			callback(err);
 		}
 		else{
@@ -98,7 +102,7 @@ database.prototype.getUserName = function(ist_id, callback) {
 };
 
 database.prototype.removeIAmHereToken = function(ist_id, callback) {
-	var sql = "UPDATE User SET iamhere_token = null WHERE ist_id = ?";
+	var sql = "UPDATE User SET iamhere_token = null WHERE ist_id = ?;";
 	var arg = [ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
@@ -114,7 +118,7 @@ database.prototype.removeIAmHereToken = function(ist_id, callback) {
 };
 
 database.prototype.generateRandomAttendanceCode = function(code_type, code_length, total_time_s, consecutive_codes, callback) {
-	var sql = "INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes) VALUES(?, ?, ?, ?, ?)";
+	var sql = "INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes) VALUES(?, ?, ?, ?, ?);";
 	var randomID = Math.floor(Math.random() * Math.floor(999999));
 	var arg = [randomID, code_type, code_length, total_time_s, consecutive_codes];
 
@@ -131,7 +135,7 @@ database.prototype.generateRandomAttendanceCode = function(code_type, code_lengt
 };
 
 database.prototype.insertCode = function(ist_id, code_generated, code_input, time_taken_s, callback) {
-	var sql = "INSERT INTO Code(date_input, ist_id, code_input, correct, code_generated, time_taken_s) VALUES(?,?,?,?,?,?)";
+	var sql = "INSERT INTO Code(date_input, ist_id, code_input, correct, code_generated, time_taken_s) VALUES(?,?,?,?,?,?);";
 	var correct = (code_generated == code_input);
 
 	var arg = [moment().format('YYYY-MM-DD HH:mm:ss'), ist_id, code_input, correct, code_generated, time_taken_s];
@@ -167,7 +171,7 @@ database.prototype.insertCodeServer = function(server_code, sequence, callback) 
 
 //TODO - fazer uma stored procedure
 database.prototype.verifyAttendance = function (ist_id, attendanceID, consecutive_codes) {
-	var sql = "SELECT COUNT(*) FROM CODE WHERE attendanceID = ? AND ist_id = ? AND correct = true VALUES(?,?)";
+	var sql = "SELECT COUNT(*) FROM CODE WHERE attendanceID = ? AND ist_id = ? AND correct = 1 VALUES(?,?)";
 	var arg = [attendanceID, ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {

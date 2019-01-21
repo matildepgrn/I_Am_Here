@@ -15,8 +15,10 @@ Service.prototype.validateCode = function(db, res, code, client_code, ist_id, ca
 }
 
 Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
+	console.log("getAccessToken(", fenix_code + ")");
 	fenix_api.requestAccessToken(fenix_code, 
 		function(error, access_token, refresh_token) {
+			console.log("requestAccessToken: ", access_token, refresh_token);
 			fenix_api.getUserInfo(access_token, refresh_token,
 				function(error, info, isProfessor) {
 					db.insertUser(info.username, access_token, refresh_token, info.name,
