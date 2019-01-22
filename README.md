@@ -42,7 +42,7 @@ More info in **default_config.js**.
 ```bash
 $ nodejs server.js
 ```
-Tested with Node.js v10.15.0 and v11.0.0.
+Tested with Node.js v10.15.0 and v11.0.0, and MySQL Server 5.5.54-0+deb8u1-log (Debian).
 
 
 
