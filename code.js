@@ -119,13 +119,11 @@ Code.prototype.stopProcess = function() {
 }
 
 Code.prototype.startProcess = function() {
-	this.code_counter = 0;
 	this.running = true;
 	this.startCountdown();
 }
 
 Code.prototype.clientInput = function(code_client, ist_id, callback){
-	console.log(code_client);
 	var result = this.validateCode(code_client);
 	console.log("clientInput", result);
 

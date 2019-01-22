@@ -114,7 +114,7 @@
     title="Generate a new sequence">Start</button>
   <button id="b_stop" type="button"
     disabled="true"
-    onclick="loadStatus('/getcode/stop'); stopTimer(); switchView(1)"
+    onclick="loadStatus('/api/getcode/stop'); stopTimer(); switchView(1)"
     title="Stop current sequence">Stop</button>
 </div>
 
@@ -160,7 +160,7 @@ var timer;
 
 function startAttendance() {
   timer = setInterval(loadStatusTimer, 1000);
-  loadStatus('/getcode');
+  loadStatus('/api/getcode');
 }
 
 function stopTimer() {
@@ -168,6 +168,8 @@ function stopTimer() {
 		clearInterval(timer);	
 	}
 }
+
+var randomID;
 
 function loadStatus(url) {
 	var xhttp = new XMLHttpRequest();
@@ -178,9 +180,15 @@ function loadStatus(url) {
 		}
 	};
 
-	xhttp.open("GET", url, true);
-	xhttp.send();
+	var json = {};
+	json.randomID = randomID;
+	
+	var json_string = JSON.stringify(json);
+
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);
 }
+
 function updateStatus(jsonStr) {
 	var json = JSON.parse(jsonStr);
 	console.log(json);
@@ -228,7 +236,7 @@ function updateButtons(isStarted){
 }
 
 function loadStatusTimer() {
-	loadStatus('/status');
+	loadStatus('/api/status');
 }
 
 function sendForm(){
@@ -247,6 +255,7 @@ function sendForm(){
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4 && this.status == 200) {
 			var json = JSON.parse(this.responseText);
+			randomID = json.randomID;
 			generateQRCode(json.url);
 			document.getElementById("attendance_link").innerHTML = json.url;
 			document.getElementById("view_consecutivecodes").innerHTML = o.consecutivecodes;

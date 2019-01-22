@@ -117,10 +117,9 @@ database.prototype.removeIAmHereToken = function(ist_id, callback) {
 	})
 };
 
-database.prototype.generateRandomAttendanceCode = function(code_type, code_length, total_time_s, consecutive_codes, callback) {
+database.prototype.generateRandomAttendanceCode = function(randomID, code_type, code_length, total_time_s, consecutive_codes, callback) {
 	//var sql = "INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes) VALUES(?, ?, ?, ?, ?);";
 	var sql = "CALL AttendanceMapping(?,?,?,?,?);";
-	var randomID = Math.floor(Math.random() * Math.floor(999999));
 	var arg = [randomID, code_type, code_length, total_time_s, consecutive_codes];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
@@ -130,7 +129,7 @@ database.prototype.generateRandomAttendanceCode = function(code_type, code_lengt
 		}
 		else{
 			console.log("randomID updated.", rows[0][0].attendanceID);
-			callback(err, randomID, rows[0][0].attendanceID);
+			callback(err, rows[0][0].attendanceID);
 		}
 	})
 };

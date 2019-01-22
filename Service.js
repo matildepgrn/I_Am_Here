@@ -1,17 +1,57 @@
 var fenix_api = require('./fenix_api');
 
 var Service = function() {};
+var Code = require('./Code');
 
-Service.prototype.validateCode = function(db, res, code, client_code, ist_id, callback) {
-	code.clientInput(client_code, ist_id, 
-		function(error, result) {
-			if(error){
-				callback(error);
-			} else {
-				callback(error, result);
+var codeByRandomID = new Map();		// randomID --> code;
+
+Service.prototype.validateCode = function(db, res, randomID, client_code, ist_id, callback) {
+	var code = codeByRandomID.get(randomID);
+	if(code){
+		code.clientInput(client_code, ist_id, 
+			function(error, result) {
+				if(error){
+					callback(error);
+				} else {
+					callback(error, result);
+					console.log("result ValidateCode:", result);
+				}
 			}
-		}
-	);
+		);
+	} else {
+		console.log("Unknown randomID (ist_id=",ist_id + "):", randomID, typeof randomID);
+		callback("Error in validateCode.", "unknown randomID");
+	}
+}
+
+Service.prototype.getStatus = function(ist_id, randomID, callback) {
+	var code = codeByRandomID.get(randomID);
+	if(code){
+		callback(code.status());	
+	} else {
+		console.log("Unknown randomID (ist_id=",ist_id + "):", randomID);
+		callback("Error in getStatus.");
+	}
+}
+
+Service.prototype.generateCode = function(ist_id, randomID, callback) {
+	var code = codeByRandomID.get(randomID);
+	if(code){
+		callback(code.newCode());	
+	} else {
+		console.log("Unknown randomID (ist_id=",ist_id + "):", randomID);
+		callback("Error in generateCode.");
+	}
+}
+
+Service.prototype.stopProcess = function(ist_id, randomID, callback) {
+	var code = codeByRandomID.get(randomID);
+	if(code){
+		callback(code.stopProcess());	
+	} else {
+		console.log("Unknown randomID (ist_id=",ist_id + "):", randomID);
+		callback("Error in stopProcess.");
+	}
 }
 
 Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
@@ -60,14 +100,24 @@ Service.prototype.getUserName = function(db, ist_id, callback) {
 }
 
 Service.prototype.getAttendanceRandomID = function(db, code_type, code_length, total_time_s, consecutive_codes, callback) {
-	db.generateRandomAttendanceCode(code_type, code_length, total_time_s, consecutive_codes,
-		function(error, randomID, attendanceID) {
-			console.log('getAttendanceRandomID: randomID = ', randomID);
+	var randomID;
+	do {
+		randomID = Math.floor(Math.random() * Math.floor(999999));
+	} while(codeByRandomID.has(randomID));
+	codeByRandomID.set(randomID, null);
+
+	db.generateRandomAttendanceCode(randomID, code_type, code_length, total_time_s, consecutive_codes,
+		function(error, attendanceID) {
+			var new_code = new Code(db, randomID, attendanceID);
+			new_code.customizeTest(code_length, code_type, total_time_s, consecutive_codes);
+			codeByRandomID.set(randomID, new_code);
+			console.log('getAttendanceRandomID: randomID = ', randomID, typeof randomID);
 			console.log(attendanceID);
 			callback(error, randomID, attendanceID);
 		}
 	); 
 }
+
 
 
 

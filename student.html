@@ -64,15 +64,16 @@ function loadDoc() {
 			document.getElementById("div_c").innerHTML = this.responseText;
 			document.getElementById("input_student").value = "";
 			document.getElementById("enter_button").disabled = true;
+			console.log("response:", this.responseText);
 		}
 	};
 	var json = {};
 	json.input_code = document.getElementById("input_student").value.toUpperCase();
 	var urlParams = new URLSearchParams(window.location.search);
-	json.randomID = urlParams.get('c');
+	json.randomID = parseInt(urlParams.get('c'));
 	
 	var json_string = JSON.stringify(json);
-
+	console.log("input_code:", json.input_code);
 	xhttp.open("POST", "/api/validatecode", true);
 	xhttp.send(json_string);
 }

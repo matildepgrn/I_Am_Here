@@ -2,7 +2,6 @@ var config = require('./default_config');
 var database = require('./database/Database');
 var Service = require('./Service');
 
-var Code = require('./Code');
 var http = config.use_HTTPS ? require('https') : require('http');
 var fs = require('fs');
 var path = require('path');
@@ -15,9 +14,6 @@ var Cookies = require('cookies');
 
 var service = new Service();
 var db = new database(150, config.mysql_host, config.mysql_user, config.mysql_pw, config.mysql_database);
-var code = new Code(db);
-
-var attendanceMap = new Map();		// attendanceID --> randomID;
 
 const options = {
 	key: config.use_HTTPS ? fs.readFileSync(config.tls_cert_key) : '',
@@ -127,13 +123,6 @@ http.createServer(options, function (req, res) {
 			break;
 		case "/getcode":
 			generateCode(res);
-			break;
-		case "/getcode/stop":
-			var statusJson = code.stopProcess();
-			sendJSON(res, statusJson);
-			break;
-		case "/status":
-			status(res);
 			break;
 		case "/oauth":
 			var fenix_code = parsedURL.query.code;
@@ -249,16 +238,45 @@ function getPostData(req, res, cookies, parsedURL) {
 
 function handlePost(req, res, cookies, parsedURL, data) {
 	switch(req.url) {
+		case "/api/status":
+		case "/api/getcode":
+		case "/api/getcode/stop":
 		case "/api/validatecode":
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id) {
 					var json = JSON.parse(data);
-					var client_code = json.input_code;
-					service.validateCode(db, res, code, client_code, ist_id,
-						function(error, result) {
-							sendText(res, '' + result); //TODO
-						}
-					);
+					var randomID = json.randomID;
+					switch(req.url) {
+						case "/api/status":
+							service.getStatus(ist_id, randomID,
+								function(status) {
+									sendJSON(res, status);
+								}
+							);
+						break;
+						case "/api/getcode/stop":
+							service.stopProcess(ist_id, randomID,
+								function(status) {
+									sendJSON(res, status);
+								}
+							);
+						break;
+						case "/api/getcode":
+							service.generateCode(ist_id, randomID,
+								function(status) {
+									sendJSON(res, status);
+								}
+							);
+						break;
+						case "/api/validatecode":
+							var client_code = json.input_code;
+							service.validateCode(db, res, randomID, client_code, ist_id,
+								function(error, result) {
+									sendText(res, '' + result); //TODO
+								}
+							);
+						break;
+					}
 				},
 				function() {
 					sendText(res, "Not logged in", 403);
@@ -272,10 +290,8 @@ function handlePost(req, res, cookies, parsedURL, data) {
 					var json_res = {};
 					json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;
 					json_res.randomID = randomID;
-					attendanceMap.set(randomID, attendanceID);
 					//console.log(Array.from(attendanceMap));
 					sendJSON(res, json_res);
-					code.customizeTest(json.code_length, json.code_type, json.time, json.consecutivecodes);
 				}
 			);
 			break;
@@ -285,14 +301,6 @@ function handlePost(req, res, cookies, parsedURL, data) {
 	}
 }
 
-function generateCode(res) {
-	var statusJson = code.newCode();
-	sendJSON(res, statusJson);
-}
-
-function status(res) {
-	sendJSON(res, code.status());
-}
 
 function styledTest(req, res, parsedURL) {
 	var t = parsedURL.query.t;
