@@ -116,3 +116,13 @@ CREATE TABLE Evaluation (
 	FOREIGN KEY(ist_id) REFERENCES User(ist_id),
 	FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID)
 );
+
+DELIMITER //
+CREATE PROCEDURE AttendanceMapping (randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int)
+BEGIN
+INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes)
+		VALUES(@randomID, @code_type, @code_length, @total_time_s, @consecutive_codes);
+SELECT LAST_INSERT_ID() AS attendanceID;
+END
+//
+DELIMITER ;

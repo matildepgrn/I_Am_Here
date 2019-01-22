@@ -1,6 +1,8 @@
 var fs = require('fs');
 
-var Code = function(db) {
+var Code = function(db, randomID, attendanceID) {
+	this.randomID = randomID;
+	this.attendanceID = attendanceID;
 	this.running = false;
 	this.time_ms = 0;
 	this.x = null;
@@ -23,6 +25,7 @@ Code.prototype.newCode = function() {
 
 Code.prototype.stop = function() {
 	this.stopProcess();
+	this.running = false;
 	return this.status();
 }
 

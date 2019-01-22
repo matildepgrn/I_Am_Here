@@ -17,6 +17,8 @@ var service = new Service();
 var db = new database(150, config.mysql_host, config.mysql_user, config.mysql_pw, config.mysql_database);
 var code = new Code(db);
 
+var attendanceMap = new Map();		// attendanceID --> randomID;
+
 const options = {
 	key: config.use_HTTPS ? fs.readFileSync(config.tls_cert_key) : '',
 	cert: config.use_HTTPS ? fs.readFileSync(config.tls_cert_crt) : '',
@@ -264,14 +266,14 @@ function handlePost(req, res, cookies, parsedURL, data) {
 			);
 			break;
 		case "/api/createAttendanceSession":
-			console.log(data);
 			var json = JSON.parse(data);
 			service.getAttendanceRandomID(db, json.code_type, json.code_length, json.time, json.consecutivecodes,
-				function(error, randomID) {
+				function(error, randomID, attendanceID) {
 					var json_res = {};
 					json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;
 					json_res.randomID = randomID;
-
+					attendanceMap.set(randomID, attendanceID);
+					//console.log(Array.from(attendanceMap));
 					sendJSON(res, json_res);
 					code.customizeTest(json.code_length, json.code_type, json.time, json.consecutivecodes);
 				}

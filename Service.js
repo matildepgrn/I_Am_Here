@@ -61,9 +61,10 @@ Service.prototype.getUserName = function(db, ist_id, callback) {
 
 Service.prototype.getAttendanceRandomID = function(db, code_type, code_length, total_time_s, consecutive_codes, callback) {
 	db.generateRandomAttendanceCode(code_type, code_length, total_time_s, consecutive_codes,
-		function(error, randomID) {
+		function(error, randomID, attendanceID) {
 			console.log('getAttendanceRandomID: randomID = ', randomID);
-			callback(error, randomID);
+			console.log(attendanceID);
+			callback(error, randomID, attendanceID);
 		}
 	); 
 }
