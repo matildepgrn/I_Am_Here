@@ -137,6 +137,10 @@ button:disabled {
 	font-size: 70px;
 }
 
+#IST_NAME {
+	font-size: 14px;
+}
+
 li .name,
 li .logoname,
 li a {
