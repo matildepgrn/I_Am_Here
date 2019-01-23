@@ -18,7 +18,7 @@
 	<li style="float:right"><span class="name" id="IST_NAME"></span></li>
 </ul>
 
-<div class="center">
+<div class="center" id="maincontainer">
 <div class="container" id="attendance_personalization">
 		<h1>
 			Personalize the attendance checking:
@@ -89,21 +89,21 @@
 </div>
 
 <div id="attendance_links" style="display:none">
-	<a onclick="switchView(0)"  class="previous round">&#8249;</a>
+	<a onclick="switchView(0)"  class="previous round" id="back_qrcode">&#8249;</a>
 	
 	<div class="text-center" id="attendance_qrcode">
 	</div>
 
-	<h2 class="text-center" id="attendance_link">
-	</h2>
+	<p class="text-center" id="attendance_link" style="font-size: 15px">
+	</p>
 
 </div>
 
 <div id="attendance_info" style="display:none">
 	<a onclick="switchView(1)" class="previous round">&#8249;</a>
 
-	<h4>Time remaining: <span id="time_remaining"></span>s</h4>
-	<h2>Consecutive codes required: <span id="view_consecutivecodes"></span></h2>
+	<p>Time remaining: <span id="time_remaining"></span>s</p>
+	<p>Consecutive codes required: <span id="view_consecutivecodes"></span></p>
 	<p><span id="randomcode"></span></p>
 
 	<p id="span_c">
@@ -113,13 +113,20 @@
 	<p id="status"> </p>
 </div>
 
+<div id="studentspresent" style="display:none">
+	<p id="span_c">
+		Students attending the class:
+	</p>
+
+</div>
+
 <div class="text-center" id="buttons_startstop" style="display:none">
 	<button id="b_start" type="button"
     onclick="switchView(2); startAttendance()"
     title="Generate a new sequence">Start</button>
   <button id="b_stop" type="button"
     disabled="true"
-    onclick="loadStatus('/api/getcode/stop'); stopTimer(); switchView(1)"
+    onclick="stopAttendance(); switchView(1)"
     title="Stop current sequence">Stop</button>
 </div>
 
@@ -131,6 +138,10 @@
 <script>
 
 var qrcode;
+
+function stopAttendance() {
+	loadStatus('/api/getcode/stop');
+}
 
 function generateQRCode(url) {
 	if(qrcode) {
@@ -206,7 +217,13 @@ function updateStatus(jsonStr) {
 	}
 	document.getElementById("time_remaining").innerHTML = json.time_ms;
 	updateButtons(json.running);
+
+	if(json.running == false) {
+		stopTimer();
+	}
 }
+
+var state;
 
 function switchView(arg){
 	switch(arg) {
@@ -215,24 +232,37 @@ function switchView(arg){
 			document.getElementById("buttons_startstop").style.display = "none";
   			document.getElementById("attendance_links").style.display = "none";
   			document.getElementById("attendance_info").style.display = "none";
+  			document.getElementById("maincontainer").classList.remove("left");
+  			document.getElementById("maincontainer").classList.add("center");
 			break;
 		case 1:
-			document.getElementById("attendance_personalization").style.display = "none";
+		  	if(state == 2) {
+  				stopAttendance();
+  			}
+  			document.getElementById("attendance_personalization").style.display = "none";
 			document.getElementById("buttons_startstop").style.display = "";
   			document.getElementById("attendance_links").style.display = "";
+			document.getElementById("studentspresent").style.display = "none";
   			document.getElementById("attendance_info").style.display = "none";
+  			document.getElementById("maincontainer").classList.remove("left");
+  			document.getElementById("maincontainer").classList.add("center");
+
 			break;
 		case 2:
+			document.getElementById("back_qrcode").style.display = "none";
 			document.getElementById("attendance_personalization").style.display = "none";
 			document.getElementById("buttons_startstop").style.display = "";
-  			document.getElementById("attendance_links").style.display = "none";
+			document.getElementById("studentspresent").style.display = "";
+  			document.getElementById("attendance_links").style.display = "";
+  			document.getElementById("maincontainer").classList.add("left");
+  			document.getElementById("maincontainer").classList.remove("center");
   			document.getElementById("attendance_info").style.display = "";
 			break;
 		default:
 			console.log("unknown arg", arg);
 			break;
-
 	}
+	state = arg;
 }
 
 function updateButtons(isStarted){

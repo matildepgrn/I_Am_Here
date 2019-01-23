@@ -77,6 +77,8 @@ td {
 	left: 50%;
 	-ms-transform: translate(-50%, -50%);
 	transform: translate(-50%, 0%);
+	/*width: 100%;
+	height: 100%;*/
 }
 
 .expired {
@@ -125,6 +127,45 @@ button:disabled {
     width:100px;
     padding: 4px 7px;
     font-size: 17px;
+}
+
+#maincontainer {
+	padding-top: 20px;
+}
+
+#buttons_startstop {
+	clear: both;
+}
+
+.left {
+	margin-top: 50px;
+}
+
+.left #studentspresent {
+	float: left;
+	width: 25%;
+	text-align: center;
+}
+
+.left #attendance_info {
+	float: left;	
+	width: 50%;
+}
+
+.left #attendance_links {
+	float: left;
+	width: 25%;
+	font-size: 30px;
+}
+
+.left #attendance_qrcode {
+	margin: auto;
+	width: 256px;
+	height: 256px;
+}
+
+.left #attendance_qrcode img {
+	height: 256px;
 }
 
 .Bigbutton:hover:enabled {
