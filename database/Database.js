@@ -117,10 +117,10 @@ database.prototype.removeIAmHereToken = function(ist_id, callback) {
 	})
 };
 
-database.prototype.generateRandomAttendanceCode = function(randomID, code_type, code_length, total_time_s, consecutive_codes, callback) {
+database.prototype.generateRandomAttendanceCode = function(randomID, code_type, code_length, total_time_s, consecutive_codes, classnumber, callback) {
 	//var sql = "INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes) VALUES(?, ?, ?, ?, ?);";
-	var sql = "CALL AttendanceMapping(?,?,?,?,?);";
-	var arg = [randomID, code_type, code_length, total_time_s, consecutive_codes];
+	var sql = "CALL AttendanceMapping(?,?,?,?,?,?);";
+	var arg = [randomID, code_type, code_length, total_time_s, consecutive_codes, classnumber];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){

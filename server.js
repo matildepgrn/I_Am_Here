@@ -285,7 +285,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 			break;
 		case "/api/createAttendanceSession":
 			var json = JSON.parse(data);
-			service.getAttendanceRandomID(db, json.code_type, json.code_length, json.time, json.consecutivecodes,
+			service.getAttendanceRandomID(db, json.code_type, json.code_length, json.time, json.consecutivecodes, json.classnumber,
 				function(error, randomID, attendanceID) {
 					var json_res = {};
 					json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;

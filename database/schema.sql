@@ -1,5 +1,6 @@
 use ist182083;
 
+drop PROCEDURE if exists AttendanceMapping;
 drop table if exists Evaluation;
 drop table if exists Code;
 drop table if exists Fingerprint;
@@ -65,6 +66,7 @@ CREATE TABLE Attendance (
 	code_length			int,
 	total_time_s		int,
 	consecutive_codes	int,
+	classnumber			int,
 	open				boolean,
 
 	PRIMARY KEY(attendanceID),
@@ -118,10 +120,10 @@ CREATE TABLE Evaluation (
 );
 
 DELIMITER //
-CREATE PROCEDURE AttendanceMapping (randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int)
+CREATE PROCEDURE AttendanceMapping (randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, classnumber int)
 BEGIN
-INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes)
-		VALUES(@randomID, @code_type, @code_length, @total_time_s, @consecutive_codes);
+INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes, classnumber)
+		VALUES(@randomID, @code_type, @code_length, @total_time_s, @consecutive_codes, @classnumber);
 SELECT LAST_INSERT_ID() AS attendanceID;
 END
 //
