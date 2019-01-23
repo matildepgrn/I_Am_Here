@@ -97,6 +97,7 @@ http.createServer(options, function (req, res) {
 		case "/a":
 		case "/student":
 		case "/professor":
+		case "/professor/classes":
 		case "/professor/attendance":
 			makeUserLogin(res, cookies, parsedURL,
 				function(ist_id){
@@ -112,6 +113,9 @@ http.createServer(options, function (req, res) {
 							break;
 						case "/professor/attendance":
 							sendFile(res, 'professor_attendance.html');
+							break;
+						case "/professor/classes":
+							sendFile(res, 'professor_classes.html');
 							break;
 						default:
 							console.log('This sould not happen');

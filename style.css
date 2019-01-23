@@ -13,6 +13,25 @@ li {
 
 }
 
+table {
+	border-collapse: collapse;
+	box-shadow: 1px 1px 3px #bbb;
+	background: #f3f3f3;
+	border-radius: 4px;
+}
+
+td, th {
+	border: 1px solid #ddd;
+}
+
+.suspicious_tr {
+	background: #ffdddd;
+}
+
+#total_tr {
+	font-weight: bold;
+}
+
 a.previous {
   text-decoration: none;
   display: inline-block;

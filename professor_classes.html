@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+
+<ul>
+	<li style="float:left"><span class="logoname" >I Am Here!</span></li>
+	<li style="float:left"><a href="/professor">Home</a></li>
+	<li style="float:left" class="current"><a href="/professor/classes">Classes</a></li>
+	<li style="float:left"><a href="/professor/attendance">Attendance</a></li>
+
+	<li style="float:right"><a href="/logout">Log Out</a></li>
+	<li style="float:right"><span class="name" id="IST_NAME"></span></li>
+</ul>
+
+<div class="center" id="maincontainer">
+<div class="container" id="studentsTable">
+		<h1>
+			Present in class #14:
+		</h1>
+
+		<table>
+			<tr>
+				<th>IST ID</th>
+				<th>Name</th>
+			</tr>
+			<tr>
+				<td>ist182083</td>
+				<td>Carolina Costa</td>
+			</tr>
+			<tr>
+				<td>ist182084</td>
+				<td>João Manuel Dias Costa</td>
+			</tr>
+			<tr>
+				<td>ist182085</td>
+				<td>Diogo António Amaral</td>
+			</tr>
+			<tr>
+				<td>ist182086</td>
+				<td>Mariana da Silva Dias</td>
+			</tr>
+			<tr class="suspicious_tr">
+				<td>ist182087</td>
+				<td>Catarina Afonso Lopes</td>
+			</tr>
+			<tr>
+				<td>ist182088</td>
+				<td>Maria José Cunha</td>
+			</tr>
+			<tr class="suspicious_tr">
+				<td>ist182089</td>
+				<td>José Miguel Antunes</td>
+			</tr>
+			<tr>
+				<td>ist182090</td>
+				<td>Fernando da Costa Gonçalves</td>
+			</tr>
+			<tr>
+				<td>ist182091</td>
+				<td>Maria Rita Esteves Orvalho</td>
+			</tr>
+			<tr>
+				<td>ist182092</td>
+				<td>Ana Madalena Leitão</td>
+			</tr>
+			<tr>
+				<td>ist182093</td>
+				<td>Joana Coimbra</td>
+			</tr>
+			<tr id="total_tr">
+				<td>Total:</td>
+				<td>11</td>
+			</tr>
+	</table>
+
+</div>
+
+
+<script>
+
+function loadName(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4 && this.status == 200) {
+			document.getElementById("IST_NAME").innerHTML = this.responseText;
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+loadName("/api/name");
+
+</script>
