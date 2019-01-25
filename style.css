@@ -13,6 +13,10 @@ li {
 
 }
 
+#classTable table td{
+	text-align: center;
+}
+
 table {
 	border-collapse: collapse;
 	box-shadow: 1px 1px 3px #bbb;
@@ -24,8 +28,22 @@ td, th {
 	border: 1px solid #ddd;
 }
 
+.less_suspicious {
+	background: #ffffdd;
+}
+
+.less_suspicious:hover {
+	cursor:pointer;
+	background: #ffffee;
+}
+
 .suspicious_tr {
 	background: #ffdddd;
+}
+
+.suspicious_tr:hover {
+	cursor:pointer;
+	background: #ffeeee;
 }
 
 #total_tr {

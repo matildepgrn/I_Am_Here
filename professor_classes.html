@@ -18,10 +18,128 @@
 	<li style="float:right"><span class="name" id="IST_NAME"></span></li>
 </ul>
 
-<div class="center" id="maincontainer">
+<div class="container" id="showClasses">
+  <center class="center">
+    <h1>
+    No courses created yet.
+    </h1>
+
+    <button class="w3-button w3-circle w3-black w3-large" id="addButton" onclick="switchView(1)">+</button>
+
+  </center>
+</div>
+
+<div class="container" id="addClasses" style="display:none">
+  <center class="center">
+	<div style="text-align: left">
+		<a onclick="switchView(0)"  class="previous round" id="back_qrcode">&#8249;</a>
+	</div>
+  	<h1>
+    	Personalize the course:
+    </h1>
+  	<form>
+  		<table>
+	  		<tr>
+	  			<td>
+	  				Course name:
+	  			</td>
+	  			<td>
+	  				<input type="text" name="coursename">
+	  			</td>
+	  		</tr>
+
+	  		<tr title="Number of the class">
+				<td>Total number of classes:</td>
+				<td><input type="number" name="classnumber" min="1" max="40" placeholder="32"></td>
+			</tr>
+
+			<tr title="Shifts">
+				<td>Shifts</td>
+				<td>
+					<input type="number" name="shiftscount" min="1" max="5" value="1">
+					<input type="text" name="shiftsname" placeholder="Separe by a coma.">
+				</td>
+			</tr>
+		</table>
+
+  	</form>
+
+		<div style="text-align: center">
+      		<button class="Bigbutton" id="attendance-button"
+        	onclick="switchView(2)" title="Create a course">
+          		Create course
+      		</button>
+    	</div>
+
+
+  </center>
+</div>
+
+<center>
+
+<div class="center" id="classTable" style="display:none">
+<div class="container" >
+	<div style="text-align: left">
+		<a onclick="switchView(1)"  class="previous round" id="back_qrcode">&#8249;</a>
+	</div>
+	<h1>
+    	Produção de Conteúdos Multimédia
+    </h1>
+	<table>
+		<tr>
+			<th>Class #</th>
+			<th>Date</th>
+			<th>Students attending</th>
+		</tr>
+		
+		<tr>
+			<td>1</td>
+			<td>Mon, Dec 3, 2018</td>
+			<td>14</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>Wed, Dec 5, 2018</td>
+			<td>17</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td>Mon, Dec 10, 2018</td>
+			<td>10</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td>Wed, Dec 12, 2018</td>
+			<td>9</td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td>Mon, 2018-12-17</td>
+			<td>13</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td>-</td>
+			<td> <a class="w3-button w3-circle w3-small w3-black" onclick="switchView(3)">&#9654;</td>
+		</tr>
+		<tr>
+			<td>7</td>
+			<td>-</td>
+			<td> <a class="w3-button w3-circle w3-small w3-black">&#9654;</td>
+		</tr>
+	</table>
+
+</div>
+</div>
+
+
+<div class="center" id="maincontainer" style="display:none">
 <div class="container" id="studentsTable">
+	<div style="text-align: left">
+		<a onclick="switchView(2)"  class="previous round" id="back_qrcode">&#8249;</a>
+	</div>
 		<h1>
-			Present in class #14:
+			Present in class #6:
 		</h1>
 
 		<table>
@@ -33,11 +151,11 @@
 				<td>ist182083</td>
 				<td>Carolina Costa</td>
 			</tr>
-			<tr>
+			<tr class="less_suspicious">
 				<td>ist182084</td>
 				<td>João Manuel Dias Costa</td>
 			</tr>
-			<tr>
+			<tr class="less_suspicious">
 				<td>ist182085</td>
 				<td>Diogo António Amaral</td>
 			</tr>
@@ -80,9 +198,45 @@
 	</table>
 
 </div>
+</div>
+
+</center>
 
 
 <script>
+
+function switchView(arg){
+	console.log("switchView", arg);
+	switch(arg) {
+		case 0:
+			document.getElementById("showClasses").style.display = "";
+			document.getElementById("addClasses").style.display = "none";
+			document.getElementById("maincontainer").style.display = "none";
+			document.getElementById("classTable").style.display = "none";
+			break;
+		case 1:
+			document.getElementById("showClasses").style.display = "none";
+			document.getElementById("addClasses").style.display = "";
+			document.getElementById("maincontainer").style.display = "none";
+			document.getElementById("classTable").style.display = "none";
+			break;
+		case 2:
+			document.getElementById("showClasses").style.display = "none";
+			document.getElementById("addClasses").style.display = "none";
+			document.getElementById("maincontainer").style.display = "none";
+			document.getElementById("classTable").style.display = "";
+			break;
+		case 3:
+			document.getElementById("showClasses").style.display = "none";
+			document.getElementById("addClasses").style.display = "none";
+			document.getElementById("maincontainer").style.display = "";
+			document.getElementById("classTable").style.display = "none";
+			break;
+		default:
+			console.log("unknown arg", arg);
+			break;
+	}
+}
 
 function loadName(url) {
 	var xhttp = new XMLHttpRequest();
