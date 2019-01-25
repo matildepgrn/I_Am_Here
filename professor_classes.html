@@ -163,7 +163,7 @@
 				<td>ist182086</td>
 				<td>Mariana da Silva Dias</td>
 			</tr>
-			<tr class="suspicious_tr">
+			<tr class="suspicious_tr" onclick="switchView(4)">
 				<td>ist182087</td>
 				<td>Catarina Afonso Lopes</td>
 			</tr>
@@ -202,6 +202,60 @@
 
 </center>
 
+<div class="container" id="fingerprintTable" style="display:none">
+	<div style="text-align: left">
+		<a onclick="switchView(3)"  class="previous round">&#8249;</a>
+	</div>
+		<h1>
+			Device fingerprint similarity:
+		</h1>
+		<table>
+			<tr>
+				<th>Catarina Afonso Lopes</th>
+				<th>Attribute</th>
+				<th>José Miguel Antunes</th>
+			</tr>
+			<tr>
+				<td>"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) (AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36)"</td>
+				<td>User agent</td>
+				<td>"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"</td>
+			</tr>
+			<tr>
+				<td>Safari</td>
+				<td style="background: #ffffdd !IMPORTANT">Browser</td>
+				<td>Chrome</td>
+			</tr>
+			<tr>
+				<td>"gzip, deflate, br"</td>
+				<td>Content encoding</td>
+				<td>"gzip, deflate, br"</td>
+			</tr>
+			<tr>
+				<td>"1440x900x24"</td>
+				<td>Screen resolution</td>
+				<td>""1440x900x24"</td>
+			</tr>
+			<tr>
+				<td>"Plugin 0: Chrome PDF Plugin; Portable Document Format; internal-pdf-viewer. Plugin 1: Chrome PDF Viewer; ; mhjfbmdgcfjbbpaeojofohoefgiehjai. Plugin 2: Native Client; ; internal-nacl-plugin. "</td>
+				<td>List of plugins</td>
+				<td>"Plugin 0: Chrome PDF Plugin; Portable Document Format; internal-pdf-viewer. Plugin 1: Chrome PDF Viewer; ; mhjfbmdgcfjbbpaeojofohoefgiehjai. Plugin 2: Native Client; ; internal-nacl-plugin. "</td>
+			</tr>
+			<tr>
+				<td>"en-US,en;q=0.9,pt-PT;q=0.8,pt;q=0.7"</td>
+				<td>Content language</td>
+				<td>"en-US,en;q=0.9,pt-PT;q=0.8,pt;q=0.7"</td>
+			</tr>
+			<tr>
+				<td>78.08%</td>
+				<td>Use of local storage</td>
+				<td>78.08%</td>
+			</tr>
+	</table>
+
+</div>
+
+</center>
+
 
 <script>
 
@@ -213,24 +267,35 @@ function switchView(arg){
 			document.getElementById("addClasses").style.display = "none";
 			document.getElementById("maincontainer").style.display = "none";
 			document.getElementById("classTable").style.display = "none";
+			document.getElementById("fingerprintTable").style.display = "none";
 			break;
 		case 1:
 			document.getElementById("showClasses").style.display = "none";
 			document.getElementById("addClasses").style.display = "";
 			document.getElementById("maincontainer").style.display = "none";
 			document.getElementById("classTable").style.display = "none";
+			document.getElementById("fingerprintTable").style.display = "none";
 			break;
 		case 2:
 			document.getElementById("showClasses").style.display = "none";
 			document.getElementById("addClasses").style.display = "none";
 			document.getElementById("maincontainer").style.display = "none";
 			document.getElementById("classTable").style.display = "";
+			document.getElementById("fingerprintTable").style.display = "none";
 			break;
 		case 3:
 			document.getElementById("showClasses").style.display = "none";
 			document.getElementById("addClasses").style.display = "none";
 			document.getElementById("maincontainer").style.display = "";
 			document.getElementById("classTable").style.display = "none";
+			document.getElementById("fingerprintTable").style.display = "none";
+			break;
+		case 4:
+			document.getElementById("showClasses").style.display = "none";
+			document.getElementById("addClasses").style.display = "none";
+			document.getElementById("maincontainer").style.display = "none";
+			document.getElementById("classTable").style.display = "none";
+			document.getElementById("fingerprintTable").style.display = "";
 			break;
 		default:
 			console.log("unknown arg", arg);

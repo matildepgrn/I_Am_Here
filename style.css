@@ -32,6 +32,15 @@ td, th {
 	background: #ffffdd;
 }
 
+#fingerprintTable table td:nth-child(2) {
+	background: #ffcccc;
+}
+
+#fingerprintTable {
+	text-align: center;
+	padding: 60px;
+}
+
 .less_suspicious:hover {
 	cursor:pointer;
 	background: #ffffee;
@@ -95,7 +104,7 @@ td {
 }
 
 .container { 
-	height: 300px;
+	min-height: 300px;
 	position: relative; 
 }
 
