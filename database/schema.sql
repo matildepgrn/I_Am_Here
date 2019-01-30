@@ -139,7 +139,7 @@ DECLARE row_correct boolean;
 DECLARE count INTEGER DEFAULT 0;
 DECLARE finished INTEGER DEFAULT 0;
 DECLARE consecutiveTrue CURSOR for
-	SELECT correct, sequence
+	SELECT sequence, correct
 	FROM Code
 		WHERE attendanceID = attendanceID AND ist_id = ist_id
 	ORDER BY sequence;
