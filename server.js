@@ -21,7 +21,7 @@ const options = {
 	ca: config.use_HTTPS ? fs.readFileSync(config.tls_cert_ca) : ''
 };
 
-http.createServer(options, function (req, res) {
+function handleRequest(req, res) {
   	
   	var cookies = new Cookies(req, res);
 
@@ -147,7 +147,21 @@ http.createServer(options, function (req, res) {
 			sendText(res, "File not found.", 404);
 			break;
 	}
+}
 
+http.createServer(options, function (req, res) {
+	try {
+		return handleRequest(req, res);
+	} catch (error) {
+		try {
+			console.log("Exception in handleRequest:", error);
+			if(!req.finished) {
+				sendText(res, "Internal server error.", 503);
+			}
+		} catch(error2) {
+			console.error("Exception while handling handleRequest Exception:", error2);
+		}
+	}
 }).listen(config.PORT); //the server object listens on config.PORT
 
 function disableCache(res) {
