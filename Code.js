@@ -58,7 +58,6 @@ Code.prototype.randomCode = function() {
 }
 
 Code.prototype.customizeTest = function(num_char, code_type, time, consecutive_codes){
-	console.log("customizeTest", num_char, code_type, time, consecutive_codes);
 	this.NUM_CHAR = num_char;
 	this.CODE_TYPE = code_type;
 	this.INTERVAL = time*1000;
