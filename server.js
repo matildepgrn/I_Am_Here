@@ -290,7 +290,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 							var client_code = json.input_code;
 							service.validateCode(db, res, randomID, client_code, ist_id,
 								function(error, result) {
-									sendText(res, '' + result); //TODO
+									sendJSON(res, result);
 								}
 							);
 						break;
@@ -308,7 +308,6 @@ function handlePost(req, res, cookies, parsedURL, data) {
 					var json_res = {};
 					json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;
 					json_res.randomID = randomID;
-					//console.log(Array.from(attendanceMap));
 					sendJSON(res, json_res);
 				}
 			);

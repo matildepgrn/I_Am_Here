@@ -23,6 +23,14 @@ Code.prototype.newCode = function() {
 	return this.status();
 }
 
+Code.prototype.getAttendanceID = function() {
+	return this.attendanceID;
+}
+
+Code.prototype.getConsecutiveCodes = function() {
+	return this.repetitions;
+}
+
 Code.prototype.stop = function() {
 	this.stopProcess();
 	this.running = false;

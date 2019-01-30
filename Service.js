@@ -13,8 +13,22 @@ Service.prototype.validateCode = function(db, res, randomID, client_code, ist_id
 				if(error){
 					callback(error);
 				} else {
-					callback(error, result);
-					console.log("result ValidateCode:", result);
+					var attendanceID = code.getAttendanceID();
+					var consecutive_codes = code.getConsecutiveCodes();
+					db.verifyAttendance(ist_id, attendanceID, consecutive_codes,
+						function(error2, isAttFinished) {
+							if(error2) {
+								callback(error2);
+							} else {
+								console.log("validateCode isAttFinished:", isAttFinished, typeof(isAttFinished));	
+								var json = {};
+								json.isAttFinished = (isAttFinished == 1);
+								json.isCodeCorrect = result;
+								callback(error, json);
+								console.log("result ValidateCode:", json);
+							}
+						}
+					); 
 				}
 			}
 		);
@@ -22,6 +36,15 @@ Service.prototype.validateCode = function(db, res, randomID, client_code, ist_id
 		console.log("Unknown randomID (ist_id=",ist_id + "):", randomID, typeof randomID);
 		callback("Error in validateCode.", "unknown randomID");
 	}
+}
+
+Service.prototype.verifyAttendance = function(db, ist_id, attendanceID, consecutive_codes) {
+	db.verifyAttendance(ist_id, attendanceID, consecutive_codes,
+		function(error, consecutive_codes) {
+			console.log('verifyAttendance:', attendanceID);
+			callback(consecutive_codes);
+		}
+	); 
 }
 
 Service.prototype.getStatus = function(ist_id, randomID, callback) {

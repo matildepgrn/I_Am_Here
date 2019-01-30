@@ -168,18 +168,17 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 };
 
 
-database.prototype.verifyAttendance = function (ist_id, attendanceID, consecutive_codes) {
-	var sql = "SELECT CheckAttendance(?,?,?)";
+database.prototype.verifyAttendance = function (ist_id, attendanceID, consecutive_codes, callback) {
+	var sql = "SELECT CheckAttendance(?,?,?) AS result";
 	var arg = [attendanceID, ist_id, consecutive_codes];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if(err) {
 			callback(err);
 		} else {
-			callback(err);
+			callback(err, rows[0].result);
 		}
 	})
-
 }
 
 

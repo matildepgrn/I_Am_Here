@@ -57,11 +57,24 @@ function loadName(url) {
 
 loadName("/api/name");
 
+function handleResponse(json) {
+	var isAttFinished = json.isAttFinished;
+	var isCodeCorrect = json.isCodeCorrect;
+
+	if(isAttFinished && isCodeCorrect) {
+		return "Correct! Attendance check!";
+	} else if(isCodeCorrect){
+		return "Correct code.";
+	}
+	return "Invalid code.";
+}
+
 function loadDoc() {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4 && this.status == 200) {
-			document.getElementById("div_c").innerHTML = this.responseText;
+			var json = JSON.parse(this.responseText);
+			document.getElementById("div_c").innerHTML = handleResponse(json);
 			document.getElementById("input_student").value = "";
 			document.getElementById("enter_button").disabled = true;
 			console.log("response:", this.responseText);
