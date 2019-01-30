@@ -134,11 +134,11 @@ database.prototype.generateRandomAttendanceCode = function(randomID, code_type, 
 	})
 };
 
-database.prototype.insertCode = function(ist_id, code_generated, code_input, time_taken_s, sequence, callback) {
-	var sql = "INSERT INTO Code(date_input, ist_id, code_input, correct, time_taken_s, sequence) VALUES(?,?,?,?,?,?);";
+database.prototype.insertCode = function(ist_id, code_generated, code_input, time_taken_s, sequence, attendanceID, callback) {
+	var sql = "INSERT INTO Code(date_input, ist_id, code_input, correct, time_taken_s, sequence, attendanceID) VALUES(?,?,?,?,?,?,?);";
 	var correct = (code_generated == code_input);
 
-	var arg = [moment().format('YYYY-MM-DD HH:mm:ss'), ist_id, code_input, correct, time_taken_s, sequence];
+	var arg = [moment().format('YYYY-MM-DD HH:mm:ss'), ist_id, code_input, correct, time_taken_s, sequence, attendanceID];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
@@ -151,9 +151,9 @@ database.prototype.insertCode = function(ist_id, code_generated, code_input, tim
 	})
 };
 
-database.prototype.insertCodeServer = function(server_code, sequence, callback) {
-	var sql = "INSERT INTO CodeAttendance(server_code, sequence) VALUES(?,?)";
-	var arg = [server_code, sequence];
+database.prototype.insertCodeServer = function(server_code, sequence, attendanceID, callback) {
+	var sql = "INSERT INTO CodeAttendance(server_code, sequence, attendanceID) VALUES(?,?,?)";
+	var arg = [server_code, sequence, attendanceID];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
@@ -168,10 +168,9 @@ database.prototype.insertCodeServer = function(server_code, sequence, callback) 
 };
 
 
-//TODO - fazer uma stored procedure
 database.prototype.verifyAttendance = function (ist_id, attendanceID, consecutive_codes) {
-	var sql = "SELECT COUNT(*) FROM CODE WHERE attendanceID = ? AND ist_id = ? AND correct = 1 VALUES(?,?)";
-	var arg = [attendanceID, ist_id];
+	var sql = "SELECT CheckAttendance(?,?,?)";
+	var arg = [attendanceID, ist_id, consecutive_codes];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if(err) {

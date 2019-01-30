@@ -104,7 +104,7 @@ Code.prototype.startCountdown = function() {
 Code.prototype.nextCode = function() {
 	this.current_code = this.randomCode();
 	this.code_counter++;
-	this.db.insertCodeServer(this.current_code, this.code_counter,
+	this.db.insertCodeServer(this.current_code, this.code_counter, this.attendanceID,
 		function(err) {}
 	);
 }
@@ -126,7 +126,7 @@ Code.prototype.clientInput = function(code_client, ist_id, callback){
 	var result = this.validateCode(code_client);
 	console.log("clientInput", result);
 
-	this.db.insertCode(ist_id, this.current_code, code_client, this.time_ms/1000, this.code_counter, 
+	this.db.insertCode(ist_id, this.current_code, code_client, this.time_ms/1000, this.code_counter, this.attendanceID,
 		function(error, code_client) {
 			console.log('clientInput: code = ', code_client);
 			callback(error, result);
