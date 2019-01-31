@@ -17,25 +17,26 @@
 
 <div class="container">
 	<center class="center">
+		<div id="insertCode">
 		<h3>
 			Insert the code here:
 		</h3>
 
-    <div style="text-align:center">
+    	<div style="text-align:center">
+	      	<table>
+	        	<td valign="middle">
+	          		<input maxlength="15" type="text" id="input_student"
+	          		style="text-transform: uppercase"
+	          		autocomplete="nope">
+	        	</td>
+	        	<td valign="middle">
+	          		<button id="enter_button" type="button" onclick="loadDoc()" disabled>Enter</button>
+	        	</td>
+	      	</table>
+    	</div>
+		</div>
 
-      <table>
-        <td valign="middle">
-          <input maxlength="15" type="text" id="input_student"
-          style="text-transform: uppercase"
-          autocomplete="nope">
-        </td>
-        <td valign="middle">
-          <button id="enter_button" type="button" onclick="loadDoc()" disabled>Enter</button>
-        </td>
-      </table>
-    </div>
-
-    <div id="div_c"> </div>
+    <div id="div_c"></div>
 
 	</center>
 </div>
@@ -60,12 +61,19 @@ loadName("/api/name");
 function handleResponse(json) {
 	var isAttFinished = json.isAttFinished;
 	var isCodeCorrect = json.isCodeCorrect;
+	var div_c = document.getElementById("div_c");
 
 	if(isAttFinished && isCodeCorrect) {
+		div_c.classList.add("isAttFinished");
+		document.getElementById("input_student").disabled = true;
+		document.getElementById("enter_button").disabled = true;
+		document.getElementById("insertCode").style.display = "none";
 		return "Correct! Attendance check!";
 	} else if(isCodeCorrect){
+		div_c.classList.add("codeCorrect");
 		return "Correct code.";
 	}
+	div_c.classList.add("invalidCode");
 	return "Invalid code.";
 }
 

@@ -8,6 +8,23 @@ ul {
 	user-select: none;
 }
 
+.isAttFinished {
+	font-weight: bold;
+	color: green;
+}
+
+.codeCorrect {
+	color: green;
+}
+
+.invalidCode {
+	color: red;
+}
+
+#div_c {
+	padding-top: 5px;
+}
+
 li {
 	border-right: 1px solid #bbb;
 
