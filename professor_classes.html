@@ -19,36 +19,36 @@
 </ul>
 
 <div class="container" id="showClasses">
-  <center class="center">
-    <h1>
-    No courses created yet.
-    </h1>
+	<center class="center">
+		<h1>
+		No courses created yet.
+		</h1>
 
-    <button class="w3-button w3-circle w3-black w3-large" id="addButton" onclick="switchView(1)">+</button>
+		<button class="w3-button w3-circle w3-black w3-large" id="addButton" onclick="switchView(1)">+</button>
 
-  </center>
+	</center>
 </div>
 
 <div class="container" id="addClasses" style="display:none">
-  <center class="center">
+	<center class="center">
 	<div style="text-align: left">
-		<a onclick="switchView(0)"  class="previous round" id="back_qrcode">&#8249;</a>
+		<a onclick="switchView(0)"	class="previous round" id="back_qrcode">&#8249;</a>
 	</div>
-  	<h1>
-    	Personalize the course:
-    </h1>
-  	<form>
-  		<table>
-	  		<tr>
-	  			<td>
-	  				Course name:
-	  			</td>
-	  			<td>
-	  				<input type="text" name="coursename">
-	  			</td>
-	  		</tr>
+		<h1>
+			Personalize the course:
+		</h1>
+		<form>
+			<table>
+				<tr>
+					<td>
+						Course name:
+					</td>
+					<td>
+						<input type="text" name="coursename">
+					</td>
+				</tr>
 
-	  		<tr title="Number of the class">
+				<tr title="Number of the class">
 				<td>Total number of classes:</td>
 				<td><input type="number" name="classnumber" min="1" max="40" placeholder="32"></td>
 			</tr>
@@ -62,17 +62,17 @@
 			</tr>
 		</table>
 
-  	</form>
+		</form>
 
 		<div style="text-align: center">
-      		<button class="Bigbutton" id="attendance-button"
-        	onclick="switchView(2)" title="Create a course">
-          		Create course
-      		</button>
-    	</div>
+					<button class="Bigbutton" id="attendance-button"
+					onclick="switchView(2)" title="Create a course">
+							Create course
+					</button>
+			</div>
 
 
-  </center>
+	</center>
 </div>
 
 <center>
@@ -80,11 +80,11 @@
 <div class="center" id="classTable" style="display:none">
 <div class="container" >
 	<div style="text-align: left">
-		<a onclick="switchView(1)"  class="previous round" id="back_qrcode">&#8249;</a>
+		<a onclick="switchView(1)"	class="previous round" id="back_qrcode">&#8249;</a>
 	</div>
 	<h1>
-    	Produção de Conteúdos Multimédia
-    </h1>
+			Produção de Conteúdos Multimédia
+		</h1>
 	<table>
 		<tr>
 			<th>Class #</th>
@@ -136,7 +136,7 @@
 <div class="center" id="maincontainer" style="display:none">
 <div class="container" id="studentsTable">
 	<div style="text-align: left">
-		<a onclick="switchView(2)"  class="previous round" id="back_qrcode">&#8249;</a>
+		<a onclick="switchView(2)"	class="previous round" id="back_qrcode">&#8249;</a>
 	</div>
 		<h1>
 			Present in class #6:
@@ -204,7 +204,7 @@
 
 <div class="container" id="fingerprintTable" style="display:none">
 	<div style="text-align: left">
-		<a onclick="switchView(3)"  class="previous round">&#8249;</a>
+		<a onclick="switchView(3)"	class="previous round">&#8249;</a>
 	</div>
 		<h1>
 			Device fingerprint similarity:
@@ -306,8 +306,12 @@ function switchView(arg){
 function loadName(url) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4 && this.status == 200) {
-			document.getElementById("IST_NAME").innerHTML = this.responseText;
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				document.getElementById("IST_NAME").innerHTML = this.responseText;
+			} else {
+				document.getElementById("IST_NAME").innerHTML = "<i>error getting username: " + this.status + "</i>";
+			}
 		}
 	};
 

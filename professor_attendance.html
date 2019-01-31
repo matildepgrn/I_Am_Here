@@ -76,16 +76,16 @@
 		</form>
 		</table>
 
-    <div style="text-align: center">
-      <button class="Bigbutton" id="attendance-button"
-        onclick="sendForm()" title="Create a session">
-          Create session
-      </button>
-    </div>
+		<div style="text-align: center">
+			<button class="Bigbutton" id="attendance-button"
+				onclick="sendForm()" title="Create a session">
+					Create session
+			</button>
+		</div>
 </div>
 
 <div id="attendance_links" style="display:none">
-	<a onclick="switchView(0)"  class="previous round" id="back_qrcode">&#8249;</a>
+	<a onclick="switchView(0)"	class="previous round" id="back_qrcode">&#8249;</a>
 	
 	<div class="text-center" id="attendance_qrcode">
 	</div>
@@ -118,12 +118,12 @@
 
 <div class="text-center" id="buttons_startstop" style="display:none">
 	<button id="b_start" type="button"
-    onclick="switchView(2); startAttendance()"
-    title="Generate a new sequence">Start</button>
-  <button id="b_stop" type="button"
-    disabled="true"
-    onclick="stopAttendance(); switchView(1)"
-    title="Stop current sequence">Stop</button>
+		onclick="switchView(2); startAttendance()"
+		title="Generate a new sequence">Start</button>
+	<button id="b_stop" type="button"
+		disabled="true"
+		onclick="stopAttendance(); switchView(1)"
+		title="Stop current sequence">Stop</button>
 </div>
 
 </div> <!-- final do container -->
@@ -159,8 +159,12 @@ function generateQRCode(url) {
 function loadName(url) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4 && this.status == 200) {
-			document.getElementById("IST_NAME").innerHTML = this.responseText;
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				document.getElementById("IST_NAME").innerHTML = this.responseText;
+			} else {
+				document.getElementById("IST_NAME").innerHTML = "<i>error getting username: " + this.status + "</i>";
+			}
 		}
 	};
 
@@ -171,8 +175,8 @@ function loadName(url) {
 var timer;
 
 function startAttendance() {
-  timer = setInterval(loadStatusTimer, 1000);
-  loadStatus('/api/getcode');
+	timer = setInterval(loadStatusTimer, 1000);
+	loadStatus('/api/getcode');
 }
 
 function stopTimer() {
@@ -226,22 +230,22 @@ function switchView(arg){
 		case 0:
 			document.getElementById("attendance_personalization").style.display = "";
 			document.getElementById("buttons_startstop").style.display = "none";
-  			document.getElementById("attendance_links").style.display = "none";
-  			document.getElementById("attendance_info").style.display = "none";
-  			document.getElementById("maincontainer").classList.remove("left");
-  			document.getElementById("maincontainer").classList.add("center");
+				document.getElementById("attendance_links").style.display = "none";
+				document.getElementById("attendance_info").style.display = "none";
+				document.getElementById("maincontainer").classList.remove("left");
+				document.getElementById("maincontainer").classList.add("center");
 			break;
 		case 1:
-		  	if(state == 2) {
-  				stopAttendance();
-  			}
-  			document.getElementById("attendance_personalization").style.display = "none";
+				if(state == 2) {
+					stopAttendance();
+				}
+				document.getElementById("attendance_personalization").style.display = "none";
 			document.getElementById("buttons_startstop").style.display = "";
-  			document.getElementById("attendance_links").style.display = "";
+				document.getElementById("attendance_links").style.display = "";
 			document.getElementById("studentspresent").style.display = "none";
-  			document.getElementById("attendance_info").style.display = "none";
-  			document.getElementById("maincontainer").classList.remove("left");
-  			document.getElementById("maincontainer").classList.add("center");
+				document.getElementById("attendance_info").style.display = "none";
+				document.getElementById("maincontainer").classList.remove("left");
+				document.getElementById("maincontainer").classList.add("center");
 
 			break;
 		case 2:
@@ -249,10 +253,10 @@ function switchView(arg){
 			document.getElementById("attendance_personalization").style.display = "none";
 			document.getElementById("buttons_startstop").style.display = "";
 			document.getElementById("studentspresent").style.display = "";
-  			document.getElementById("attendance_links").style.display = "";
-  			document.getElementById("maincontainer").classList.add("left");
-  			document.getElementById("maincontainer").classList.remove("center");
-  			document.getElementById("attendance_info").style.display = "";
+				document.getElementById("attendance_links").style.display = "";
+				document.getElementById("maincontainer").classList.add("left");
+				document.getElementById("maincontainer").classList.remove("center");
+				document.getElementById("attendance_info").style.display = "";
 			break;
 		default:
 			console.log("unknown arg", arg);

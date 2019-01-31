@@ -22,21 +22,21 @@
 			Insert the code here:
 		</h3>
 
-    	<div style="text-align:center">
-	      	<table>
-	        	<td valign="middle">
-	          		<input maxlength="15" type="text" id="input_student"
-	          		style="text-transform: uppercase"
-	          		autocomplete="nope">
-	        	</td>
-	        	<td valign="middle">
-	          		<button id="enter_button" type="button" onclick="loadDoc()" disabled>Enter</button>
-	        	</td>
-	      	</table>
-    	</div>
+			<div style="text-align:center">
+					<table>
+						<td valign="middle">
+								<input maxlength="15" type="text" id="input_student"
+								style="text-transform: uppercase"
+								autocomplete="nope">
+						</td>
+						<td valign="middle">
+								<button id="enter_button" type="button" onclick="loadDoc()" disabled>Enter</button>
+						</td>
+					</table>
+			</div>
 		</div>
 
-    <div id="div_c"></div>
+		<div id="div_c"></div>
 
 	</center>
 </div>
@@ -47,8 +47,12 @@
 function loadName(url) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4 && this.status == 200) {
-			document.getElementById("IST_NAME").innerHTML = this.responseText;
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				document.getElementById("IST_NAME").innerHTML = this.responseText;
+			} else {
+				document.getElementById("IST_NAME").innerHTML = "<i>error getting username: " + this.status + "</i>";
+			}
 		}
 	};
 
@@ -108,7 +112,6 @@ input.addEventListener("keyup", function keyDown(event){
 		loadDoc();
 	}
 	else {
-		//console.log(this.value.length);
 		botao.disabled = this.value.length <= 0;
 	}
 });
