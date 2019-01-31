@@ -39,7 +39,7 @@ function handleRequest(req, res) {
 		case "/index.html":
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id){
-					sendFile(res, 'student.html');
+					sendFile(res, 'student_index.html');
 				},
 				function(){
 					sendFile(res, 'index.html');
@@ -103,7 +103,11 @@ function handleRequest(req, res) {
 				function(ist_id){
 					switch(parsedURL.pathname) {
 						case "/a":
-							sendFile(res, 'student.html');
+							if(parsedURL.query.c != undefined && service.verifyRandomID(parsedURL.query.c)){
+								sendFile(res, 'student.html');
+							} else {
+								sendText(res, "Invalid attendance link.");
+							}
 							break;
 						case "/student":
 							sendFile(res, 'student.html');

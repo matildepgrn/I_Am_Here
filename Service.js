@@ -5,6 +5,11 @@ var Code = require('./Code');
 
 var codeByRandomID = new Map();		// randomID --> code;
 
+Service.prototype.verifyRandomID = function(randomID) {
+	var code = codeByRandomID.get(randomID);
+	return (code != undefined);
+}
+
 Service.prototype.validateCode = function(db, res, randomID, client_code, ist_id, callback) {
 	var code = codeByRandomID.get(randomID);
 	if(code){
