@@ -126,7 +126,7 @@
 		title="Stop current sequence">Pause</button>
 </div>
 
-<div class="text-center" id="button_finishAttendance" style="display:none">
+<div class="text-center" id="button_finishAttendance" style="display:none" onclick="closeAttendance()">
 	<button>
 		End session
 	</button>
@@ -179,6 +179,11 @@ function loadName(url) {
 }
 
 var timer;
+
+function closeAttendance() {
+	stopAttendance();
+	loadStatus("/api/closeAttendance");
+}
 
 function startAttendance() {
 	timer = setInterval(loadStatusTimer, 1000);

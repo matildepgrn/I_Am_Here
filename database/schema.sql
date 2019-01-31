@@ -120,10 +120,10 @@ CREATE TABLE Evaluation (
 );
 
 DELIMITER //
-CREATE PROCEDURE AttendanceMapping (randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int)
+CREATE PROCEDURE AttendanceMapping (randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, open boolean)
 BEGIN
-INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes)
-		VALUES(randomID, code_type, code_length, total_time_s, consecutive_codes);
+INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes, open)
+		VALUES(randomID, code_type, code_length, total_time_s, consecutive_codes, open);
 SELECT LAST_INSERT_ID() AS attendanceID;
 END
 //

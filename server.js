@@ -260,6 +260,7 @@ function getPostData(req, res, cookies, parsedURL) {
 
 function handlePost(req, res, cookies, parsedURL, data) {
 	switch(req.url) {
+		case "/api/closeAttendance":
 		case "/api/status":
 		case "/api/getcode":
 		case "/api/getcode/stop":
@@ -269,6 +270,13 @@ function handlePost(req, res, cookies, parsedURL, data) {
 					var json = JSON.parse(data);
 					var randomID = json.randomID;
 					switch(req.url) {
+						case "/api/closeAttendance":
+							service.closeAttendance(db, randomID,
+								function(status) {
+									sendJSON(res, status);
+								}
+							);
+							break;
 						case "/api/status":
 							service.getStatus(ist_id, randomID,
 								function(status) {

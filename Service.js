@@ -146,7 +146,14 @@ Service.prototype.getAttendanceRandomID = function(db, code_type, code_length, t
 	); 
 }
 
-
+Service.prototype.closeAttendance = function(db, randomID, callback) {
+	db.closeAttendance(randomID,
+		function(error, success) {
+			console.log('closeAttendance: response = ', success);
+			callback(error, success);
+		}
+	); 
+}
 
 
 Service.prototype.removeIAmHereToken = function(db, ist_id, callback) {
