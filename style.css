@@ -8,6 +8,10 @@ ul {
 	user-select: none;
 }
 
+#button_finishAttendance {
+	margin-top: 10px;
+}
+
 .isAttFinished {
 	font-weight: bold;
 	color: green;

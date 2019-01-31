@@ -123,7 +123,13 @@
 	<button id="b_stop" type="button"
 		disabled="true"
 		onclick="stopAttendance(); switchView(1)"
-		title="Stop current sequence">Stop</button>
+		title="Stop current sequence">Pause</button>
+</div>
+
+<div class="text-center" id="button_finishAttendance" style="display:none">
+	<button>
+		End session
+	</button>
 </div>
 
 </div> <!-- final do container -->
@@ -230,22 +236,25 @@ function switchView(arg){
 		case 0:
 			document.getElementById("attendance_personalization").style.display = "";
 			document.getElementById("buttons_startstop").style.display = "none";
-				document.getElementById("attendance_links").style.display = "none";
-				document.getElementById("attendance_info").style.display = "none";
-				document.getElementById("maincontainer").classList.remove("left");
-				document.getElementById("maincontainer").classList.add("center");
+			document.getElementById("button_finishAttendance").style.display = "none";
+			document.getElementById("attendance_links").style.display = "none";
+			document.getElementById("attendance_info").style.display = "none";
+			document.getElementById("maincontainer").classList.remove("left");
+			document.getElementById("maincontainer").classList.add("center");
 			break;
 		case 1:
-				if(state == 2) {
-					stopAttendance();
-				}
-				document.getElementById("attendance_personalization").style.display = "none";
+			if(state == 2) {
+				stopAttendance();
+			}
+			document.getElementById("back_qrcode").style.display = "";
+			document.getElementById("attendance_personalization").style.display = "none";
 			document.getElementById("buttons_startstop").style.display = "";
-				document.getElementById("attendance_links").style.display = "";
+			document.getElementById("button_finishAttendance").style.display = "none";
+			document.getElementById("attendance_links").style.display = "";
 			document.getElementById("studentspresent").style.display = "none";
-				document.getElementById("attendance_info").style.display = "none";
-				document.getElementById("maincontainer").classList.remove("left");
-				document.getElementById("maincontainer").classList.add("center");
+			document.getElementById("attendance_info").style.display = "none";
+			document.getElementById("maincontainer").classList.remove("left");
+			document.getElementById("maincontainer").classList.add("center");
 
 			break;
 		case 2:
@@ -253,10 +262,11 @@ function switchView(arg){
 			document.getElementById("attendance_personalization").style.display = "none";
 			document.getElementById("buttons_startstop").style.display = "";
 			document.getElementById("studentspresent").style.display = "";
-				document.getElementById("attendance_links").style.display = "";
-				document.getElementById("maincontainer").classList.add("left");
-				document.getElementById("maincontainer").classList.remove("center");
-				document.getElementById("attendance_info").style.display = "";
+			document.getElementById("attendance_links").style.display = "";
+			document.getElementById("maincontainer").classList.add("left");
+			document.getElementById("maincontainer").classList.remove("center");
+			document.getElementById("attendance_info").style.display = "";
+			document.getElementById("button_finishAttendance").style.display = "";
 			break;
 		default:
 			console.log("unknown arg", arg);
