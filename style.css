@@ -12,6 +12,12 @@ ul {
 	margin-top: 10px;
 }
 
+footer {
+	padding-top: 200px;
+	text-align: center;
+	color: darkgrey;
+}
+
 .isAttFinished {
 	font-weight: bold;
 	color: green;
@@ -242,7 +248,15 @@ button:disabled {
 }
 
 .intro {
+	margin-bottom: 0px;
 	font-size: 70px;
+	color:#f3f3f3;
+}
+
+.intro_sub {
+	font-size: 23.5px;
+	color:#f3f3f3;
+	margin-top: 0px;
 }
 
 #IST_NAME {
