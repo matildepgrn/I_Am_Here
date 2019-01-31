@@ -39,7 +39,7 @@ function handleRequest(req, res) {
 		case "/index.html":
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id){
-					sendFile(res, 'student_index.html');
+					sendFile(res, 'student/student_index.html');
 				},
 				function(){
 					sendFile(res, 'index.html');
@@ -104,22 +104,22 @@ function handleRequest(req, res) {
 					switch(parsedURL.pathname) {
 						case "/a":
 							if(parsedURL.query.c != undefined && service.verifyRandomID(parsedURL.query.c)){
-								sendFile(res, 'student.html');
+								sendFile(res, 'student/student.html');
 							} else {
 								sendText(res, "Invalid attendance link.");
 							}
 							break;
 						case "/student":
-							sendFile(res, 'student.html');
+							sendFile(res, 'student/student.html');
 							break;
 						case "/professor":
-							sendFile(res, 'professor.html');
+							sendFile(res, 'professor/professor.html');
 							break;
 						case "/professor/attendance":
-							sendFile(res, 'professor_attendance.html');
+							sendFile(res, 'professor/professor_attendance.html');
 							break;
 						case "/professor/classes":
-							sendFile(res, 'professor_classes.html');
+							sendFile(res, 'professor/professor_classes.html');
 							break;
 						default:
 							console.log('This sould not happen');
