@@ -83,7 +83,7 @@ Service.prototype.stopProcess = function(ist_id, randomID, callback) {
 }
 
 Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
-	console.log("getAccessToken(", fenix_code + ")");
+	var that = this;
 	fenix_api.requestAccessToken(fenix_code, 
 		function(error, access_token, refresh_token) {
 			console.log("requestAccessToken: ", access_token, refresh_token);
@@ -94,7 +94,11 @@ Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
 							if(isProfessor) {
 								db.insertProfessor(info.username,
 									function(error){
-										callback(iamhere_token);
+										that.getCourseInfo(db, res, fenix_code, access_token, refresh_token,
+											function(error){
+												callback(iamhere_token);
+											}
+										);
 									}
 								);
 							}else{
@@ -107,6 +111,24 @@ Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
 		}
 	);
 }
+
+
+Service.prototype.getCourseInfo = function(db, res, fenix_code, access_token, refresh_token, callback) {
+	fenix_api.getCourseInfo(access_token, refresh_token,
+		function(error, info) {
+			var info_teaching = info["teaching"];
+			if(!info_teaching || !info_teaching.length || info_teaching.length == 0) {
+				callback(error);
+			} else {
+				for(let k = 0; k < info_teaching.length; k++) {
+					db.insertCourse(info_teaching[k]["acronym"], info_teaching[k]["name"], info_teaching[k]["academicTerm"]);
+				}
+				callback(error, info_teaching);
+			}
+		}
+	);
+}
+
 
 //TODO
 Service.prototype.verifyLogin = function(db, iamhere_token, callback) {

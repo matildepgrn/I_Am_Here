@@ -36,6 +36,23 @@ database.prototype.insertUser = function(user_id, access_token, refresh_token, n
 	});
 }
 
+database.prototype.insertCourse = function(courseID, courseName, academicTerm) {
+	var sql = "UPDATE Course WHERE courseID = ? AND courseName = ? AND academicTerm = ?;";
+	//var sql = "INSERT INTO Course (courseID, courseName, academicTerm) VALUES (?,?,?);";
+	var args = [courseID, courseName, academicTerm];
+
+	this.pool.query(sql, args, function (err, result) {
+		if (err){
+			console.log("Error in the insertion of a course:", err);
+			callback(err);
+		}
+		else{
+			console.log("1 course inserted.");
+			callback(err, courseID);
+		}
+	});
+}
+
 database.prototype.insertProfessor = function(user_id, callback) {
 	var sql = "REPLACE INTO Professor (ist_id) VALUES (?);";
 	var args = [user_id];

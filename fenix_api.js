@@ -1,6 +1,7 @@
 module.exports = {
 	requestAccessToken: requestAccessToken,
 	getUserInfo: getUserInfo,
+	getCourseInfo: getCourseInfo,
 };
 
 var request = require('request');
@@ -53,6 +54,22 @@ function isProfessor(body){
 		}
 	}
 	return false;
+}
+
+function getCourseInfo(access_token, refresh_token, callback){
+	request
+		({url:'https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person/courses?access_token=' + encodeURIComponent(access_token), json: true}
+			, function(error, response, body) {
+				if(response.statusCode == 200) {
+					callback(error, body);
+				} else if(response.statusCode == 401 && body
+					&& body.error && body.error == 'accessTokenExpired') {
+						console.log('Error - getUserInfo: Requires new access token.');
+				} else {
+					console.log('Erro no getCourseInfo.', response.statusCode, error);
+					callback(error);
+				}
+			});
 }
 
 
