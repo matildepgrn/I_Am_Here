@@ -1,5 +1,6 @@
 use ist182083;
 
+drop PROCEDURE if exists InsertCourseIfNotExists;
 DROP FUNCTION IF EXISTS CheckAttendance;
 drop PROCEDURE if exists AttendanceMapping;
 drop table if exists Evaluation;
@@ -9,6 +10,7 @@ drop table if exists CodeAttendance;
 drop table if exists Attendance;
 drop table if exists Schedule;
 drop table if exists Class;
+drop table if exists ProfessorTeachesCourse;
 drop table if exists Course;
 drop table if exists Professor;
 drop table if exists User;
@@ -34,6 +36,7 @@ CREATE TABLE Professor (
 CREATE TABLE Course (
 	courseID					varchar(255),
 	courseName					varchar(255),
+	academicTerm				varchar(255),
 
 	PRIMARY KEY(courseID)
 );
@@ -42,6 +45,7 @@ CREATE TABLE ProfessorTeachesCourse (
 	ist_id 						varchar(255),
 	courseID					varchar(255),
 
+	PRIMARY KEY(ist_id, courseID),
 	FOREIGN KEY(ist_id) REFERENCES Professor,
 	FOREIGN KEY(courseID) REFERENCES Course
 );
@@ -183,6 +187,16 @@ myLoop: LOOP
 END LOOP myLoop;
 CLOSE consecutiveTrue;
 RETURN false;
+END
+//
+DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE InsertCourseIfNotExists(courseID varchar(255), courseName varchar(255), academicTerm varchar(255))
+BEGIN
+		INSERT IGNORE INTO Course (courseID, courseName, academicTerm)
+			VALUES(courseID, courseName, academicTerm);
 END
 //
 DELIMITER ;

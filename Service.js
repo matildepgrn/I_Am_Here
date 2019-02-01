@@ -121,10 +121,12 @@ Service.prototype.getCourseInfo = function(db, res, fenix_code, access_token, re
 				callback(error);
 			} else {
 				for(let k = 0; k < info_teaching.length; k++) {
-					db.insertCourse(info_teaching[k]["acronym"], info_teaching[k]["name"], info_teaching[k]["academicTerm"]);
+					db.insertCourse(info_teaching[k]["acronym"], info_teaching[k]["name"], info_teaching[k]["academicTerm"],
+						function(error) {}
+					);
 				}
-				callback(error, info_teaching);
-			}
+			}	//todo handle better
+			callback(info_teaching);
 		}
 	);
 }

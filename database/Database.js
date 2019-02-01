@@ -36,9 +36,8 @@ database.prototype.insertUser = function(user_id, access_token, refresh_token, n
 	});
 }
 
-database.prototype.insertCourse = function(courseID, courseName, academicTerm) {
-	var sql = "UPDATE Course WHERE courseID = ? AND courseName = ? AND academicTerm = ?;";
-	//var sql = "INSERT INTO Course (courseID, courseName, academicTerm) VALUES (?,?,?);";
+database.prototype.insertCourse = function(courseID, courseName, academicTerm, callback) {
+	var sql = "CALL InsertCourseIfNotExists(?,?,?);";
 	var args = [courseID, courseName, academicTerm];
 
 	this.pool.query(sql, args, function (err, result) {
