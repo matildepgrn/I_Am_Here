@@ -79,6 +79,7 @@ function handleRequest(req, res) {
 			break;
 		case "/api/name":
 		case "/api/courses":
+		case "/professor/new":
 			disableCache(res);
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id){
@@ -96,6 +97,9 @@ function handleRequest(req, res) {
 									sendJSON(res, rows);
 								}
 							);
+							break;
+						case "/professor/new":
+							sendFile(res, 'professor/professor_new.html');
 							break;
 					}
 				},

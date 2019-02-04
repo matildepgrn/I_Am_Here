@@ -50,19 +50,17 @@
 
 	
 	<table id="courseHistoryTable">
-		<template id="courseHistoryTemplate">
-		
 		<tr>
 			<th>Class #</th>
 			<th>Date</th>
 			<th>Students attending</th>
 		</tr>
+		<template id="courseHistoryTemplate">
 		<tr>
 			<td class="classnumber">1</td>
-			<td class="classdate">-</td>
+			<td class="classdate"></td>
 			<td class="studentsPresent"><a class="w3-button w3-circle w3-small w3-black" onclick="switchView(3)">&#9654;</td>
 		</tr>
-
 		</template>
 	</table>
 
@@ -98,6 +96,8 @@
 
 
 <script>
+
+// COURSES
 
 function addCourse(table, template, coursename, academicTerm, courseid) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
@@ -156,6 +156,8 @@ function loadCourses(url) {
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
+
+// CLASSES
 
 function loadClasses(url) {
 	var xhttp = new XMLHttpRequest();
@@ -243,5 +245,6 @@ function loadName(url) {
 
 loadName("/api/name");
 loadCourses("/api/courses");
+loadClasses("/api/classes");
 
 </script>

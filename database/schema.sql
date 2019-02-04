@@ -82,6 +82,7 @@ CREATE TABLE Attendance (
 	code_length						int,
 	total_time_s					int,
 	consecutive_codes				int,
+    date								varchar(255),
 	open							boolean,
 
 	PRIMARY KEY(attendanceID),
@@ -129,6 +130,7 @@ CREATE TABLE AttendanceHistory (
 	success						boolean,
     
     PRIMARY KEY(attendancehistoryID),
+	FOREIGN KEY(randomID) REFERENCES Attendance(randomID),
     FOREIGN KEY(ist_id) REFERENCES User(ist_id)
 );
 
@@ -145,10 +147,10 @@ CREATE TABLE Evaluation (
 );
 
 DELIMITER //
-CREATE PROCEDURE AttendanceMapping (randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, open boolean)
+CREATE PROCEDURE AttendanceMapping (randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, date varchar(255), open boolean)
 BEGIN
-INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes, open)
-		VALUES(randomID, code_type, code_length, total_time_s, consecutive_codes, open);
+INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes, date, open)
+		VALUES(randomID, code_type, code_length, total_time_s, consecutive_codes, date, open);
 SELECT LAST_INSERT_ID() AS attendanceID;
 END
 //

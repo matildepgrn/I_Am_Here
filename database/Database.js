@@ -131,8 +131,9 @@ database.prototype.closeAttendance = function(randomID, callback) {
 
 database.prototype.generateRandomAttendanceCode = function(randomID, code_type, code_length, total_time_s, consecutive_codes, callback) {
 	//var sql = "INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes) VALUES(?, ?, ?, ?, ?);";
-	var sql = "CALL AttendanceMapping(?,?,?,?,?,?);";
-	var arg = [randomID, code_type, code_length, total_time_s, consecutive_codes, true];
+	var sql = "CALL AttendanceMapping(?,?,?,?,?,?,?);";
+	var date = moment().format('YYYY-MM-DD');
+	var arg = [randomID, code_type, code_length, total_time_s, consecutive_codes, date, true];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
@@ -191,7 +192,7 @@ database.prototype.createClass = function(ist_id, courseID, callback) {
 };
 
 database.prototype.getAttendanceHistory = function(randomID, callback) {
-	var sql = "SELECT distinct count(ist_id) FROM AttendanceHistory WHERE randomID = ? AND success = 1;";
+	var sql = "SELECT date from Attendance where randomID = ?;";
 	var arg = [randomID];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {

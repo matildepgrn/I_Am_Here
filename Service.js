@@ -105,13 +105,19 @@ Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
 			);
 		}
 	);
-}
+};
 
 Service.prototype.selectCourseInfo = function(db, ist_id, callback) {
 	db.selectCourseInfo(ist_id, function(err, rows) {
 		callback(err, rows);
 	});
-}
+};
+
+Service.prototype.getAttendanceHistory = function(db, randomID, callback) {
+	db.getAttendanceHistory(randomID, function(err, rows) {
+		callback(err, rows);
+	});
+};
 
 Service.prototype.getCourseInfo = function(db, res, fenix_code, access_token, refresh_token, callback) {
 	fenix_api.getCourseInfo(access_token, refresh_token,
