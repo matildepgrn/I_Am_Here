@@ -1,6 +1,6 @@
 use ist182083;
 
-drop PROCEDURE if exists InsertCourseIfNotExists;
+drop PROCEDURE if exists InsertProfessorandCourse;
 DROP FUNCTION IF EXISTS CheckAttendance;
 drop PROCEDURE if exists AttendanceMapping;
 drop table if exists Evaluation;
@@ -30,6 +30,7 @@ CREATE TABLE User (
 CREATE TABLE Professor (
 	ist_id						varchar(255),
 	
+    PRIMARY KEY(ist_id),
 	FOREIGN KEY(ist_id) REFERENCES User(ist_id)
 );
 
@@ -46,8 +47,8 @@ CREATE TABLE ProfessorTeachesCourse (
 	courseID					varchar(255),
 
 	PRIMARY KEY(ist_id, courseID),
-	FOREIGN KEY(ist_id) REFERENCES Professor,
-	FOREIGN KEY(courseID) REFERENCES Course
+	FOREIGN KEY(ist_id) REFERENCES Professor (ist_id),
+	FOREIGN KEY(courseID) REFERENCES Course (courseID)
 );
 
 CREATE TABLE Class (
@@ -193,10 +194,16 @@ DELIMITER ;
 
 
 DELIMITER //
-CREATE PROCEDURE InsertCourseIfNotExists(courseID varchar(255), courseName varchar(255), academicTerm varchar(255))
+CREATE PROCEDURE InsertProfessorandCourse(ist_id varchar(255), courseID varchar(255), courseName varchar(255), academicTerm varchar(255))
 BEGIN
-		INSERT IGNORE INTO Course (courseID, courseName, academicTerm)
-			VALUES(courseID, courseName, academicTerm);
+	INSERT IGNORE INTO Professor (ist_id)
+		VALUES (ist_id);
+		
+	INSERT IGNORE INTO Course (courseID, courseName, academicTerm)
+		VALUES(courseID, courseName, academicTerm);
+
+	INSERT IGNORE INTO ProfessorTeachesCourse (ist_id, courseID)
+		VALUES(ist_id, courseID);
 END
 //
 DELIMITER ;

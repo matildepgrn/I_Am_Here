@@ -8,7 +8,18 @@ ul {
 	user-select: none;
 }
 
-#button_finishAttendance {
+#showCourses_template:hover {
+	background-color: #008CBA;
+	opacity: 1;
+	color: white;
+}
+
+#button_scancourses {
+	padding-top: 15px;
+}
+
+#button_finishAttendance,
+#b_personalizecourse {
 	margin-top: 10px;
 }
 

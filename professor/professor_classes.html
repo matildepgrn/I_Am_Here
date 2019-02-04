@@ -18,114 +18,44 @@
 	<li style="float:right"><span class="name" id="IST_NAME"></span></li>
 </ul>
 
-<div class="container" id="showClasses">
-	<center class="center">
-		<h1>
-		No courses created yet.
-		</h1>
-
-		<button class="w3-button w3-circle w3-black w3-large" id="addButton" onclick="switchView(1)">+</button>
-
-	</center>
+<div class="text-center" id="button_scancourses">
 </div>
 
-<div class="container" id="addClasses" style="display:none">
+
+<div class="container" >
 	<center class="center">
-	<div style="text-align: left">
-		<a onclick="switchView(0)"	class="previous round" id="back_qrcode">&#8249;</a>
-	</div>
-		<h1>
-			Personalize the course:
-		</h1>
-		<form>
-			<table>
-				<tr>
-					<td>
-						Course name:
-					</td>
-					<td>
-						<input type="text" name="coursename">
-					</td>
-				</tr>
-
-				<tr title="Number of the class">
-				<td>Total number of classes:</td>
-				<td><input type="number" name="classnumber" min="1" max="40" placeholder="32"></td>
-			</tr>
-
-			<tr title="Shifts">
-				<td>Shifts</td>
-				<td>
-					<input type="number" name="shiftscount" min="1" max="5" value="1">
-					<input type="text" name="shiftsname" placeholder="Separe by a coma.">
-				</td>
+		<table id="showCourses_template">
+			<tr class="courserow">
+				<td class="coursename">Produção de Conteúdos Multimédia</td>
+				<td class="courseid">PCM201819</td>
 			</tr>
 		</table>
-
-		</form>
-
-		<div style="text-align: center">
-					<button class="Bigbutton" id="attendance-button"
-					onclick="switchView(2)" title="Create a course">
-							Create course
-					</button>
-			</div>
-
-
 	</center>
 </div>
 
 <center>
 
-<div class="center" id="classTable" style="display:none">
+
+<div class="center" id="classTable">
 <div class="container" >
 	<div style="text-align: left">
 		<a onclick="switchView(1)"	class="previous round" id="back_qrcode">&#8249;</a>
 	</div>
-	<h1>
-			Produção de Conteúdos Multimédia
-		</h1>
+	
+	<h3>
+		Produção de Conteúdos Multimédia
+	</h3>
+	
 	<table>
 		<tr>
 			<th>Class #</th>
 			<th>Date</th>
 			<th>Students attending</th>
 		</tr>
-		
 		<tr>
-			<td>1</td>
-			<td>Mon, Dec 3, 2018</td>
-			<td>14</td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td>Wed, Dec 5, 2018</td>
-			<td>17</td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td>Mon, Dec 10, 2018</td>
-			<td>10</td>
-		</tr>
-		<tr>
-			<td>4</td>
-			<td>Wed, Dec 12, 2018</td>
-			<td>9</td>
-		</tr>
-		<tr>
-			<td>5</td>
-			<td>Mon, Dec 17, 2018</td>
-			<td>13</td>
-		</tr>
-		<tr>
-			<td>6</td>
-			<td>-</td>
-			<td> <a class="w3-button w3-circle w3-small w3-black" onclick="switchView(3)">&#9654;</td>
-		</tr>
-		<tr>
-			<td>7</td>
-			<td>-</td>
-			<td> <a class="w3-button w3-circle w3-small w3-black">&#9654;</td>
+			<td id="classnumber">1</td>
+			<td id="classdate">-</td>
+			<td><a class="w3-button w3-circle w3-small w3-black" onclick="switchView(3)">&#9654;</td>
 		</tr>
 	</table>
 
@@ -138,9 +68,9 @@
 	<div style="text-align: left">
 		<a onclick="switchView(2)"	class="previous round" id="back_qrcode">&#8249;</a>
 	</div>
-		<h1>
+		<h3>
 			Present in class #6:
-		</h1>
+		</h3>
 
 		<table>
 			<tr>
@@ -150,50 +80,6 @@
 			<tr>
 				<td>ist182083</td>
 				<td>Carolina Costa</td>
-			</tr>
-			<tr class="less_suspicious">
-				<td>ist182084</td>
-				<td>João Manuel Dias Costa</td>
-			</tr>
-			<tr class="less_suspicious">
-				<td>ist182085</td>
-				<td>Diogo António Amaral</td>
-			</tr>
-			<tr>
-				<td>ist182086</td>
-				<td>Mariana da Silva Dias</td>
-			</tr>
-			<tr class="suspicious_tr" onclick="switchView(4)">
-				<td>ist182087</td>
-				<td>Catarina Afonso Lopes</td>
-			</tr>
-			<tr>
-				<td>ist182088</td>
-				<td>Maria José Cunha</td>
-			</tr>
-			<tr class="suspicious_tr">
-				<td>ist182089</td>
-				<td>José Miguel Antunes</td>
-			</tr>
-			<tr>
-				<td>ist182090</td>
-				<td>Fernando da Costa Gonçalves</td>
-			</tr>
-			<tr>
-				<td>ist182091</td>
-				<td>Maria Rita Esteves Orvalho</td>
-			</tr>
-			<tr>
-				<td>ist182092</td>
-				<td>Ana Madalena Leitão</td>
-			</tr>
-			<tr>
-				<td>ist182093</td>
-				<td>Joana Coimbra</td>
-			</tr>
-			<tr id="total_tr">
-				<td>Total:</td>
-				<td>11</td>
 			</tr>
 	</table>
 

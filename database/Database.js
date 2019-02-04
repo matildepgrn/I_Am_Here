@@ -36,33 +36,18 @@ database.prototype.insertUser = function(user_id, access_token, refresh_token, n
 	});
 }
 
-database.prototype.insertCourse = function(courseID, courseName, academicTerm, callback) {
-	var sql = "CALL InsertCourseIfNotExists(?,?,?);";
-	var args = [courseID, courseName, academicTerm];
+database.prototype.insertProfessorandCourse = function(ist_id, courseID, courseName, academicTerm, callback) {
+	var sql = "CALL InsertProfessorandCourse(?,?,?,?);";
+	var args = [ist_id, courseID, courseName, academicTerm];
 
 	this.pool.query(sql, args, function (err, result) {
 		if (err){
-			console.log("Error in the insertion of a course:", err);
+			console.log("Error in the insertion of a professor and course:", err);
 			callback(err);
 		}
 		else{
-			console.log("1 course inserted.");
-			callback(err, courseID);
+			callback(err);
 		}
-	});
-}
-
-database.prototype.insertProfessor = function(user_id, callback) {
-	var sql = "REPLACE INTO Professor (ist_id) VALUES (?);";
-	var args = [user_id];
-	this.pool.query(sql, args, function (err, result) {
-		if (err){
-			console.log("Error in the insertion of a professor.");
-		}
-		else{
-			console.log("1 professor inserted.");
-		}
-		callback(err);
 	});
 }
 
@@ -198,6 +183,10 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 		}
 	})
 };
+
+database.prototype.getCourseInfo = function(ist_id, callback) {
+	var sql = "SELECT * FROM ";
+}
 
 
 database.prototype.verifyAttendance = function (ist_id, attendanceID, consecutive_codes, callback) {
