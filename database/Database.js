@@ -205,7 +205,7 @@ database.prototype.getAttendanceHistory = function(randomID, callback) {
 };
 
 database.prototype.selectCourseInfo = function(ist_id, callback) {
-	var sql = "SELECT c.academicTerm, c.courseName, c.courseID FROM Professor as p, Course as c, ProfessorTeachesCourse as pfc WHERE p.ist_id = ? and p.ist_id = pfc.ist_id ORDER BY courseName;";
+	var sql = "SELECT c.academicTerm, c.courseName, c.courseID FROM Professor as p, Course as c WHERE  p.ist_id = ? ORDER BY courseName;";
 	var arg = [ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
