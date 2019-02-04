@@ -123,7 +123,7 @@ function handleRequest(req, res) {
 							sendFile(res, 'student/student.html');
 							break;
 						case "/professor":
-							sendFile(res, 'professor/professor.html');
+							sendFile(res, 'professor/professor_classes.html');
 							break;
 						case "/professor/attendance":
 							sendFile(res, 'professor/professor_attendance.html');
