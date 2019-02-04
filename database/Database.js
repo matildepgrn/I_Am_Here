@@ -185,13 +185,15 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 };
 
 database.prototype.selectCourseInfo = function(ist_id, callback) {
-	var sql = "SELECT c.courseID, c.courseName FROM Professor as p, Course as c, ProfessorTeachesCourse as pfc WHERE p.ist_id = ? and p.ist_id = pfc.ist_id ORDER BY courseName VALUES(?);";
-	var args = [ist_id];
+	var sql = "SELECT c.courseID, c.courseName FROM Professor as p, Course as c, ProfessorTeachesCourse as pfc WHERE p.ist_id = ? and p.ist_id = pfc.ist_id ORDER BY courseName;";
+	var arg = [ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if(err) {
+			console.log("Error in selectCourseInfo:", err);
 			callback(err);
 		} else {
+			console.log(rows);
 			callback(err, rows);
 		}
 	})

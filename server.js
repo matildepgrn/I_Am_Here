@@ -80,14 +80,26 @@ function handleRequest(req, res) {
 			);
 			break;
 		case "/api/name":
+		case "/api/courses":
 			disableCache(res);
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id){
-					service.getUserName(db, ist_id,
-						function(name){
-							sendText(res, name);
-						}
-					);
+					switch(parsedURL.pathname) {
+						case "/api/name":
+							service.getUserName(db, ist_id,
+								function(name){
+									sendText(res, name);
+								}
+							);
+							break;
+						case "/api/courses":
+							service.selectCourseInfo(db, ist_id,
+								function(error, rows) {
+									sendJSON(res, rows);
+								}
+							);
+							break;
+					}
 				},
 				function(){
 					sendText(res, "Not logged in", 403);
@@ -97,7 +109,7 @@ function handleRequest(req, res) {
 		case "/a":
 		case "/student":
 		case "/professor":
-		case "/professor/classes":
+		case "/professor/courses":
 		case "/professor/attendance":
 			makeUserLogin(res, cookies, parsedURL,
 				function(ist_id){
@@ -118,7 +130,7 @@ function handleRequest(req, res) {
 						case "/professor/attendance":
 							sendFile(res, 'professor/professor_attendance.html');
 							break;
-						case "/professor/classes":
+						case "/professor/courses":
 							sendFile(res, 'professor/professor_classes.html');
 							break;
 						default:
