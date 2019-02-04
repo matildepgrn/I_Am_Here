@@ -176,6 +176,34 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 	})
 };
 
+database.prototype.createClass = function(ist_id, courseID, callback) {
+	var sql = "INSERT INTO Class(ist_id, courseID) VALUES (?,?);";
+	var arg = [ist_id, randomID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in createClass:", err);
+			callback(err);
+		} else {
+			callback(err);
+		}
+	})
+};
+
+database.prototype.getAttendanceHistory = function(randomID, callback) {
+	var sql = "SELECT distinct count(ist_id) FROM AttendanceHistory WHERE randomID = ? AND success = 1;";
+	var arg = [randomID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getAttendanceHistory:", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
 database.prototype.selectCourseInfo = function(ist_id, callback) {
 	var sql = "SELECT c.academicTerm, c.courseName, c.courseID FROM Professor as p, Course as c, ProfessorTeachesCourse as pfc WHERE p.ist_id = ? and p.ist_id = pfc.ist_id ORDER BY courseName;";
 	var arg = [ist_id];
@@ -188,7 +216,7 @@ database.prototype.selectCourseInfo = function(ist_id, callback) {
 			callback(err, rows);
 		}
 	})
-}
+};
 
 
 database.prototype.verifyAttendance = function (ist_id, attendanceID, consecutive_codes, callback) {
@@ -202,11 +230,11 @@ database.prototype.verifyAttendance = function (ist_id, attendanceID, consecutiv
 			callback(err, rows[0].result);
 		}
 	})
-}
+};
 
 
 function randomInt(size){
 	return crypto.randomBytes(size).toString('hex');
-}
+};
 
 module.exports = database;

@@ -4,6 +4,7 @@ drop PROCEDURE if exists InsertProfessorandCourse;
 DROP FUNCTION IF EXISTS CheckAttendance;
 drop PROCEDURE if exists AttendanceMapping;
 drop table if exists Evaluation;
+drop table if exists AttendanceHistory;
 drop table if exists Code;
 drop table if exists Fingerprint;
 drop table if exists CodeAttendance;
@@ -52,12 +53,14 @@ CREATE TABLE ProfessorTeachesCourse (
 );
 
 CREATE TABLE Class (
+	ist_id							varchar(255),
 	courseID						varchar(255),
 	classID							varchar(255),
-	nr_student_enrolled				int,
+
 	schedule						varchar(255),
 
 	PRIMARY KEY(classID),
+	FOREIGN KEY(ist_id) REFERENCES Professor (ist_id),
 	FOREIGN KEY(courseID) REFERENCES Course(courseID)
 );
 
@@ -126,7 +129,6 @@ CREATE TABLE AttendanceHistory (
 	success						boolean,
     
     PRIMARY KEY(attendancehistoryID),
-    FOREIGN KEY(ist_id) REFERENCES User(ist_id),
     FOREIGN KEY(ist_id) REFERENCES User(ist_id)
 );
 
