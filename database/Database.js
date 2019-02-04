@@ -184,8 +184,17 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 	})
 };
 
-database.prototype.getCourseInfo = function(ist_id, callback) {
-	var sql = "SELECT * FROM ";
+database.prototype.selectCourseInfo = function(ist_id, callback) {
+	var sql = "SELECT c.courseID, c.courseName FROM Professor as p, Course as c, ProfessorTeachesCourse as pfc WHERE p.ist_id = ? and p.ist_id = pfc.ist_id ORDER BY courseName VALUES(?);";
+	var args = [ist_id];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
 }
 
 
