@@ -30,7 +30,6 @@ database.prototype.insertUser = function(user_id, access_token, refresh_token, n
 			callback(err);
 		}
 		else{
-			console.log("1 user inserted.");
 			callback(err, iamhere_token);
 		}
 	});
@@ -60,7 +59,6 @@ database.prototype.updateAccessToken = function(access_token, refresh_token, new
 			callback(err);
 		}
 		else{
-			console.log("New access token inserted.");
 			callback(err, newAccessToken);
 		}
 	});
@@ -80,7 +78,6 @@ database.prototype.getUserByToken = function(iamhere_token, callback) {
 			callback(err);
 		}
 		else {
-			console.log("1 ist_id sent");
 			callback(err, rows[0].ist_id);
 		}
 	})
@@ -96,7 +93,6 @@ database.prototype.getUserName = function(ist_id, callback) {
 			callback(err);
 		}
 		else{
-			console.log("1 user name sent");
 			callback(err, rows[0].name);
 		}
 	})
@@ -112,7 +108,6 @@ database.prototype.removeIAmHereToken = function(ist_id, callback) {
 			callback(err, false);
 		}
 		else{
-			console.log("iamhere_token removed.");
 			callback(err, true);
 		}
 	})
@@ -145,7 +140,6 @@ database.prototype.generateRandomAttendanceCode = function(randomID, code_type, 
 			callback(err);
 		}
 		else{
-			console.log("randomID updated.", rows[0][0].attendanceID);
 			callback(err, rows[0][0].attendanceID);
 		}
 	})
@@ -162,7 +156,6 @@ database.prototype.insertCode = function(ist_id, code_generated, code_input, tim
 			console.log("Error inserting code:", err);
 		}
 		else{
-			console.log("Code inserted.");
 		}
 		callback(err, code_input);
 	})
@@ -178,14 +171,13 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 			callback(err);
 		}
 		else{
-			console.log("Server code inserted.");
 			callback(err);
 		}
 	})
 };
 
 database.prototype.selectCourseInfo = function(ist_id, callback) {
-	var sql = "SELECT c.courseID, c.courseName FROM Professor as p, Course as c, ProfessorTeachesCourse as pfc WHERE p.ist_id = ? and p.ist_id = pfc.ist_id ORDER BY courseName;";
+	var sql = "SELECT c.academicTerm, c.courseName, c.courseID FROM Professor as p, Course as c, ProfessorTeachesCourse as pfc WHERE p.ist_id = ? and p.ist_id = pfc.ist_id ORDER BY courseName;";
 	var arg = [ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
@@ -193,7 +185,6 @@ database.prototype.selectCourseInfo = function(ist_id, callback) {
 			console.log("Error in selectCourseInfo:", err);
 			callback(err);
 		} else {
-			console.log(rows);
 			callback(err, rows);
 		}
 	})

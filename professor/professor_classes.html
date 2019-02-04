@@ -17,17 +17,19 @@
 	<li style="float:right"><span class="name" id="IST_NAME"></span></li>
 </ul>
 
-<div class="text-center" id="button_scancourses">
-</div>
-
-
-<div class="container" >
+<div class="container" id="container1">
 	<center class="center">
+		<h3>
+			Your courses:
+		</h3>
+		<h6>
+			(select a course to start the attendance)
+		</h6>
+
 		<table id="courseListTable">
 			<template id="courseListTemplate">
 				<tr class="courserow">
 					<td class="coursename" onclick=""></td>
-					<td class="courseid"></td>
 				</tr>
 			</template>
 		</table>
@@ -37,14 +39,13 @@
 <center>
 
 
-<div class="center" id="classTable">
+<div class="center" id="classTable" style="display:none">
 <div class="container" >
 	<div style="text-align: left">
-		<a onclick="switchView(1)"	class="previous round" id="back_qrcode">&#8249;</a>
+		<a onclick="switchView(0);"	class="previous round" id="back_qrcode">&#8249;</a>
 	</div>
 	
-	<h3>
-		Produção de Conteúdos Multimédia
+	<h3 id="courseName_2">
 	</h3>
 	
 	<table>
@@ -90,15 +91,35 @@
 
 <script>
 
-function addCourse(table, template, coursename, courseid) {
+function addCourse(table, template, coursename, academicTerm, courseid) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var el_coursename = tr_clone.getElementsByClassName("coursename")[0];
-	var el_courseid = tr_clone.getElementsByClassName("courseid")[0];
 
 	el_coursename.innerText = coursename;
-	el_courseid.innerText = courseid;
+
+	tr_clone.mycourseid = coursename;
+
+	tr_clone.onclick = function() {
+		//getCourseInfo(this.mycourseid);
+		document.getElementById("courseName_2").innerHTML = this.mycourseid;
+		switchView(1);
+	};
 
 	table.appendChild(tr_clone);
+}
+
+function getCourseInfo(courseid) {		// envia coursename para o server
+	var url = "/api/courseInfo";
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4 && this.status == 200) {
+			var json = JSON.parse(this.responseText);
+			document.getElementsByClassName("coursename").innerHTML = json.coursename;
+		}
+	};
+
+	xhttp.open("POST", url, true);
+	xhttp.send(json);
 }
 
 function showCourses(courses) {
@@ -106,7 +127,7 @@ function showCourses(courses) {
 	var table = document.getElementById("courseListTable");
 
 	for(let i = 0; i < courses.length; i++) {
-		addCourse(table, template, courses[i].courseName, courses[i].courseID);
+		addCourse(table, template, courses[i].courseName, courses[i].academicTerm, courses[i].courseID);
 	}
 }
 
@@ -129,42 +150,21 @@ function loadCourses(url) {
 }
 
 function switchView(arg){
-	console.log("switchView", arg);
 	switch(arg) {
 		case 0:
-			document.getElementById("showClasses").style.display = "";
-			document.getElementById("addClasses").style.display = "none";
-			document.getElementById("maincontainer").style.display = "none";
+			document.getElementById("container1").style.display = "";
 			document.getElementById("classTable").style.display = "none";
-			document.getElementById("fingerprintTable").style.display = "none";
+			document.getElementById("studentsTable").style.display = "none";
 			break;
 		case 1:
-			document.getElementById("showClasses").style.display = "none";
-			document.getElementById("addClasses").style.display = "";
-			document.getElementById("maincontainer").style.display = "none";
-			document.getElementById("classTable").style.display = "none";
-			document.getElementById("fingerprintTable").style.display = "none";
+			document.getElementById("container1").style.display = "none";
+			document.getElementById("classTable").style.display = "";
+			document.getElementById("studentsTable").style.display = "none";
 			break;
 		case 2:
-			document.getElementById("showClasses").style.display = "none";
-			document.getElementById("addClasses").style.display = "none";
-			document.getElementById("maincontainer").style.display = "none";
-			document.getElementById("classTable").style.display = "";
-			document.getElementById("fingerprintTable").style.display = "none";
-			break;
-		case 3:
-			document.getElementById("showClasses").style.display = "none";
-			document.getElementById("addClasses").style.display = "none";
-			document.getElementById("maincontainer").style.display = "";
+			document.getElementById("container1").style.display = "none";
 			document.getElementById("classTable").style.display = "none";
-			document.getElementById("fingerprintTable").style.display = "none";
-			break;
-		case 4:
-			document.getElementById("showClasses").style.display = "none";
-			document.getElementById("addClasses").style.display = "none";
-			document.getElementById("maincontainer").style.display = "none";
-			document.getElementById("classTable").style.display = "none";
-			document.getElementById("fingerprintTable").style.display = "";
+			document.getElementById("studentsTable").style.display = "";
 			break;
 		default:
 			console.log("unknown arg", arg);

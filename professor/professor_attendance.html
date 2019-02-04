@@ -217,7 +217,6 @@ function loadStatus(url) {
 
 function updateStatus(jsonStr) {
 	var json = JSON.parse(jsonStr);
-	console.log(json);
 	var code_element = document.getElementById("randomcode");
 	code_element.innerHTML = json.current_code;
 	if(json.current_code == "Expired") {

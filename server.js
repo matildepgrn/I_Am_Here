@@ -24,8 +24,6 @@ const options = {
 function handleRequest(req, res) {
   	
   	var cookies = new Cookies(req, res);
-
-	console.log(req.method + " " + req.url);
 	
 	var parsedURL = url.parse(req.url, true);
 
@@ -186,7 +184,6 @@ function disableCache(res) {
 
 
 function redirectURL(res, url) {
-	console.log("redirecting to: ", url);
 	res.writeHead(301,
 		{Location: url}
 	);
@@ -195,7 +192,6 @@ function redirectURL(res, url) {
 
 
 function goToLogin(res, cookies, parsedURL) {
-	console.log("goToLogin: setting cookie");
 	cookies.set('last_url', parsedURL.pathname);
 	redirectURL(res, config.EXTERNAL_LOGIN_URL);	
 }
@@ -215,7 +211,6 @@ function isLoggedIn(res, cookies, parsedURL, callback_true, callback_false) {
 }
 
 function makeUserLogin(res, cookies, parsedURL, callback) {
-	console.log("Make user login: ", parsedURL.pathname);
 	isLoggedIn(res, cookies, parsedURL,
 		//callback_true
 		function(ist_id){
@@ -265,7 +260,6 @@ function getPostData(req, res, cookies, parsedURL) {
 		data += chunk.toString();
 	});
 	req.on('end', () => {
-		console.log(data);
 		handlePost(req, res, cookies, parsedURL, data);
 	});
 }

@@ -89,7 +89,6 @@ function loadDoc() {
 			document.getElementById("div_c").innerHTML = handleResponse(json);
 			document.getElementById("input_student").value = "";
 			document.getElementById("enter_button").disabled = true;
-			console.log("response:", this.responseText);
 		}
 	};
 	var json = {};
@@ -98,7 +97,6 @@ function loadDoc() {
 	json.randomID = parseInt(urlParams.get('c'));
 	
 	var json_string = JSON.stringify(json);
-	console.log("input_code:", json.input_code);
 	xhttp.open("POST", "/api/validatecode", true);
 	xhttp.send(json_string);
 }
@@ -106,7 +104,6 @@ function loadDoc() {
 var input = document.getElementById("input_student");
 var botao = document.getElementById("enter_button");
 input.addEventListener("keyup", function keyDown(event){
-	console.log(event);
 	if(event.keyCode === 13 && this.value.length > 0) {
 		event.preventDefault();
 		loadDoc();
