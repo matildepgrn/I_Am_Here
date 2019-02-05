@@ -18,18 +18,91 @@
 <div class="container">
 	<center class="center">
 		<table id="historyTable">
+			<tr>
+				<th rowspan="2">Class #</th>
+				<th rowspan="2">Date</th>
+				<th colspan="2">Code</th>
+				<th rowspan="2">Time</th>
+				<th rowspan="2">Consecutive codes</th>
+				<th rowspan="2"># Students</th>
+			</tr>
+			<tr>
+				<th>Type</th>
+				<th>Length</th>
+			</tr>
+			
 			<template id="historyTemplate">
-				<tr class="">
-					<td class=""></td>
+				<tr>
+					<td class="classCounter"></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
 				</tr>
 			</template>
+
+
 		</table>
+
+		<button id="b_attendance" type="button"
+		onclick="goTo('/professor/attendance')"
+		title="Generate a new sequence">Start new attendance</button>
 
 	</center>
 </div>
 
 
 <script>
+
+function goTo(url) {
+	window.location.replace(url);
+}
+
+function loadHistory(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				var history = JSON.parse(this.responseText);
+				showHistory(history);
+			} else {
+				//todo
+				console.log("Error loading history:", this.status);
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+function showHistory(history) {
+	var template = document.getElementById("historyTemplate");
+	var table = document.getElementById("historyTable");
+
+	for(let i = 0; i < history.length; i++) {
+		addHistory(table, template, i+1, history[i].date, history[i].code_type, history[i].code_length, history[i].total_time_s, history[i].consecutive_codes);
+	} 
+};
+
+function addHistory(table, template, classcounter, date, code_type, code_length, total_time_s, consecutive_codes) {
+	var tr_clone = template.content.querySelector("tr").cloneNode(true);
+	var tds = tr_clone.children;
+
+	for(let x = 0; x < tds.length; x++) {
+		tds[x].innerText = arguments[x+2];
+	}
+
+	tr_clone.onclick = function() {
+		//getCourseInfo(this.mycourseid);
+		//document.getElementById("courseName_2").innerHTML = this.mycourseid;
+		//switchView(1);
+	};
+
+	table.appendChild(tr_clone);
+}
 
 function loadName(url) {
 	var xhttp = new XMLHttpRequest();
@@ -48,5 +121,6 @@ function loadName(url) {
 }
 
 loadName("/api/name");
+loadHistory("/db/courses");
 
 </script>

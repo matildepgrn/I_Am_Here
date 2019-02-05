@@ -8,6 +8,25 @@ ul {
 	user-select: none;
 }
 
+#historyTable tr td:nth-child(1),
+#historyTable tr td:nth-child(2),
+#historyTable tr td:nth-child(3){
+	text-align: center;
+}
+
+#historyTable tr td {
+	text-align: right;
+}
+
+th {
+	background: #a4c1da;
+	padding: 1px 3px;
+}
+
+#b_attendance {
+	margin-top: 10px;
+}
+
 #courseListTable tr:hover {
 	background-color: #008CBA;
 	opacity: 1;

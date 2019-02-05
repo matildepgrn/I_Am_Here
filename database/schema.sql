@@ -9,7 +9,6 @@ drop table if exists Code;
 drop table if exists Fingerprint;
 drop table if exists CodeAttendance;
 drop table if exists Attendance;
-drop table if exists Schedule;
 drop table if exists Class;
 drop table if exists ProfessorTeachesCourse;
 drop table if exists Course;
@@ -57,27 +56,15 @@ CREATE TABLE Class (
 	courseID						varchar(255),
 	classID							varchar(255),
 
-	schedule						varchar(255),
-
 	PRIMARY KEY(classID),
 	FOREIGN KEY(ist_id) REFERENCES Professor (ist_id),
 	FOREIGN KEY(courseID) REFERENCES Course(courseID)
 );
 
-CREATE TABLE Schedule (
-	scheduleID						varchar(255),
-	classID							varchar(255),
-	nr_attendance					int,
-	date_time						timestamp,
-
-	PRIMARY KEY(scheduleID),
-	FOREIGN KEY(classID) REFERENCES Class(classID)
-);
-
 CREATE TABLE Attendance (
+	ist_id								varchar(255),
 	attendanceID					int AUTO_INCREMENT,
 	randomID						int,
-	scheduleID						varchar(255),
 	code_type						varchar(255),
 	code_length						int,
 	total_time_s					int,
@@ -86,7 +73,7 @@ CREATE TABLE Attendance (
 	open							boolean,
 
 	PRIMARY KEY(attendanceID),
-	FOREIGN KEY(scheduleID) REFERENCES Schedule(scheduleID)
+    FOREIGN KEY(ist_id) REFERENCES Professor(ist_id)
 );
 
 CREATE TABLE CodeAttendance (
@@ -147,10 +134,10 @@ CREATE TABLE Evaluation (
 );
 
 DELIMITER //
-CREATE PROCEDURE AttendanceMapping (randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, date varchar(255), open boolean)
+CREATE PROCEDURE AttendanceMapping (ist_id varchar(255), randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, date varchar(255), open boolean)
 BEGIN
-INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes, date, open)
-		VALUES(randomID, code_type, code_length, total_time_s, consecutive_codes, date, open);
+INSERT INTO Attendance(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open)
+		VALUES(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open);
 SELECT LAST_INSERT_ID() AS attendanceID;
 END
 //

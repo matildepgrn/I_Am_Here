@@ -80,6 +80,7 @@ function handleRequest(req, res) {
 		case "/api/name":
 		case "/api/courses":
 		case "/professor/new":
+		case "/db/courses":
 			disableCache(res);
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id){
@@ -100,6 +101,13 @@ function handleRequest(req, res) {
 							break;
 						case "/professor/new":
 							sendFile(res, 'professor/professor_new.html');
+							break;
+						case "/db/courses":
+							service.getAttendanceHistory(db, ist_id,
+								function(error, rows) {
+									sendJSON(res, rows);
+								}
+							);
 							break;
 					}
 				},
@@ -271,6 +279,7 @@ function getPostData(req, res, cookies, parsedURL) {
 function handlePost(req, res, cookies, parsedURL, data) {
 	switch(req.url) {
 		case "/api/closeAttendance":
+		case "/api/createAttendanceSession":
 		case "/api/status":
 		case "/api/getcode":
 		case "/api/getcode/stop":
@@ -316,21 +325,21 @@ function handlePost(req, res, cookies, parsedURL, data) {
 								}
 							);
 						break;
+						case "/api/createAttendanceSession":
+							var json = JSON.parse(data);
+							service.getAttendanceRandomID(db, ist_id, json.code_type, json.code_length, json.time, json.consecutivecodes,
+								function(error, randomID, attendanceID) {
+									var json_res = {};
+									json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;
+									json_res.randomID = randomID;
+									sendJSON(res, json_res);
+								}
+							);
+							break;
 					}
 				},
 				function() {
 					sendText(res, "Not logged in", 403);
-				}
-			);
-			break;
-		case "/api/createAttendanceSession":
-			var json = JSON.parse(data);
-			service.getAttendanceRandomID(db, json.code_type, json.code_length, json.time, json.consecutivecodes,
-				function(error, randomID, attendanceID) {
-					var json_res = {};
-					json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;
-					json_res.randomID = randomID;
-					sendJSON(res, json_res);
 				}
 			);
 			break;
