@@ -145,7 +145,7 @@ DELIMITER ;
 
 
 DELIMITER //
-CREATE FUNCTION CheckAttendance(attendanceID int, ist_id varchar(255), consecutive_codes int)
+CREATE FUNCTION CheckAttendance(my_attendanceID int, my_ist_id varchar(255), my_consecutive_codes int)
 RETURNS boolean
 BEGIN
 DECLARE row_sequence INTEGER;
@@ -155,7 +155,7 @@ DECLARE finished INTEGER DEFAULT 0;
 DECLARE consecutiveTrue CURSOR for
 	SELECT sequence, correct
 	FROM Code
-		WHERE attendanceID = attendanceID AND ist_id = ist_id
+		WHERE attendanceID = my_attendanceID AND ist_id = my_ist_id
 	ORDER BY sequence;
 
 DECLARE CONTINUE HANDLER
@@ -169,7 +169,7 @@ myLoop: LOOP
 	END IF;
     IF row_correct = 1 THEN
 		SET count = count + 1;
-        IF count = consecutive_codes THEN
+        IF count = my_consecutive_codes THEN
 			CLOSE consecutiveTrue;
 			RETURN true;
         END IF;
@@ -198,3 +198,4 @@ BEGIN
 END
 //
 DELIMITER ;
+
