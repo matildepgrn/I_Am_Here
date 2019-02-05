@@ -27,15 +27,15 @@ th {
 	margin-top: 10px;
 }
 
-#courseListTable tr:hover {
-	background-color: #008CBA;
+.clickable:hover {
+	background-color: #bfbfbf;
 	opacity: 1;
-	color: white;
 	cursor: pointer;
 }
 
-#courseListTable tr:active {
-	background-color: #00ACDA;
+.clickable:active {
+	color: white;
+	background-color: #008CBA;
 }
 
 #button_scancourses {

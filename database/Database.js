@@ -35,6 +35,22 @@ database.prototype.insertUser = function(user_id, access_token, refresh_token, n
 	});
 }
 
+database.prototype.isProfessor = function(ist_id, callback) {
+	var sql = "SELECT ist_id from Professor WHERE ist_id = ?";
+	var args = [ist_id];
+
+	this.pool.query(sql, args, function (err, rows, fields) {
+		if (err){
+			console.log("Error verifying if is professor", err);
+			callback(err);
+		}
+		else {
+			callback(err, rows.length > 0);
+		}
+	});
+
+}
+
 database.prototype.insertProfessorandCourse = function(ist_id, courseID, courseName, academicTerm, callback) {
 	var sql = "CALL InsertProfessorandCourse(?,?,?,?);";
 	var args = [ist_id, courseID, courseName, academicTerm];
@@ -65,7 +81,7 @@ database.prototype.updateAccessToken = function(access_token, refresh_token, new
 }
 
 database.prototype.getUserByToken = function(iamhere_token, callback) {
-	var sql = "SELECT ist_id FROM User WHERE iamhere_token = ?";
+	var sql = "SELECT ist_id FROM User WHERE iamhere_token = ?;";
 	var arg = [iamhere_token];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
@@ -192,12 +208,26 @@ database.prototype.createClass = function(ist_id, courseID, callback) {
 };
 
 database.prototype.getAttendanceHistory = function(ist_id, callback) {
-	var sql = "SELECT date, code_type, code_length, total_time_s, consecutive_codes FROM Attendance WHERE ist_id = ?;";
+	var sql = "SELECT date, code_type, code_length, total_time_s, consecutive_codes, attendanceID FROM Attendance WHERE ist_id = ?;";
 	var arg = [ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if(err) {
 			console.log("Error in getAttendanceHistory:", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
+database.prototype.getClassHistory = function(attendanceID, callback) {
+	var sql = "SELECT ist_id from AttendanceHistory WHERE attendanceID = ?;";
+	var arg = [attendanceID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getClassHistory:", err);
 			callback(err);
 		} else {
 			callback(err, rows);
@@ -226,6 +256,7 @@ database.prototype.verifyAttendance = function (ist_id, attendanceID, consecutiv
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if(err) {
+			console.log("Error in verifyAttendance:", err);
 			callback(err);
 		} else {
 			callback(err, rows[0].result);

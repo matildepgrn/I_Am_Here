@@ -15,7 +15,7 @@
 	<li style="float:right"><span class="name" id="IST_NAME">Name</span></li>
 </ul>
 
-<div class="container">
+<div class="container" id="showHistoryofProfessor">
 	<center class="center">
 		<table id="historyTable">
 			<tr>
@@ -32,7 +32,7 @@
 			</tr>
 			
 			<template id="historyTemplate">
-				<tr>
+				<tr class="clickable">
 					<td class="classCounter"></td>
 					<td></td>
 					<td></td>
@@ -50,6 +50,28 @@
 		onclick="goTo('/professor/attendance')"
 		title="Generate a new sequence">Start new attendance</button>
 
+	</center>
+</div>
+
+<div class="container" id="showStudentsHistory" style="display: none">
+	<center class="center">
+		<div style="text-align: left">
+			<a onclick="switchView(0);"	class="previous round">&#8249;</a>
+		</div>
+
+		<table id="studentsTable">
+			<tr>
+				<th>ID</th>
+			</tr>
+			
+			<template id="studentsTemplate">
+				<tr class="clickable">
+					<td></td>
+				</tr>
+			</template>
+
+
+		</table>
 	</center>
 </div>
 
@@ -83,22 +105,23 @@ function showHistory(history) {
 	var table = document.getElementById("historyTable");
 
 	for(let i = 0; i < history.length; i++) {
-		addHistory(table, template, i+1, history[i].date, history[i].code_type, history[i].code_length, history[i].total_time_s, history[i].consecutive_codes);
+		addHistory(table, template, history[i].attendanceID, i+1, history[i].date, history[i].code_type, history[i].code_length, history[i].total_time_s, history[i].consecutive_codes);
 	} 
 };
 
-function addHistory(table, template, classcounter, date, code_type, code_length, total_time_s, consecutive_codes) {
+function addHistory(table, template, attendanceID, classcounter, date, code_type, code_length, total_time_s, consecutive_codes) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 
+	tr_clone.myattendanceID = attendanceID;
+
 	for(let x = 0; x < tds.length; x++) {
-		tds[x].innerText = arguments[x+2];
+		tds[x].innerText = arguments[x+3];
 	}
 
 	tr_clone.onclick = function() {
-		//getCourseInfo(this.mycourseid);
-		//document.getElementById("courseName_2").innerHTML = this.mycourseid;
-		//switchView(1);
+		loadStudents("/api/getattendancehistory?rid="+this.myattendanceID);
+		switchView(1);
 	};
 
 	table.appendChild(tr_clone);
@@ -120,7 +143,67 @@ function loadName(url) {
 	xhttp.send();
 }
 
+function loadStudents(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				var studentshistory = JSON.parse(this.responseText);
+				showStudents(studentshistory);
+			} else {
+				//todo
+				console.log("Error loading students:", this.status);
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+function showStudents(studentshistory) {
+	var template = document.getElementById("studentsTemplate");
+	var table = document.getElementById("studentsTable");
+
+	for(let i = 0; i < studentshistory.length; i++) {
+		addStudent(table, template, studentshistory[i].ist_id);
+	} 
+};
+
+function addStudent(table, template, ist_id) {
+	var tr_clone = template.content.querySelector("tr").cloneNode(true);
+	var tds = tr_clone.children;
+
+	for(let x = 0; x < tds.length; x++) {
+		tds[x].innerText = arguments[x+2];
+	}
+
+	tr_clone.onclick = function() {
+
+	};
+
+	table.appendChild(tr_clone);
+}
+
+function switchView(arg){
+	switch(arg) {
+		case 0:
+			document.getElementById("showHistoryofProfessor").style.display = "";
+			document.getElementById("showStudentsHistory").style.display = "none";
+			break;
+		case 1:
+			document.getElementById("showHistoryofProfessor").style.display = "none";
+			document.getElementById("showStudentsHistory").style.display = "";
+			break;
+		case 2:
+			break;
+		default:
+			console.log("unknown arg", arg);
+			break;
+	}
+}
+
 loadName("/api/name");
-loadHistory("/db/courses");
+loadHistory("/api/history");
 
 </script>

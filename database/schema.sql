@@ -112,12 +112,12 @@ CREATE TABLE Code (
 
 CREATE TABLE AttendanceHistory (
 	attendancehistoryID			int auto_INCREMENT,
-    randomID					int,
+    attendanceID					int,
     ist_id						varchar(255),
 	success						boolean,
     
     PRIMARY KEY(attendancehistoryID),
-	FOREIGN KEY(randomID) REFERENCES Attendance(randomID),
+	FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID),
     FOREIGN KEY(ist_id) REFERENCES User(ist_id)
 );
 
@@ -142,7 +142,6 @@ SELECT LAST_INSERT_ID() AS attendanceID;
 END
 //
 DELIMITER ;
-
 
 DELIMITER //
 CREATE FUNCTION CheckAttendance(my_attendanceID int, my_ist_id varchar(255), my_consecutive_codes int)
@@ -171,6 +170,7 @@ myLoop: LOOP
 		SET count = count + 1;
         IF count = my_consecutive_codes THEN
 			CLOSE consecutiveTrue;
+            INSERT IGNORE INTO AttendanceHistory(attendanceID, ist_id, success) VALUES (my_attendanceID, my_ist_id, true);
 			RETURN true;
         END IF;
 	ELSE

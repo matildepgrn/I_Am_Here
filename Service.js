@@ -48,6 +48,14 @@ Service.prototype.verifyAttendance = function(db, ist_id, attendanceID, consecut
 	); 
 }
 
+Service.prototype.isProfessor = function(db, ist_id, callback) {
+	db.isProfessor(ist_id,
+		function(error, result) {
+			callback(result);
+		}
+	); 
+}
+
 Service.prototype.getStatus = function(ist_id, randomID, callback) {
 	var code = codeByRandomID.get(randomID);
 	if(code){
@@ -115,6 +123,12 @@ Service.prototype.selectCourseInfo = function(db, ist_id, callback) {
 
 Service.prototype.getAttendanceHistory = function(db, ist_id, callback) {
 	db.getAttendanceHistory(ist_id, function(err, rows) {
+		callback(err, rows);
+	});
+};
+
+Service.prototype.getClassHistory = function(db, attendanceID, callback) {
+	db.getClassHistory(attendanceID, function(err, rows) {
 		callback(err, rows);
 	});
 };

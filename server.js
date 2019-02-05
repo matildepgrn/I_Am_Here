@@ -77,14 +77,26 @@ function handleRequest(req, res) {
 				}
 			);
 			break;
+		case "/api/getattendancehistory":
 		case "/api/name":
 		case "/api/courses":
-		case "/professor/new":
-		case "/db/courses":
+		case "/api/history":
 			disableCache(res);
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id){
 					switch(parsedURL.pathname) {
+						case "/api/getattendancehistory":
+							var attendanceID_int = parseInt(parsedURL.query.rid);
+							if(attendanceID_int){
+								service.getClassHistory(db, attendanceID_int,
+									function(error, rows) {
+										sendJSON(res, rows);
+									}
+								);
+							} else {
+								sendText(res, "Invalid attendance link.");
+							}
+							break;
 						case "/api/name":
 							service.getUserName(db, ist_id,
 								function(name){
@@ -99,10 +111,7 @@ function handleRequest(req, res) {
 								}
 							);
 							break;
-						case "/professor/new":
-							sendFile(res, 'professor/professor_new.html');
-							break;
-						case "/db/courses":
+						case "/api/history":
 							service.getAttendanceHistory(db, ist_id,
 								function(error, rows) {
 									sendJSON(res, rows);
@@ -119,13 +128,15 @@ function handleRequest(req, res) {
 		case "/a":
 		case "/student":
 		case "/professor":
+		case "/professor/new":
 		case "/professor/courses":
 		case "/professor/attendance":
 			makeUserLogin(res, cookies, parsedURL,
 				function(ist_id){
 					switch(parsedURL.pathname) {
 						case "/a":
-							if(parsedURL.query.c != undefined && service.verifyRandomID(parsedURL.query.c)){
+							var randomID_int = parseInt(parsedURL.query.c);
+							if(randomID_int != undefined && service.verifyRandomID(randomID_int)){
 								sendFile(res, 'student/student.html');
 							} else {
 								sendText(res, "Invalid attendance link.");
@@ -136,6 +147,9 @@ function handleRequest(req, res) {
 							break;
 						case "/professor":
 							sendFile(res, 'professor/professor_classes.html');
+							break;
+						case "/professor/new":
+							sendFile(res, 'professor/professor_new.html');
 							break;
 						case "/professor/attendance":
 							sendFile(res, 'professor/professor_attendance.html');
@@ -321,7 +335,11 @@ function handlePost(req, res, cookies, parsedURL, data) {
 							var client_code = json.input_code;
 							service.validateCode(db, res, randomID, client_code, ist_id,
 								function(error, result) {
-									sendJSON(res, result);
+									if(error) {
+										sendText(res, "Error validating code.", 500);
+									} else {
+										sendJSON(res, result);	
+									}
 								}
 							);
 						break;
