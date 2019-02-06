@@ -61,11 +61,13 @@
 
 		<table id="studentsTable">
 			<tr>
-				<th>ID</th>
+				<th>IST ID</th>
+				<th>Name</th>
 			</tr>
 			
 			<template id="studentsTemplate">
 				<tr class="clickable">
+					<td></td>
 					<td></td>
 				</tr>
 			</template>
@@ -166,7 +168,7 @@ function showStudents(studentshistory) {
 	var table = document.getElementById("studentsTable");
 
 	for(let i = 0; i < studentshistory.length; i++) {
-		addStudent(table, template, studentshistory[i].ist_id);
+		addStudent(table, template, studentshistory[i].ist_id, studentshistory[i].name);
 	} 
 };
 
