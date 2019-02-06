@@ -13,6 +13,7 @@ var Code = function(db, randomID, attendanceID) {
 	this.current_code = '';
 	this.code_counter = 0;
 	this.db = db;
+	this.studentsList = [];
 };
 
 var CSV_SEPARATOR = ",";
@@ -77,7 +78,8 @@ Code.prototype.status = function() {
 		current_code: this.current_code,
 		code_counter: this.code_counter,
 		time_ms: this.time_ms/1000,
-		running: this.running
+		running: this.running,
+		studentsList: this.studentsList
 	};
 }
 
@@ -149,6 +151,11 @@ Code.prototype.validateCode = function(code_client){
 	else {
 		return false;
 	}
+}
+
+Code.prototype.insertStudent = function(ist_id){
+	this.studentsList.push(ist_id);
+
 }
 
 function initStream(filename) {

@@ -110,8 +110,10 @@
 
 <div id="studentspresent" style="display:none">
 	<p id="span_c">
-		Students attending the class:
+		Students attending the class (<span id="studentsCount"></span>):
 	</p>
+	<pre id="showStudents">
+	</pre>
 
 </div>
 
@@ -223,6 +225,10 @@ function updateStatus(jsonStr) {
 	var json = JSON.parse(jsonStr);
 	var code_element = document.getElementById("randomcode");
 	code_element.innerHTML = json.current_code;
+	var showStudents = document.getElementById("showStudents");
+	var count = document.getElementById("studentsCount");
+	count.innerHTML = json.studentsList.length;
+	showStudents.innerHTML = json.studentsList.join('\n');
 	if(json.current_code == "Expired") {
 		code_element.className = "expired"; // EXPIRED class
 	} else {

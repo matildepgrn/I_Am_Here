@@ -129,8 +129,8 @@ function handleRequest(req, res) {
 		case "/student":
 		case "/professor":
 		case "/professor/new":
-		case "/professor/courses":
 		case "/professor/attendance":
+		case "/professor/courses":
 			makeUserLogin(res, cookies, parsedURL,
 				function(ist_id){
 					switch(parsedURL.pathname) {
@@ -181,7 +181,8 @@ function handleRequest(req, res) {
 					} else {
 						redirectURL(res, "/");	
 					}
-				});
+				}
+			);
 			break;
 		default:
 			sendText(res, "File not found.", 404);
@@ -218,7 +219,7 @@ function redirectURL(res, url) {
 
 
 function goToLogin(res, cookies, parsedURL) {
-	cookies.set('last_url', parsedURL.pathname);
+	cookies.set('last_url', parsedURL.path);
 	redirectURL(res, config.EXTERNAL_LOGIN_URL);	
 }
 

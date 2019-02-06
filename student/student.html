@@ -75,9 +75,13 @@ function handleResponse(json) {
 		return "Correct! Attendance check!";
 	} else if(isCodeCorrect){
 		div_c.classList.add("codeCorrect");
+		div_c.classList.remove("isAttFinished");
+		div_c.classList.remove("invalidCode");
 		return "Correct code.";
 	}
 	div_c.classList.add("invalidCode");
+	div_c.classList.remove("codeCorrect");
+	div_c.classList.remove("isAttFinished");
 	return "Invalid code.";
 }
 

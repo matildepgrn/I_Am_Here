@@ -129,6 +129,7 @@ database.prototype.removeIAmHereToken = function(ist_id, callback) {
 	})
 };
 
+
 database.prototype.closeAttendance = function(randomID, callback) {
 	var sql = "UPDATE Attendance SET open = false WHERE randomID = ?;";
 	var arg = [randomID];

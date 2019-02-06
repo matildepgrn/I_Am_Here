@@ -28,6 +28,9 @@ Service.prototype.validateCode = function(db, res, randomID, client_code, ist_id
 								var json = {};
 								json.isAttFinished = (isAttFinished == 1);
 								json.isCodeCorrect = result;
+								if(isAttFinished) {
+									code.insertStudent(ist_id);
+								}
 								callback(error, json);
 							}
 						}
@@ -189,6 +192,7 @@ Service.prototype.getAttendanceRandomID = function(db, ist_id, code_type, code_l
 Service.prototype.closeAttendance = function(db, randomID, callback) {
 	db.closeAttendance(randomID,
 		function(error, success) {
+			codeByRandomID.set(randomID, null);
 			callback(error, success);
 		}
 	); 
