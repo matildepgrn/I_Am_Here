@@ -37,6 +37,10 @@ function handleRequest(req, res) {
 		case "/index.html":
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id){
+					useragent = req.headers['user-agent'];
+					user_ip = req.connection.remoteAddress;
+					service.insertFingerprintData(db, ist_id, useragent, user_ip,
+						function(error) {});
 					sendFile(res, 'student/student_index.html');
 				},
 				function(){

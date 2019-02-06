@@ -194,6 +194,21 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 	})
 };
 
+database.prototype.insertFingerprintData = function(ist_id, useragent, ip, callback) {
+	var sql = "INSERT INTO FingerprintData(timestamp, ist_id, useragent, ip) VALUES(?,?,?,?)";
+	var arg = [moment().format('YYYY-MM-DD HH:mm:ss'), ist_id, useragent, ip];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error inserting fingerprintdata.", err);
+			callback(err);
+		}
+		else{
+			callback(err);
+		}
+	})
+};
+
 database.prototype.createClass = function(ist_id, courseID, callback) {
 	var sql = "INSERT INTO Class(ist_id, courseID) VALUES (?,?);";
 	var arg = [ist_id, randomID];
@@ -223,7 +238,7 @@ database.prototype.getAttendanceHistory = function(ist_id, callback) {
 };
 
 database.prototype.getClassHistory = function(attendanceID, callback) {
-	var sql = "SELECT ah.ist_id, u.name from AttendanceHistory ah, User u WHERE ah.attendanceID = ? and u.ist_id = ah.ist_id;;";
+	var sql = "SELECT ah.ist_id, u.name from AttendanceHistory ah, User u WHERE ah.attendanceID = ? and u.ist_id = ah.ist_id;";
 	var arg = [attendanceID];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {

@@ -6,7 +6,7 @@ drop PROCEDURE if exists AttendanceMapping;
 drop table if exists Evaluation;
 drop table if exists AttendanceHistory;
 drop table if exists Code;
-drop table if exists Fingerprint;
+drop table if exists FingerprintData;
 drop table if exists CodeAttendance;
 drop table if exists Attendance;
 drop table if exists Class;
@@ -85,13 +85,15 @@ CREATE TABLE CodeAttendance (
 	FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID)
 );
 
-CREATE TABLE Fingerprint (
+CREATE TABLE FingerprintData (
 	fingerprintID				int AUTO_INCREMENT,
-	attendanceID 				int,
+	timestamp				timestamp,
 	ist_id						varchar(255),
+    useragent				varchar(255),
+    ip		varchar(255),
+    
 
 	PRIMARY KEY(fingerprintID),
-	FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID),
 	FOREIGN KEY(ist_id) REFERENCES User(ist_id)
 );
 
