@@ -190,7 +190,7 @@ function handleRequest(req, res) {
 	}
 }
 
-http.createServer(options, function (req, res) {
+var server = http.createServer(options, function (req, res) {
 	try {
 		return handleRequest(req, res);
 	} catch (error) {
@@ -203,7 +203,21 @@ http.createServer(options, function (req, res) {
 			console.error("Exception while handling handleRequest Exception:", error2);
 		}
 	}
-}).listen(config.PORT); //the server object listens on config.PORT
+});
+
+server.on('clientError', (err, socket) => {
+  socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+});
+
+server.on('error', function(e) {
+	console.log("Server error", e);
+});
+
+server.on('listening', function() {
+	console.log("Server listening on", server.address());
+});
+
+server.listen(config.PORT); //the server object listens on config.PORT
 
 function disableCache(res) {
 	res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');

@@ -199,3 +199,6 @@ END
 //
 DELIMITER ;
 
+INSERT INTO User(ist_id) VALUES ('ist182083');
+INSERT INTO Professor(ist_id) VALUES ('ist182083');
+
