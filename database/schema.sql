@@ -1,5 +1,6 @@
 use ist182083;
 
+drop PROCEDURE if exists InsertStudentToAttendance;
 drop PROCEDURE if exists GetFingerprintInfo;
 drop PROCEDURE if exists InsertProfessorandCourse;
 DROP FUNCTION IF EXISTS CheckAttendance;
@@ -118,6 +119,7 @@ CREATE TABLE AttendanceHistory (
     attendanceID					int,
     ist_id						varchar(255),
 	success						boolean,
+    manually						boolean,
     
     PRIMARY KEY(attendancehistoryID),
 	FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID),
@@ -173,7 +175,7 @@ myLoop: LOOP
 		SET count = count + 1;
         IF count = my_consecutive_codes THEN
 			CLOSE consecutiveTrue;
-            INSERT IGNORE INTO AttendanceHistory(attendanceID, ist_id, success) VALUES (my_attendanceID, my_ist_id, true);
+            INSERT IGNORE INTO AttendanceHistory(attendanceID, ist_id, success, manually) VALUES (my_attendanceID, my_ist_id, true, false);
 			RETURN true;
         END IF;
 	ELSE
@@ -212,6 +214,18 @@ BEGIN
             ah.attendanceID = a.attendanceID AND
             f.ist_id = my_ist_id AND
             ah.ist_id = my_ist_id;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE InsertStudentToAttendance(my_ist_id varchar(255), my_attendanceID int)
+BEGIN
+		INSERT IGNORE INTO User (ist_id)
+		VALUES (my_ist_id);
+		
+	INSERT IGNORE INTO AttendanceHistory (attendanceID, ist_id, success, manually)
+		VALUES(my_attendanceID, my_ist_id, true, true);
 END
 //
 DELIMITER ;

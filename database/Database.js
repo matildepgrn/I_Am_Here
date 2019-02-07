@@ -209,6 +209,21 @@ database.prototype.insertFingerprintData = function(ist_id, useragent, ip, callb
 	})
 };
 
+database.prototype.manuallyInsertStudent = function(ist_id, attendanceID, callback) {
+	var sql = "CALL InsertStudentToAttendance(?,?)";
+	var arg = [ist_id, attendanceID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error inserting student manually.", err);
+			callback(err);
+		}
+		else{
+			callback(err);
+		}
+	})
+};
+
 database.prototype.getFingerprintData = function(ist_id, attendanceID, callback) {
 	var sql = "CALL GetFingerprintInfo(?,?);";
 	var arg = [ist_id, attendanceID];

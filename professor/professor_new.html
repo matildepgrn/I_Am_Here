@@ -71,9 +71,17 @@
 					<td></td>
 				</tr>
 			</template>
-
-
 		</table>
+		<form id="formStudent" method="post" style="margin-top: 10px">
+
+			<tr title="ist_id">
+				<td>
+					<input name="ist_id" placeholder="IST ID">
+					<button id="add_student" type="button" onclick="sendForm()" 
+							title="">Add student</button>
+				</td>
+			</tr>
+			</form>
 	</center>
 </div>
 
@@ -255,6 +263,30 @@ function addFingerprint(table, template, useragent, ip) {
 	};
 
 	table.appendChild(tr_clone);
+}
+
+function sendForm(){
+	var formEl = document.getElementById("formStudent");
+	var data = new FormData(formEl);
+	var o = {};
+
+	for(var e of data) {
+		o[e[0]] = e[1];
+	}
+	
+	var json_string = JSON.stringify(o);
+
+	var xhttp = new XMLHttpRequest();
+	var url = "/api/addmanually";
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4 && this.status == 200) {
+			var json = JSON.parse(this.responseText);
+			switchView(1);
+		}
+	};
+
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);
 }
 
 function switchView(arg){
