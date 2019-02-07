@@ -85,6 +85,7 @@ function handleRequest(req, res) {
 		case "/api/name":
 		case "/api/courses":
 		case "/api/history":
+		case "/api/fingerprint":
 			disableCache(res);
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id){
@@ -118,6 +119,15 @@ function handleRequest(req, res) {
 						case "/api/history":
 							service.getAttendanceHistory(db, ist_id,
 								function(error, rows) {
+									sendJSON(res, rows);
+								}
+							);
+							break;
+						case "/api/fingerprint":
+							var attendanceID_int = parseInt(parsedURL.query.f);
+							var student_id = parsedURL.query.i;
+							service.getFingerprintData(db, student_id, attendanceID_int,
+								function(error, rows){
 									sendJSON(res, rows);
 								}
 							);

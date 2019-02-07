@@ -77,6 +77,29 @@
 	</center>
 </div>
 
+<div class="container" id="showFingerprintHistory" style="display: none">
+	<center class="center">
+		<div style="text-align: left">
+			<a onclick="switchView(1);"	class="previous round">&#8249;</a>
+		</div>
+
+		<table id="fingerprintTable">
+			<tr>
+				<th>User Agent</th>
+				<th>IP</th>
+			</tr>
+			
+			<template id="fingerprintTemplate">
+				<tr class="clickable">
+					<td></td>
+					<td></td>
+				</tr>
+			</template>
+
+
+		</table>
+	</center>
+</div>
 
 <script>
 
@@ -167,12 +190,60 @@ function showStudents(studentshistory) {
 	var template = document.getElementById("studentsTemplate");
 	var table = document.getElementById("studentsTable");
 
+
 	for(let i = 0; i < studentshistory.length; i++) {
-		addStudent(table, template, studentshistory[i].ist_id, studentshistory[i].name);
+		addStudent(table, template, studentshistory[i].ist_id, studentshistory[i].name, studentshistory[i].attendanceID);
 	} 
 };
 
-function addStudent(table, template, ist_id) {
+function addStudent(table, template, ist_id, name, attendanceID) {
+	var tr_clone = template.content.querySelector("tr").cloneNode(true);
+	var tds = tr_clone.children;
+
+	tr_clone.myattendanceID = attendanceID;
+	tr_clone.ist_id = ist_id;
+
+	for(let x = 0; x < tds.length; x++) {
+		tds[x].innerText = arguments[x+2];
+	}
+
+	tr_clone.onclick = function() {
+		loadFingerprint("/api/fingerprint?f="+this.myattendanceID+"&i="+this.ist_id);
+		switchView(2);
+	};
+
+	table.appendChild(tr_clone);
+}
+
+function loadFingerprint(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				var fingerprint = JSON.parse(this.responseText);
+				showFingerprint(fingerprint);
+			} else {
+				//todo
+				console.log("Error loading fingerprint:", this.status);
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+function showFingerprint(fingerprint) {
+	var template = document.getElementById("fingerprintTemplate");
+	var table = document.getElementById("fingerprintTable");
+
+
+	for(let i = 0; i < fingerprint.length; i++) {
+		addFingerprint(table, template, fingerprint[i].useragent, fingerprint[i].ip);
+	} 
+};
+
+function addFingerprint(table, template, useragent, ip) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 
@@ -181,7 +252,6 @@ function addStudent(table, template, ist_id) {
 	}
 
 	tr_clone.onclick = function() {
-
 	};
 
 	table.appendChild(tr_clone);
@@ -192,12 +262,17 @@ function switchView(arg){
 		case 0:
 			document.getElementById("showHistoryofProfessor").style.display = "";
 			document.getElementById("showStudentsHistory").style.display = "none";
+			document.getElementById("showFingerprintHistory").style.display = "none";
 			break;
 		case 1:
 			document.getElementById("showHistoryofProfessor").style.display = "none";
 			document.getElementById("showStudentsHistory").style.display = "";
+			document.getElementById("showFingerprintHistory").style.display = "none";
 			break;
 		case 2:
+			document.getElementById("showHistoryofProfessor").style.display = "none";
+			document.getElementById("showStudentsHistory").style.display = "none";
+			document.getElementById("showFingerprintHistory").style.display = "";
 			break;
 		default:
 			console.log("unknown arg", arg);

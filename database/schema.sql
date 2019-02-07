@@ -1,5 +1,6 @@
 use ist182083;
 
+drop PROCEDURE if exists GetFingerprintInfo;
 drop PROCEDURE if exists InsertProfessorandCourse;
 DROP FUNCTION IF EXISTS CheckAttendance;
 drop PROCEDURE if exists AttendanceMapping;
@@ -185,7 +186,6 @@ END
 //
 DELIMITER ;
 
-
 DELIMITER //
 CREATE PROCEDURE InsertProfessorandCourse(ist_id varchar(255), courseID varchar(255), courseName varchar(255), academicTerm varchar(255))
 BEGIN
@@ -197,6 +197,21 @@ BEGIN
 
 	INSERT IGNORE INTO ProfessorTeachesCourse (ist_id, courseID)
 		VALUES(ist_id, courseID);
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE GetFingerprintInfo(my_ist_id varchar(255), my_attendanceID int)
+BEGIN
+	SELECT f.useragent, f.ip
+		FROM FingerprintData f, Attendance a, AttendanceHistory ah
+        WHERE
+			a.attendanceID = my_attendanceID AND
+			ah.attendanceID = my_attendanceID AND
+            ah.attendanceID = a.attendanceID AND
+            f.ist_id = my_ist_id AND
+            ah.ist_id = my_ist_id;
 END
 //
 DELIMITER ;

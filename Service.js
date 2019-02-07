@@ -59,6 +59,14 @@ Service.prototype.insertFingerprintData = function(db, ist_id, useragent, ip, ca
 	); 
 }
 
+Service.prototype.getFingerprintData = function(db, ist_id, attendanceID, callback) {
+	db.getFingerprintData(ist_id, attendanceID,
+		function(error, rows) {
+			callback(error, rows);
+		}
+	); 
+}
+
 Service.prototype.isProfessor = function(db, ist_id, callback) {
 	db.isProfessor(ist_id,
 		function(error, result) {

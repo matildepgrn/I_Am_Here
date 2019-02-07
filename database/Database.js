@@ -196,7 +196,7 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 
 database.prototype.insertFingerprintData = function(ist_id, useragent, ip, callback) {
 	var sql = "INSERT INTO FingerprintData(timestamp, ist_id, useragent, ip) VALUES(?,?,?,?)";
-	var arg = [moment().format('YYYY-MM-DD HH:mm:ss'), ist_id, useragent, ip];
+	var arg = [moment().format('YYYY-MM-DD'), ist_id, useragent, ip];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
@@ -205,6 +205,21 @@ database.prototype.insertFingerprintData = function(ist_id, useragent, ip, callb
 		}
 		else{
 			callback(err);
+		}
+	})
+};
+
+database.prototype.getFingerprintData = function(ist_id, attendanceID, callback) {
+	var sql = "CALL GetFingerprintInfo(?,?);";
+	var arg = [ist_id, attendanceID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error getting fingerprint data", err);
+			callback(err);
+		}
+		else{
+			callback(err, rows[0]);
 		}
 	})
 };
@@ -238,7 +253,7 @@ database.prototype.getAttendanceHistory = function(ist_id, callback) {
 };
 
 database.prototype.getClassHistory = function(attendanceID, callback) {
-	var sql = "SELECT ah.ist_id, u.name from AttendanceHistory ah, User u WHERE ah.attendanceID = ? and u.ist_id = ah.ist_id;";
+	var sql = "SELECT ah.ist_id, u.name, ah.attendanceID from AttendanceHistory ah, User u WHERE ah.attendanceID = ? and u.ist_id = ah.ist_id;";
 	var arg = [attendanceID];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
