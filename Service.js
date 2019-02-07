@@ -156,7 +156,8 @@ Service.prototype.getAttendanceHistory = function(db, ist_id, callback) {
 
 Service.prototype.getClassHistory = function(db, attendanceID, callback) {
 	db.getClassHistory(attendanceID, function(err, rows) {
-		callback(err, rows);
+		var o = {attendanceID: attendanceID, rows: rows};
+		callback(err, o);
 	});
 };
 

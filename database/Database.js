@@ -268,7 +268,7 @@ database.prototype.getAttendanceHistory = function(ist_id, callback) {
 };
 
 database.prototype.getClassHistory = function(attendanceID, callback) {
-	var sql = "SELECT ah.ist_id, u.name, ah.attendanceID from AttendanceHistory ah, User u WHERE ah.attendanceID = ? and u.ist_id = ah.ist_id;";
+	var sql = "SELECT ah.ist_id, u.name from AttendanceHistory ah, User u WHERE ah.attendanceID = ? and u.ist_id = ah.ist_id;";
 	var arg = [attendanceID];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {

@@ -76,8 +76,8 @@
 
 			<tr title="ist_id">
 				<td>
-					<input name="ist_id" placeholder="IST ID">
-					<button id="add_student" type="button" onclick="sendForm()" 
+					<input name="ist_id" placeholder="IST ID (ist1XXXXX)">
+					<button id="add_student" type="button" onclick="sendForm();" 
 							title="">Add student</button>
 				</td>
 			</tr>
@@ -143,6 +143,7 @@ function showHistory(history) {
 };
 
 function addHistory(table, template, attendanceID, classcounter, date, code_type, code_length, total_time_s, consecutive_codes) {
+
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 
@@ -198,17 +199,23 @@ function showStudents(studentshistory) {
 	var template = document.getElementById("studentsTemplate");
 	var table = document.getElementById("studentsTable");
 
+	var old_tr = table.getElementsByTagName("tr");
+	for(let l = old_tr.length - 1; l > 0; l--) {
+		old_tr[l].parentElement.removeChild(old_tr[l]);
+	}
 
-	for(let i = 0; i < studentshistory.length; i++) {
-		addStudent(table, template, studentshistory[i].ist_id, studentshistory[i].name, studentshistory[i].attendanceID);
+	var rows = studentshistory.rows;
+	table.attendanceID = studentshistory.attendanceID;
+
+	for(let i = 0; i < rows.length; i++) {
+		addStudent(table, template, rows[i].ist_id, rows[i].name);
 	} 
 };
 
-function addStudent(table, template, ist_id, name, attendanceID) {
+function addStudent(table, template, ist_id, name) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 
-	tr_clone.myattendanceID = attendanceID;
 	tr_clone.ist_id = ist_id;
 
 	for(let x = 0; x < tds.length; x++) {
@@ -216,7 +223,8 @@ function addStudent(table, template, ist_id, name, attendanceID) {
 	}
 
 	tr_clone.onclick = function() {
-		loadFingerprint("/api/fingerprint?f="+this.myattendanceID+"&i="+this.ist_id);
+		var table = document.getElementById("studentsTable");
+		loadFingerprint("/api/fingerprint?f="+table.attendanceID+"&i="+this.ist_id);
 		switchView(2);
 	};
 
@@ -270,6 +278,9 @@ function sendForm(){
 	var data = new FormData(formEl);
 	var o = {};
 
+	var table = document.getElementById("studentsTable");
+	o.attendanceID = table.attendanceID;
+
 	for(var e of data) {
 		o[e[0]] = e[1];
 	}
@@ -281,7 +292,9 @@ function sendForm(){
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4 && this.status == 200) {
 			var json = JSON.parse(this.responseText);
-			switchView(1);
+			var template = document.getElementById("studentsTemplate");
+			var table = document.getElementById("studentsTable");
+			addStudent(table, template, o.ist_id, "");
 		}
 	};
 

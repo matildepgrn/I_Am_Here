@@ -94,8 +94,8 @@ function handleRequest(req, res) {
 							var attendanceID_int = parseInt(parsedURL.query.rid);
 							if(attendanceID_int){
 								service.getClassHistory(db, attendanceID_int,
-									function(error, rows) {
-										sendJSON(res, rows);
+									function(error, o) {
+										sendJSON(res, o);
 									}
 								);
 							} else {
@@ -327,6 +327,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 		case "/api/getcode":
 		case "/api/getcode/stop":
 		case "/api/validatecode":
+		case "/api/addmanually":
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id) {
 					var json = JSON.parse(data);
@@ -382,6 +383,17 @@ function handlePost(req, res, cookies, parsedURL, data) {
 									sendJSON(res, json_res);
 								}
 							);
+							break;
+						case "/api/addmanually":
+							var json = JSON.parse(data);
+							service.manuallyInsertStudent(db, json.ist_id, json.attendanceID,
+								function(error){
+									if(error) {
+										sendText(res, "Could not manually insert student", 500);
+									} else {
+										sendJSON(res, "Student mannually added", 200);
+									}
+								});
 							break;
 					}
 				},
