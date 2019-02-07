@@ -98,7 +98,7 @@
 			</tr>
 			
 			<template id="fingerprintTemplate">
-				<tr class="clickable">
+				<tr>
 					<td></td>
 					<td></td>
 				</tr>
@@ -252,6 +252,11 @@ function loadFingerprint(url) {
 function showFingerprint(fingerprint) {
 	var template = document.getElementById("fingerprintTemplate");
 	var table = document.getElementById("fingerprintTable");
+
+	var old_tr = table.getElementsByTagName("tr");
+	for(let l = old_tr.length - 1; l > 0; l--) {
+		old_tr[l].parentElement.removeChild(old_tr[l]);
+	}
 
 
 	for(let i = 0; i < fingerprint.length; i++) {
