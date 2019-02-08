@@ -93,12 +93,14 @@
 
 		<table id="fingerprintTable">
 			<tr>
+				<th>Timestamp</th>
 				<th>User Agent</th>
 				<th>IP</th>
 			</tr>
 			
 			<template id="fingerprintTemplate">
 				<tr>
+					<td></td>
 					<td></td>
 					<td></td>
 				</tr>
@@ -260,7 +262,7 @@ function showFingerprint(fingerprint) {
 
 
 	for(let i = 0; i < fingerprint.length; i++) {
-		addFingerprint(table, template, fingerprint[i].useragent, fingerprint[i].ip);
+		addFingerprint(table, template, fingerprint[i],timestamp, fingerprint[i].useragent, fingerprint[i].ip);
 	} 
 };
 
