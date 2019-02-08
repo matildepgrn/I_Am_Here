@@ -13,7 +13,7 @@ function requestAccessToken(fenix_code, callback){
 		'https://fenix.tecnico.ulisboa.pt/oauth/access_token?' +
 		'client_id=' + encodeURIComponent(config.client_id) +
 		'&client_secret=' + encodeURIComponent(config.client_secret) +
-		'&redirect_uri=' + encodeURIComponent('https://testhere.duckdns.org:9080/oauth') +
+		'&redirect_uri=' + encodeURIComponent(config.WEBSITE_REDIRECT) +
 		'&code=' + encodeURIComponent(fenix_code) +
 		'&grant_type=authorization_code',
 		{ json: {key: ' '}},
@@ -40,8 +40,11 @@ function getUserInfo(access_token, refresh_token, callback) {
 					&& body.error && body.error == 'accessTokenExpired') {
 						console.log('Error - getUserInfo: Requires new access token.');
 						//TODO
+				} else if(body){ //TODO handle this better
+					console.log('Erro no getUserInfo()', response.statusCode, body);
+					callback(body.error);
 				} else { //TODO handle this better
-					console.log('Erro no getUserInfo().', response.statusCode, error);
+					console.log('Erro no request do getUserInfo().', response.statusCode, error);
 					callback(error);
 				}
 			});
