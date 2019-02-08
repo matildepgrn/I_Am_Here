@@ -46,7 +46,11 @@ Service.prototype.validateCode = function(db, res, randomID, client_code, ist_id
 Service.prototype.verifyAttendance = function(db, ist_id, attendanceID, consecutive_codes) {
 	db.verifyAttendance(ist_id, attendanceID, consecutive_codes,
 		function(error, consecutive_codes) {
-			callback(consecutive_codes);
+			if(error) {
+				callback(error);
+			} else {
+				callback(consecutive_codes);	
+			}
 		}
 	); 
 }
@@ -70,7 +74,11 @@ Service.prototype.manuallyInsertStudent = function(db, ist_id, attendanceID, cal
 Service.prototype.getFingerprintData = function(db, ist_id, attendanceID, callback) {
 	db.getFingerprintData(ist_id, attendanceID,
 		function(error, rows) {
-			callback(error, rows);
+			if(error) {
+				callback(error);
+			} else {
+				callback(error, rows);
+			}
 		}
 	); 
 }
@@ -78,7 +86,11 @@ Service.prototype.getFingerprintData = function(db, ist_id, attendanceID, callba
 Service.prototype.isProfessor = function(db, ist_id, callback) {
 	db.isProfessor(ist_id,
 		function(error, result) {
-			callback(result);
+			if(error) {
+				callback(error);
+			} else {
+				callback(result);	
+			}
 		}
 	); 
 }
@@ -148,20 +160,32 @@ Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
 
 Service.prototype.selectCourseInfo = function(db, ist_id, callback) {
 	db.selectCourseInfo(ist_id, function(err, rows) {
-		callback(err, rows);
+		if(err) {
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
 	});
 };
 
 Service.prototype.getAttendanceHistory = function(db, ist_id, callback) {
 	db.getAttendanceHistory(ist_id, function(err, rows) {
-		callback(err, rows);
+		if(err) {
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
 	});
 };
 
 Service.prototype.getClassHistory = function(db, attendanceID, callback) {
 	db.getClassHistory(attendanceID, function(err, rows) {
-		var o = {attendanceID: attendanceID, rows: rows};
-		callback(err, o);
+		if(err) {
+			callback(err);
+		} else {
+			var o = {attendanceID: attendanceID, rows: rows};
+			callback(err, o);
+		}
 	});
 };
 

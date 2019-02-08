@@ -95,7 +95,11 @@ function handleRequest(req, res) {
 							if(attendanceID_int){
 								service.getClassHistory(db, attendanceID_int,
 									function(error, o) {
-										sendJSON(res, o);
+										if(error) {
+											sendText(res, "Coul not get class history.", 500);
+										} else {
+											sendJSON(res, o);
+										}
 									}
 								);
 							} else {
@@ -112,14 +116,22 @@ function handleRequest(req, res) {
 						case "/api/courses":
 							service.selectCourseInfo(db, ist_id,
 								function(error, rows) {
-									sendJSON(res, rows);
+									if(error) {
+										sendText(res, "Could not select course info.", 500);
+									} else {
+										sendJSON(res, rows);
+									}
 								}
 							);
 							break;
 						case "/api/history":
 							service.getAttendanceHistory(db, ist_id,
 								function(error, rows) {
-									sendJSON(res, rows);
+									if(error) {
+										sendText(res, "Could not get attendande history.", 500);
+									} else {
+										sendJSON(res, rows);
+									}
 								}
 							);
 							break;
@@ -128,7 +140,11 @@ function handleRequest(req, res) {
 							var student_id = parsedURL.query.i;
 							service.getFingerprintData(db, student_id, attendanceID_int,
 								function(error, rows){
-									sendJSON(res, rows);
+									if(error) {
+										sendText(res, "Could not load fingerprint", 500);
+									} else{
+										sendJSON(res, rows);	
+									}
 								}
 							);
 							break;
