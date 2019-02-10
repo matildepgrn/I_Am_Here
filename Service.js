@@ -85,11 +85,11 @@ Service.prototype.getFingerprintData = function(db, ist_id, attendanceID, callba
 
 Service.prototype.isProfessor = function(db, ist_id, callback) {
 	db.isProfessor(ist_id,
-		function(error, result) {
+		function(error, is_professor) {
 			if(error) {
 				callback(error);
 			} else {
-				callback(result);	
+				callback(error, is_professor);	
 			}
 		}
 	); 

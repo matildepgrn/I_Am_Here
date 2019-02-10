@@ -35,13 +35,17 @@ function handleRequest(req, res) {
 	switch(parsedURL.pathname) {
 		case "/":
 		case "/index.html":
-			isLoggedIn(res, cookies, parsedURL,
-				function(ist_id){
-					useragent = req.headers['user-agent'];
-					user_ip = req.connection.remoteAddress;
-					service.insertFingerprintData(db, ist_id, useragent, user_ip,
-						function(error) {});
-					sendFile(res, 'student/student_index.html');
+			isLoggedInAsProf(res, cookies, parsedURL,
+				function(ist_id, is_professor){
+					if(is_professor) {
+						sendFile(res, 'professor/professor_new.html');
+					} else {		//os alunos que sao profs nao vao ter acesso a pagina index.html dos alunos
+						useragent = req.headers['user-agent'];
+						user_ip = req.connection.remoteAddress;
+						service.insertFingerprintData(db, ist_id, useragent, user_ip,
+							function(error) {});
+						sendFile(res, 'student/student_index.html');
+					}
 				},
 				function(){
 					sendFile(res, 'index.html');
@@ -81,14 +85,36 @@ function handleRequest(req, res) {
 				}
 			);
 			break;
-		case "/api/getattendancehistory":
 		case "/api/name":
+			disableCache(res);
+			isLoggedIn(res, cookies, parsedURL,
+				function(ist_id){
+					switch(parsedURL.pathname) {
+						case "/api/name":
+							service.getUserName(db, ist_id,
+								function(name){
+									sendText(res, name);
+								}
+							);
+							break;
+					}
+				},
+				function(){
+					sendText(res, "Not logged in", 403);
+				}
+			);
+			break;
+		case "/api/getattendancehistory":
 		case "/api/courses":
 		case "/api/history":
 		case "/api/fingerprint":
 			disableCache(res);
-			isLoggedIn(res, cookies, parsedURL,
-				function(ist_id){
+			isLoggedInAsProf(res, cookies, parsedURL,
+				function(ist_id, is_professor){
+					if(false == is_professor){
+						sendText(res, "User not authorized.", 403);
+						return;
+					}
 					switch(parsedURL.pathname) {
 						case "/api/getattendancehistory":
 							var attendanceID_int = parseInt(parsedURL.query.rid);
@@ -96,7 +122,7 @@ function handleRequest(req, res) {
 								service.getClassHistory(db, attendanceID_int,
 									function(error, o) {
 										if(error) {
-											sendText(res, "Coul not get class history.", 500);
+											sendText(res, "Could not get class history.", 500);
 										} else {
 											sendJSON(res, o);
 										}
@@ -105,13 +131,6 @@ function handleRequest(req, res) {
 							} else {
 								sendText(res, "Invalid attendance link.");
 							}
-							break;
-						case "/api/name":
-							service.getUserName(db, ist_id,
-								function(name){
-									sendText(res, name);
-								}
-							);
 							break;
 						case "/api/courses":
 							service.selectCourseInfo(db, ist_id,
@@ -157,10 +176,6 @@ function handleRequest(req, res) {
 			break;
 		case "/a":
 		case "/student":
-		case "/professor":
-		case "/professor/new":
-		case "/professor/attendance":
-		case "/professor/courses":
 			makeUserLogin(res, cookies, parsedURL,
 				function(ist_id){
 					switch(parsedURL.pathname) {
@@ -175,6 +190,25 @@ function handleRequest(req, res) {
 						case "/student":
 							sendFile(res, 'student/student.html');
 							break;
+						default:
+							console.log('This sould not happen');
+							sendText(res, "Error.", 501);
+							break;
+					}
+				} 
+			);
+			break;
+		case "/professor":
+		case "/professor/new":
+		case "/professor/attendance":
+		case "/professor/courses":
+			makeProfessorLogin(res, cookies, parsedURL,
+				function(ist_id, is_professor){
+					if(false == is_professor){
+						sendText(res, "User not authorized.", 403);
+						return;
+					}
+					switch(parsedURL.pathname) {
 						case "/professor":
 							sendFile(res, 'professor/professor_classes.html');
 							break;
@@ -192,11 +226,8 @@ function handleRequest(req, res) {
 							sendText(res, "Error.", 501);
 							break;
 					}
-				} 
+				}
 			);
-			break;
-		case "/getcode":
-			generateCode(res);
 			break;
 		case "/oauth":
 			var fenix_code = parsedURL.query.code;
@@ -267,12 +298,24 @@ function goToLogin(res, cookies, parsedURL) {
 	redirectURL(res, config.EXTERNAL_LOGIN_URL);	
 }
 
-function isLoggedIn(res, cookies, parsedURL, callback_true, callback_false) {
+function isLoggedInAsProf(res, cookies, parsedURL, callback_true, callback_false) {
+	return isLoggedIn(res, cookies, parsedURL, callback_true, callback_false, true);
+}
+
+function isLoggedIn(res, cookies, parsedURL, callback_true, callback_false, needsBeProf = false) {
 	var token = cookies.get('login');
 	service.verifyLogin(db, token,
 		function(ist_id){
 			if(ist_id != null){
-				callback_true(ist_id);
+				if(needsBeProf) {
+					service.isProfessor(db, ist_id,
+						function(error, is_professor) {
+							callback_true(ist_id, is_professor);
+						}
+					);
+				} else {
+					callback_true(ist_id);
+				}
 			}
 			else {
 				callback_false();
@@ -291,6 +334,21 @@ function makeUserLogin(res, cookies, parsedURL, callback) {
 		//callback_false
 		function(){
 			console.log("isNOTlogged in.");
+			goToLogin(res, cookies, parsedURL);
+		}
+	);
+}
+
+function makeProfessorLogin(res, cookies, parsedURL, callback) {
+	isLoggedInAsProf(res, cookies, parsedURL,
+		//callback_true
+		function(ist_id, is_professor){
+			console.log("Professor isLogged in as: ", ist_id);
+			callback(ist_id, is_professor);
+		},
+		//callback_false
+		function(){
+			console.log("Professor isNOTlogged in.");
 			goToLogin(res, cookies, parsedURL);
 		}
 	);
@@ -337,15 +395,43 @@ function getPostData(req, res, cookies, parsedURL) {
 
 function handlePost(req, res, cookies, parsedURL, data) {
 	switch(req.url) {
+		case "/api/validatecode":
+			isLoggedIn(res, cookies, parsedURL,
+				function(ist_id) {
+					var json = JSON.parse(data);
+					var randomID = json.randomID;
+					switch(req.url) {
+						case "/api/validatecode":
+							var client_code = json.input_code;
+							service.validateCode(db, res, randomID, client_code, ist_id,
+								function(error, result) {
+									if(error) {
+										sendText(res, "Error validating code.", 500);
+									} else {
+										sendJSON(res, result);	
+									}
+								}
+							);
+							break;
+					}
+				},
+				function() {
+					sendText(res, "Not logged in", 403);
+				}
+			);
+			break;
 		case "/api/closeAttendance":
 		case "/api/createAttendanceSession":
 		case "/api/status":
 		case "/api/getcode":
 		case "/api/getcode/stop":
-		case "/api/validatecode":
 		case "/api/addmanually":
-			isLoggedIn(res, cookies, parsedURL,
-				function(ist_id) {
+			isLoggedInAsProf(res, cookies, parsedURL,
+				function(ist_id, is_professor){
+					if(false == is_professor){
+						sendText(res, "User not authorized.", 403);
+						return;
+					}
 					var json = JSON.parse(data);
 					var randomID = json.randomID;
 					switch(req.url) {
