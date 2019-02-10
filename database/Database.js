@@ -195,8 +195,8 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 };
 
 database.prototype.insertFingerprintData = function(ist_id, useragent, ip, callback) {
-	var sql = "INSERT INTO FingerprintData(timestamp, ist_id, useragent, ip) VALUES(?,?,?,?)";
-	var arg = [moment().format('YYYY-MM-DD'), ist_id, useragent, ip];
+	var sql = "INSERT INTO FingerprintData(ist_id, useragent, ip) VALUES(?,?,?)";
+	var arg = [ist_id, useragent, ip];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
