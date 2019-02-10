@@ -40,8 +40,13 @@ function handleRequest(req, res) {
 					if(is_professor) {
 						sendFile(res, 'professor/professor_new.html');
 					} else {		//os alunos que sao profs nao vao ter acesso a pagina index.html dos alunos
-						useragent = req.headers['user-agent'];
-						user_ip = req.connection.remoteAddress;
+						var useragent = req.headers['user-agent'];
+						var user_ip;
+						if(config.isBehindProxy) {
+							user_ip = req.headers['x-real-ip'];
+						} else {
+							user_ip = req.connection.remoteAddress;
+						}
 						service.insertFingerprintData(db, ist_id, useragent, user_ip,
 							function(error) {});
 						sendFile(res, 'student/student_index.html');
