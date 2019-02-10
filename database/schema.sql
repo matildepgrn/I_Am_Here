@@ -1,5 +1,6 @@
 use ist182083;
 
+drop PROCEDURE if exists CheckFingerprint;
 drop PROCEDURE if exists InsertStudentToAttendance;
 drop PROCEDURE if exists GetFingerprintInfo;
 drop PROCEDURE if exists InsertProfessorandCourse;
@@ -206,7 +207,7 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE GetFingerprintInfo(my_ist_id varchar(255), my_attendanceID int)
 BEGIN
-	SELECT distinct f.useragent, f.ip
+	SELECT distinct f.ip, f.useragent
 		FROM FingerprintData f, Attendance a, AttendanceHistory ah
         WHERE
 			a.attendanceID = my_attendanceID AND
@@ -226,6 +227,21 @@ BEGIN
 		
 	INSERT IGNORE INTO AttendanceHistory (attendanceID, ist_id, success, manually)
 		VALUES(my_attendanceID, my_ist_id, true, true);
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE CheckFingerprint(my_attendanceID int)
+BEGIN
+SELECT f.ist_id
+		FROM FingerprintData f, Attendance a, AttendanceHistory ah
+        WHERE
+			a.attendanceID = my_attendanceID AND
+			ah.attendanceID = my_attendanceID AND
+            ah.attendanceID = a.attendanceID
+            group by f.ist_id, f.ip
+            having count(*) > 1;
 END
 //
 DELIMITER ;

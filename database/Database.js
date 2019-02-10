@@ -224,6 +224,21 @@ database.prototype.manuallyInsertStudent = function(ist_id, attendanceID, callba
 	})
 };
 
+database.prototype.checkFingerprint = function(attendanceID, callback) {
+	var sql = "CALL CheckFingerprint(?,?);";
+	var arg = [attendanceID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error checking fingerprint", err);
+			callback(err);
+		}
+		else{
+			callback(err, rows);
+		}
+	})
+};
+
 database.prototype.getFingerprintData = function(ist_id, attendanceID, callback) {
 	var sql = "CALL GetFingerprintInfo(?,?);";
 	var arg = [ist_id, attendanceID];

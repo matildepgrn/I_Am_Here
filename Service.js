@@ -63,6 +63,18 @@ Service.prototype.insertFingerprintData = function(db, ist_id, useragent, ip, ca
 	); 
 }
 
+Service.prototype.checkFingerprint = function(db, attendanceID, callback) {
+	db.checkFingerprint(attendanceID,
+		function(error, rows) {
+			if(error){
+				callback(error);
+			} else {
+				callback(rows);
+			}
+		}
+	); 
+}
+
 Service.prototype.manuallyInsertStudent = function(db, ist_id, attendanceID, callback) {
 	db.manuallyInsertStudent(ist_id, attendanceID,
 		function(error) {
