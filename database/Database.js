@@ -195,7 +195,7 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 };
 
 database.prototype.insertFingerprintData = function(ist_id, useragent, ip, callback) {
-	var sql = "INSERT INTO FingerprintData(ist_id, useragent, ip) VALUES(?,?,?)";
+	var sql = "INSERT INTO FingerprintData(ist_id, useragent, ip) VALUES(?,?,?);";
 	var arg = [ist_id, useragent, ip];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
@@ -225,7 +225,7 @@ database.prototype.manuallyInsertStudent = function(ist_id, attendanceID, callba
 };
 
 database.prototype.checkFingerprint = function(attendanceID, callback) {
-	var sql = "CALL CheckFingerprint(?,?);";
+	var sql = "CALL CheckFingerprint(?);";
 	var arg = [attendanceID];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
@@ -234,7 +234,7 @@ database.prototype.checkFingerprint = function(attendanceID, callback) {
 			callback(err);
 		}
 		else{
-			callback(err, rows);
+			callback(err, rows[0]);
 		}
 	})
 };

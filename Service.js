@@ -63,18 +63,6 @@ Service.prototype.insertFingerprintData = function(db, ist_id, useragent, ip, ca
 	); 
 }
 
-Service.prototype.checkFingerprint = function(db, attendanceID, callback) {
-	db.checkFingerprint(attendanceID,
-		function(error, rows) {
-			if(error){
-				callback(error);
-			} else {
-				callback(rows);
-			}
-		}
-	); 
-}
-
 Service.prototype.manuallyInsertStudent = function(db, ist_id, attendanceID, callback) {
 	db.manuallyInsertStudent(ist_id, attendanceID,
 		function(error) {
@@ -195,8 +183,16 @@ Service.prototype.getClassHistory = function(db, attendanceID, callback) {
 		if(err) {
 			callback(err);
 		} else {
-			var o = {attendanceID: attendanceID, rows: rows};
-			callback(err, o);
+			db.checkFingerprint(attendanceID,
+				function(error, rows_fingerprints) {
+					if(error) {
+						callback(error);
+					} else {
+						var o = {attendanceID: attendanceID, rows: rows, rows_fingerprints: rows_fingerprints};
+						callback(err, o);
+					}
+				}
+			);
 		}
 	});
 };

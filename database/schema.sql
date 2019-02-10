@@ -234,13 +234,13 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE CheckFingerprint(my_attendanceID int)
 BEGIN
-SELECT f.ist_id
+SELECT distinct ah.ist_id
 		FROM FingerprintData f, Attendance a, AttendanceHistory ah
         WHERE
-			a.attendanceID = my_attendanceID AND
+			ah.attendanceID = my_attendanceID AND
 			ah.attendanceID = my_attendanceID AND
             ah.attendanceID = a.attendanceID
-            group by f.ist_id, f.ip
+            group by ah.ist_id, f.ip
             having count(*) > 1;
 END
 //

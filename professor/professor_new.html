@@ -96,14 +96,12 @@
 
 		<table id="fingerprintTable">
 			<tr>
-				<th>Timestamp</th>
 				<th>User Agent</th>
 				<th>IP</th>
 			</tr>
 			
 			<template id="fingerprintTemplate">
 				<tr>
-					<td></td>
 					<td></td>
 					<td></td>
 				</tr>
@@ -210,18 +208,32 @@ function showStudents(studentshistory) {
 	}
 
 	var rows = studentshistory.rows;
+	var rows_fingerprints = studentshistory.rows_fingerprints;
 	table.attendanceID = studentshistory.attendanceID;
 
 	for(let i = 0; i < rows.length; i++) {
-		addStudent(table, template, rows[i].ist_id, rows[i].name);
+		var studentCheating = isCheating(rows_fingerprints, rows[i].ist_id);
+		addStudent(table, template, rows[i].ist_id, rows[i].name, studentCheating);
 	} 
 };
 
-function addStudent(table, template, ist_id, name) {
+function isCheating(rows_fingerprints, ist_id) {
+	for(let i = 0; i < rows_fingerprints.length; i++) {
+		if(rows_fingerprints[i].ist_id == ist_id) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function addStudent(table, template, ist_id, name, studentCheating) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 
 	tr_clone.ist_id = ist_id;
+	if(studentCheating){
+		tr_clone.classList.add("less_suspicious");
+	}
 
 	for(let x = 0; x < tds.length; x++) {
 		tds[x].innerText = arguments[x+2];
