@@ -149,7 +149,7 @@ database.prototype.closeAttendance = function(randomID, callback) {
 database.prototype.generateRandomAttendanceCode = function(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, callback) {
 	//var sql = "INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes) VALUES(?, ?, ?, ?, ?);";
 	var sql = "CALL AttendanceMapping(?,?,?,?,?,?,?,?);";
-	var date = moment().format('YYYY-MM-DD');
+	var date = moment().format('YYYY-MM-DD HH:mm:ss');
 	var arg = [ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, true];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
