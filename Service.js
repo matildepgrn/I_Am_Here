@@ -5,9 +5,18 @@ var Code = require('./Code');
 
 var codeByRandomID = new Map();		// randomID --> code;
 
-Service.prototype.verifyRandomID = function(randomID) {
+Service.prototype.verifyRandomID = function(db, randomID, ist_id, useragent, ip, callback) {
 	var code = codeByRandomID.get(randomID);
-	return (code != undefined);
+	if(!code) {
+		callback(null, false);
+		return;
+	}
+	var attendanceID = code.getAttendanceID();
+	this.insertFingerprintData(db, ist_id, useragent, ip, attendanceID,
+		function(error){
+			callback(error, code != undefined);
+		}
+	);
 }
 
 Service.prototype.validateCode = function(db, res, randomID, client_code, ist_id, callback) {
@@ -55,8 +64,8 @@ Service.prototype.verifyAttendance = function(db, ist_id, attendanceID, consecut
 	); 
 }
 
-Service.prototype.insertFingerprintData = function(db, ist_id, useragent, ip, callback) {
-	db.insertFingerprintData(ist_id, useragent, ip,
+Service.prototype.insertFingerprintData = function(db, ist_id, useragent, ip, attendanceID, callback) {
+	db.insertFingerprintData(ist_id, useragent, ip, attendanceID,
 		function(error) {
 			callback(error);
 		}

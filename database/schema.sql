@@ -91,13 +91,15 @@ CREATE TABLE CodeAttendance (
 CREATE TABLE FingerprintData (
 	fingerprintID				int AUTO_INCREMENT,
 	timestamp				timestamp,
+    attendanceID			int,	
 	ist_id						varchar(255),
     useragent				varchar(255),
     ip		varchar(255),
     
 
 	PRIMARY KEY(fingerprintID),
-	FOREIGN KEY(ist_id) REFERENCES User(ist_id)
+	FOREIGN KEY(ist_id) REFERENCES User(ist_id),
+    FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID)
 );
 
 CREATE TABLE Code (
@@ -234,12 +236,12 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE CheckFingerprint(my_attendanceID int)
 BEGIN
-SELECT distinct ah.ist_id
+SELECT distinct f.ist_id
 		FROM FingerprintData f, Attendance a, AttendanceHistory ah
         WHERE
-			ah.attendanceID = my_attendanceID AND
-			ah.attendanceID = my_attendanceID AND
-            ah.attendanceID = a.attendanceID
+            f.attendanceID = my_attendanceID AND
+            ah.attendanceID = f.attendanceID AND
+            a.attendanceID = f.attendanceID
             group by ah.ist_id, f.ip
             having count(*) > 1;
 END

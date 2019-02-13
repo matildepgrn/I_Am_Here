@@ -194,9 +194,9 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 	})
 };
 
-database.prototype.insertFingerprintData = function(ist_id, useragent, ip, callback) {
-	var sql = "INSERT INTO FingerprintData(ist_id, useragent, ip) VALUES(?,?,?);";
-	var arg = [ist_id, useragent, ip];
+database.prototype.insertFingerprintData = function(ist_id, useragent, ip, attendanceID, callback) {
+	var sql = "INSERT INTO FingerprintData(ist_id, useragent, ip, attendanceID) VALUES(?,?,?,?);";
+	var arg = [ist_id, useragent, ip, attendanceID];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
