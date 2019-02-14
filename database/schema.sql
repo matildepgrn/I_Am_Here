@@ -242,7 +242,7 @@ SELECT distinct f.ist_id
             f.attendanceID = my_attendanceID AND
             ah.attendanceID = f.attendanceID AND
             a.attendanceID = f.attendanceID
-            group by ah.ist_id, f.ip
+            group by f.ist_id, f.ip
             having count(*) > 1;
 END
 //
