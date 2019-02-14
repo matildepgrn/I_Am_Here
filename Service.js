@@ -80,6 +80,14 @@ Service.prototype.manuallyInsertStudent = function(db, ist_id, attendanceID, cal
 	); 
 }
 
+Service.prototype.manuallyRemoveStudent = function(db, ist_id, attendanceID, callback) {
+	db.manuallyRemoveStudent(ist_id, attendanceID,
+		function(error) {
+			callback(error);
+		}
+	); 
+}
+
 Service.prototype.getFingerprintData = function(db, ist_id, attendanceID, callback) {
 	db.getFingerprintData(ist_id, attendanceID,
 		function(error, rows) {

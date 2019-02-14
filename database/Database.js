@@ -224,6 +224,21 @@ database.prototype.manuallyInsertStudent = function(ist_id, attendanceID, callba
 	})
 };
 
+database.prototype.manuallyRemoveStudent = function(ist_id, attendanceID, callback) {
+	var sql = "DELETE FROM AttendanceHistory WHERE attendanceID = ? and ist_id = ?;";
+	var arg = [attendanceID, ist_id];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error removing student manually.", err);
+			callback(err);
+		}
+		else{
+			callback(err);
+		}
+	})
+};
+
 database.prototype.checkFingerprint = function(attendanceID, callback) {
 	var sql = "CALL CheckFingerprint(?);";
 	var arg = [attendanceID];
