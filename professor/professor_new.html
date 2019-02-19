@@ -203,7 +203,7 @@ function showStudents(studentshistory) {
 	var table = document.getElementById("studentsTable");
 
 	var old_tr = table.getElementsByTagName("tr");
-	for(let l = old_tr.length - 1; l > 0; l--) {
+	for(let l = old_tr.length; l > 0; l--) {
 		old_tr[l].parentElement.removeChild(old_tr[l]);
 	}
 
@@ -235,7 +235,7 @@ function addStudent(table, template, ist_id, name, studentCheating) {
 		tr_clone.classList.add("less_suspicious");
 	}
 
-	for(let x = 0; x < tds.length; x++) {
+	for(let x = 0; x < tds.length - 1; x++) {
 		tds[x].innerText = arguments[x+2];
 	}
 

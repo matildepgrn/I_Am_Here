@@ -454,7 +454,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 							);
 							break;
 						case "/api/status":
-							service.getStatus(ist_id, randomID,
+							service.getStatus(db, ist_id, randomID,
 								function(status) {
 									sendJSON(res, status);
 								}

@@ -112,14 +112,44 @@ Service.prototype.isProfessor = function(db, ist_id, callback) {
 	); 
 }
 
-Service.prototype.getStatus = function(ist_id, randomID, callback) {
+Service.prototype.getStatus = function(db, ist_id, randomID, callback) {
+	this.getCode(db, ist_id, randomID,
+		function(error, code) {
+			if(error) {
+				callback(error);
+			} else {
+				callback(code.status());
+			}
+		}
+	);
+}
+
+Service.prototype.getCode = function(db, ist_id, randomID, callback) {
 	var code = codeByRandomID.get(randomID);
 	if(code){
-		callback(code.status());	
+		callback(null, code);	
 	} else {
-		callback("Error in getStatus.");
+		db.getAttendanceByRandomID(randomID, ist_id,
+			function(error, rows) {
+				if(error) {
+					callback(error);
+				} else {
+					if(rows[0]){
+						var code = new Code(db, randomID, rows[0].attendanceID);
+						code.customizeTest(rows[0].code_length, rows[0].code_type, rows[0].total_time_s, rows[0].consecutive_codes);
+						codeByRandomID.set(randomID, code);
+						code.startProcess();
+						callback(null, code);
+					} else {
+						console.log("Error in getCode");
+						callback(error);
+					}
+				}
+			}		
+		);
 	}
 }
+	
 
 Service.prototype.generateCode = function(ist_id, randomID, callback) {
 	var code = codeByRandomID.get(randomID);

@@ -297,6 +297,21 @@ database.prototype.getAttendanceHistory = function(ist_id, callback) {
 	})
 };
 
+//when server crashes
+database.prototype.getAttendanceByRandomID = function(randomID, ist_id, callback) {
+	var sql = "select * from Attendance WHERE randomID = ? AND ist_id = ?;";
+	var arg = [randomID, ist_id];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getAttendanceByRandomID:", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
 database.prototype.getClassHistory = function(attendanceID, callback) {
 	var sql = "SELECT ah.ist_id, u.name from AttendanceHistory ah, User u WHERE ah.attendanceID = ? and u.ist_id = ah.ist_id;";
 	var arg = [attendanceID];
