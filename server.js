@@ -33,6 +33,9 @@ function handleRequest(req, res) {
 	}
 
 	switch(parsedURL.pathname) {
+		case "/api/H6YsZVWpIkXKeORd291yYLvEFfowzTcP3O5tRp9m/pcm1819_attendance.tsv":
+			sendFile(res, 'studentsattending.tsv', 'text/plain; charset=utf-8');
+			break;
 		case "/":
 		case "/index.html":
 			isLoggedInAsProf(res, cookies, parsedURL,
@@ -104,6 +107,7 @@ function handleRequest(req, res) {
 		case "/api/courses":
 		case "/api/history":
 		case "/api/fingerprint":
+		case "/api/pcm1819attendance":
 			disableCache(res);
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
@@ -162,6 +166,9 @@ function handleRequest(req, res) {
 									}
 								}
 							);
+							break;
+						case "/api/pcm1819attendance":
+							sendFile(res, 'studentsattending.tsv', 'text/plain; charset=utf-8');
 							break;
 					}
 				},
