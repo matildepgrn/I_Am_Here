@@ -205,6 +205,16 @@ Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
 	);
 };
 
+Service.prototype.studentAttendanceChecked = function(db, ist_id, randomID, callback) {
+	db.studentAttendanceChecked(ist_id, randomID, function(err, isChecked) {
+		if(err) {
+			callback(err);
+		} else {
+			callback(err, isChecked);
+		}
+	});
+};
+
 Service.prototype.selectCourseInfo = function(db, ist_id, callback) {
 	db.selectCourseInfo(ist_id, function(err, rows) {
 		if(err) {

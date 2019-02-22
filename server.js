@@ -198,7 +198,17 @@ function handleRequest(req, res) {
 							service.verifyRandomID(db, randomID_int, ist_id, useragent, user_ip,
 								function(error, success){
 									if(success){
-										sendFile(res, 'student/student.html');
+										service.studentAttendanceChecked(db, ist_id, randomID_int,
+											function(error, isChecked) {
+												if(error) {
+													sendText(res, "Error verifying student's attendance", 500);
+												} else if(isChecked) {
+													sendText(res, 'Attendance already checked for this session.');
+												} else {
+													sendFile(res, 'student/student.html');
+												}
+											}
+										)
 									} else {
 										sendText(res, "Invalid attendance link!");
 									}

@@ -340,6 +340,19 @@ database.prototype.selectCourseInfo = function(ist_id, callback) {
 	})
 };
 
+database.prototype.studentAttendanceChecked = function(ist_id, randomID, callback) {
+	var sql = "SELECT ah.ist_id FROM AttendanceHistory ah, Attendance a WHERE a.randomID = ? AND a.attendanceID = ah.attendanceID AND ah.ist_id = ?;";
+	var arg = [randomID, ist_id];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in studentAttendanceChecked.", err);
+			callback(err);
+		} else {
+			callback(err, rows.length > 0);
+		}
+	})
+};
 
 database.prototype.verifyAttendance = function (ist_id, attendanceID, consecutive_codes, callback) {
 	var sql = "SELECT CheckAttendance(?,?,?) AS result";
