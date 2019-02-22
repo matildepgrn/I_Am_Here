@@ -178,7 +178,10 @@ myLoop: LOOP
 		SET count = count + 1;
         IF count = my_consecutive_codes THEN
 			CLOSE consecutiveTrue;
-            INSERT IGNORE INTO AttendanceHistory(attendanceID, ist_id, success, manually) VALUES (my_attendanceID, my_ist_id, true, false);
+			SELECT ist_id INTO @old_ist_id FROM AttendanceHistory WHERE attendanceID = my_attendanceID AND ist_id = my_ist_id LIMIT 1;
+			IF(@old_ist_id IS NULL) THEN
+            	INSERT IGNORE INTO AttendanceHistory(attendanceID, ist_id, success, manually) VALUES (my_attendanceID, my_ist_id, true, false);
+            END IF;
 			RETURN true;
         END IF;
 	ELSE
