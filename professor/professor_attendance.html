@@ -122,7 +122,7 @@
 		title="Stop current sequence">Pause</button>
 </div>
 
-<div class="text-center" onclick="closeAttendance(); goTo('/professor/new');">
+<div class="text-center" id="button_finishAttendance" style="display:none" onclick="closeAttendance(); goTo('/professor/new');">
 	<button>
 		End session
 	</button>
@@ -147,12 +147,6 @@
 		disabled="true"
 		onclick="stopAttendance(); switchView(1)"
 		title="Stop current sequence">Pause</button>
-</div>
-
-<div class="text-center" id="button_finishAttendance" style="display:none; margin-top: 10px" onclick="closeAttendance(); goTo('/professor/new');">
-	<button>
-		End session
-	</button>
 </div>
 
 </div> <!-- final do container -->
@@ -301,7 +295,7 @@ function switchView(arg){
 			document.getElementById("maincontainer").classList.add("left");
 			document.getElementById("maincontainer").classList.remove("center");
 			document.getElementById("attendance_info").style.display = "";
-			document.getElementById("button_finishAttendance").style.display = "none";
+			document.getElementById("button_finishAttendance").style.display = "";
 			break;
 		default:
 			console.log("unknown arg", arg);
