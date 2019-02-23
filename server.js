@@ -196,19 +196,16 @@ function handleRequest(req, res) {
 								user_ip = req.connection.remoteAddress;
 							}
 							service.verifyRandomID(db, randomID_int, ist_id, useragent, user_ip,
-								function(error, success){
-									if(success){
-										service.studentAttendanceChecked(db, ist_id, randomID_int,
-											function(error, isChecked) {
-												if(error) {
-													sendText(res, "Error verifying student's attendance", 500);
-												} else if(isChecked) {
-													sendText(res, 'Attendance already checked for this session.');
-												} else {
-													sendFile(res, 'student/student.html');
-												}
-											}
-										)
+								function(error, isValid, isChecked){
+									if(error) {
+										console.log("Error in verifyRandomID (probably while saving fingerprint; page still served).");
+									}
+									if(isValid){
+										if(isChecked) {
+											sendText(res, 'Attendance already checked for this session.');
+										} else {
+											sendFile(res, 'student/student.html');
+										}
 									} else {
 										sendText(res, "Invalid attendance link!");
 									}

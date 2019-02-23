@@ -12,9 +12,18 @@ Service.prototype.verifyRandomID = function(db, randomID, ist_id, useragent, ip,
 		return;
 	}
 	var attendanceID = code.getAttendanceID();
-	this.insertFingerprintData(db, ist_id, useragent, ip, attendanceID,
-		function(error){
-			callback(error, code != undefined);
+	var that = this;
+	this.studentAttendanceChecked(db, ist_id, randomID,
+		function(error, isChecked) {
+			if(isChecked) {
+				callback(null, true, true);
+			} else {
+				that.insertFingerprintData(db, ist_id, useragent, ip, attendanceID,
+					function(error){
+						callback(error, code != undefined, false);
+					}
+				);
+			}
 		}
 	);
 }
