@@ -111,6 +111,22 @@
 	</p>
 
 	<p id="status"> </p>
+
+	<div class="text-center">
+	<button id="b_start" type="button"
+		onclick="switchView(2); startAttendance()"
+		title="Generate a new sequence">Start</button>
+	<button id="b_stop" type="button"
+		disabled="true"
+		onclick="stopAttendance(); switchView(1)"
+		title="Stop current sequence">Pause</button>
+</div>
+
+<div class="text-center" onclick="closeAttendance(); goTo('/professor/new');">
+	<button>
+		End session
+	</button>
+</div>
 </div>
 
 <div id="studentspresent" style="display:none">
@@ -118,6 +134,7 @@
 		Students attending the class (<span id="studentsCount"></span>):
 	</p>
 	<pre id="showStudents">
+
 	</pre>
 
 </div>
@@ -132,7 +149,7 @@
 		title="Stop current sequence">Pause</button>
 </div>
 
-<div class="text-center" id="button_finishAttendance" style="display:none" onclick="closeAttendance(); goTo('/professor/new');">
+<div class="text-center" id="button_finishAttendance" style="display:none; margin-top: 10px" onclick="closeAttendance(); goTo('/professor/new');">
 	<button>
 		End session
 	</button>
@@ -278,13 +295,13 @@ function switchView(arg){
 		case 2:
 			document.getElementById("back_qrcode").style.display = "none";
 			document.getElementById("attendance_personalization").style.display = "none";
-			document.getElementById("buttons_startstop").style.display = "";
+			document.getElementById("buttons_startstop").style.display = "none";
 			document.getElementById("studentspresent").style.display = "";
 			document.getElementById("attendance_links").style.display = "";
 			document.getElementById("maincontainer").classList.add("left");
 			document.getElementById("maincontainer").classList.remove("center");
 			document.getElementById("attendance_info").style.display = "";
-			document.getElementById("button_finishAttendance").style.display = "";
+			document.getElementById("button_finishAttendance").style.display = "none";
 			break;
 		default:
 			console.log("unknown arg", arg);
