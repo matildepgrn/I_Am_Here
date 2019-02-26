@@ -199,7 +199,7 @@ td {
 }
 
 #randomcode {
-	font-size: 145px;
+	font-size: 150px;
 	font-family: monospace;
 	text-align: center;
 }
@@ -328,4 +328,17 @@ li a:hover {
 .name {
 	font-size: 12px;
 	padding-top: 17px !important;
+}
+
+#time_remaining,
+#view_consecutivecodes {
+	font-weight: bold;
+}
+
+.time_remaining_short {
+	color: red;
+}
+
+#attendance_info p {
+	font-size: 36px;
 }

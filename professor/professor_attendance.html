@@ -103,12 +103,8 @@
 	<!--<a onclick="switchView(1)" class="previous round">&#8249;</a>-->
 
 	<p>Time remaining: <span id="time_remaining"></span>s</p>
-	<p>Consecutive codes required: <span id="view_consecutivecodes"></span></p>
+	<p>Insert <span id="view_consecutivecodes"></span> consecutive codes:</p>
 	<p><span id="randomcode"></span></p>
-
-	<p id="span_c">
-		Insert the code in your browser.
-	</p>
 
 	<p id="status"> </p>
 
@@ -250,7 +246,13 @@ function updateStatus(jsonStr) {
 	} else {
 		code_element.className = "";
 	}
-	document.getElementById("time_remaining").innerHTML = json.time_ms;
+	var time_remaining = document.getElementById("time_remaining");
+	time_remaining.innerHTML = json.time_ms;
+	if(json.time_ms <= 3) {
+		time_remaining.classList.add('time_remaining_short');
+	} else {
+		time_remaining.classList.remove('time_remaining_short');
+	}
 	updateButtons(json.running);
 
 	if(json.running == false) {
