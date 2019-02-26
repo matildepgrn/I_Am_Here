@@ -84,7 +84,23 @@
 							title="">Add student</button>
 				</td>
 			</tr>
-			</form>
+		</form>
+
+		<p>Students that failed to take the attendance:</p>
+		<table id="attempedstudentsTable">
+			<tr>
+				<th>IST ID</th>
+				<th>Name</th>
+			</tr>
+			
+			<template id="attempedstudentsTemplate">
+				<tr>
+					<td></td>
+					<td></td>
+				</tr>
+			</template>
+		</table>
+
 	</center>
 </div>
 
@@ -198,23 +214,35 @@ function loadStudents(url) {
 	xhttp.send();
 }
 
-function showStudents(studentshistory) {
-	var template = document.getElementById("studentsTemplate");
-	var table = document.getElementById("studentsTable");
-
-	var old_tr = table.getElementsByTagName("tr");
+function removeTrs(old_tr) {
 	for(let l = old_tr.length-1; l > 0; l--) {
 		old_tr[l].parentElement.removeChild(old_tr[l]);
 	}
+}
+
+function showStudents(studentshistory) {
+	var template = document.getElementById("studentsTemplate");
+	var table = document.getElementById("studentsTable");
+	var template_tried = document.getElementById("attempedstudentsTemplate");
+	var table_tried = document.getElementById("attempedstudentsTable");
+
+	removeTrs(table.getElementsByTagName("tr"));
+	removeTrs(table_tried.getElementsByTagName("tr"));
 
 	var rows = studentshistory.rows;
 	var rows_fingerprints = studentshistory.rows_fingerprints;
+	var rows_studentsThatTried = studentshistory.rows_studentsThatTried;
 	table.attendanceID = studentshistory.attendanceID;
 
 	for(let i = 0; i < rows.length; i++) {
 		var studentCheating = isCheating(rows_fingerprints, rows[i].ist_id);
 		addStudent(table, template, rows[i].ist_id, rows[i].name, studentCheating);
 	}
+
+	for(let j = 0; j < rows_studentsThatTried.length; j++) {
+		addStudent(table_tried, template_tried, rows_studentsThatTried[j].ist_id, rows_studentsThatTried[j].name, false);
+	}
+
 };
 
 function isCheating(rows_fingerprints, ist_id) {
@@ -270,11 +298,7 @@ function showFingerprint(fingerprint) {
 	var template = document.getElementById("fingerprintTemplate");
 	var table = document.getElementById("fingerprintTable");
 
-	var old_tr = table.getElementsByTagName("tr");
-	for(let l = old_tr.length - 1; l > 0; l--) {
-		old_tr[l].parentElement.removeChild(old_tr[l]);
-	}
-
+	removeTrs(table.getElementsByTagName("tr"));
 
 	for(let i = 0; i < fingerprint.length; i++) {
 		addFingerprint(table, template, fingerprint[i].useragent, fingerprint[i].ip);

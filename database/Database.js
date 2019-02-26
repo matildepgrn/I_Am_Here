@@ -297,6 +297,26 @@ database.prototype.getAttendanceHistory = function(ist_id, callback) {
 	})
 };
 
+database.prototype.getStudentsThatTried = function(attendanceID, callback) {
+	var sql = "SELECT distinct c.ist_id, u.name \
+				FROM Code c, User u \
+				WHERE c.attendanceID = ? AND c.ist_id = u.ist_id AND c.ist_id NOT IN \
+				(SELECT ah.ist_id \
+				FROM AttendanceHistory ah \
+				WHERE ah.attendanceID = ? AND \
+				ah.success = 1);";
+	var arg = [attendanceID, attendanceID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getStudentsThatTried:", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
 //when server crashes
 database.prototype.getAttendanceByRandomID = function(randomID, ist_id, callback) {
 	var sql = "select * from Attendance WHERE randomID = ? AND ist_id = ?;";

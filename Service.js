@@ -254,8 +254,19 @@ Service.prototype.getClassHistory = function(db, attendanceID, callback) {
 					if(error) {
 						callback(error);
 					} else {
-						var o = {attendanceID: attendanceID, rows: rows, rows_fingerprints: rows_fingerprints};
-						callback(err, o);
+						db.getStudentsThatTried(attendanceID,
+							function(error2, rows_studentsThatTried) {
+								if(error2) {
+									callback(error2);
+								} else {
+									var o = {attendanceID: attendanceID,
+										rows: rows,
+										rows_fingerprints: rows_fingerprints,
+										rows_studentsThatTried: rows_studentsThatTried};
+									callback(null, o);
+								}
+							}
+						)
 					}
 				}
 			);

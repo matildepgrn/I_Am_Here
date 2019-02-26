@@ -342,3 +342,11 @@ li a:hover {
 #attendance_info p {
 	font-size: 36px;
 }
+
+#attempedstudentsTable {
+	background: #ffebeb !IMPORTANT;
+}
+
+#attempedstudentsTable tr th {
+	background: #daa4a4 !IMPORTANT;
+}
