@@ -20,6 +20,11 @@
 
 <div class="container" id="showHistoryofProfessor">
 	<center class="center">
+		
+		<button id="b_attendance" type="button"
+		onclick="goTo('/professor/attendance')"
+		title="Generate a new sequence">Start new attendance</button>
+
 		<table id="historyTable">
 			<tr>
 				<th rowspan="2">Class #</th>
@@ -48,10 +53,6 @@
 
 
 		</table>
-
-		<button id="b_attendance" type="button"
-		onclick="goTo('/professor/attendance')"
-		title="Generate a new sequence">Start new attendance</button>
 
 	</center>
 </div>
