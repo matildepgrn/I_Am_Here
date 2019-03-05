@@ -80,7 +80,7 @@
 
 			<tr title="ist_id">
 				<td>
-					<input name="ist_id" placeholder="IST ID (ist1XXXXX)">
+					<input id="inputadd_student" name="ist_id" placeholder="IST ID (ist1XXXXX)">
 					<button id="add_student" type="button" onclick="sendForm();" 
 							title="">Add student</button>
 				</td>
@@ -91,13 +91,14 @@
 		<table id="attempedstudentsTable">
 			<tr>
 				<th>IST ID</th>
-				<th>Name</th>
+				<th colspan="2">Name</th>
 			</tr>
 			
 			<template id="attempedstudentsTemplate">
 				<tr>
 					<td></td>
 					<td></td>
+					<td><button onclick="copyISTIDToAddStudent(this)">+</button></td>
 				</tr>
 			</template>
 		</table>
@@ -264,11 +265,11 @@ function addStudent(table, template, ist_id, name, studentCheating) {
 		tr_clone.classList.add("less_suspicious");
 	}
 
-	for(let x = 0; x < tds.length; x++) {
+	for(let x = 0; x < tds.length - 1; x++) {		// -1 por causa da coluna "extra"
 		tds[x].innerText = arguments[x+2];
 	}
 
-	tr_clone.onclick = function() {
+	tds[1].onclick = function() {
 		var table = document.getElementById("studentsTable");
 		loadFingerprint("/api/fingerprint?f="+table.attendanceID+"&i="+this.ist_id);
 		switchView(2);
@@ -347,6 +348,11 @@ function sendForm(){
 
 	xhttp.open("POST", url, true);
 	xhttp.send(json_string);
+}
+
+function copyISTIDToAddStudent(button) {
+	var inputadd_student = document.getElementById("inputadd_student");
+	inputadd_student.value = button.parentElement.parentElement.ist_id;
 }
 
 function switchView(arg){
