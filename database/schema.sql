@@ -232,7 +232,7 @@ BEGIN
 	INSERT IGNORE INTO User (ist_id)
 		VALUES (my_ist_id);
 		
-	SELECT ist_id INTO existsInTable FROM AttendanceHistory WHERE ist_id = my_ist_id LIMIT 1;
+	SELECT ist_id INTO existsInTable FROM AttendanceHistory WHERE ist_id = my_ist_id AND attendanceID = my_attendanceID LIMIT 1;
     IF existsInTable IS NULL THEN
 		INSERT IGNORE INTO AttendanceHistory (attendanceID, ist_id, success, manually)
 			VALUES(my_attendanceID, my_ist_id, true, true);
