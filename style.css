@@ -18,6 +18,10 @@ ul {
 	text-align: right;
 }
 
+#historyTable {
+	margin-bottom: 90px;
+}
+
 th {
 	background: #a4c1da;
 	padding: 1px 3px;
@@ -346,6 +350,7 @@ li a:hover {
 
 #attempedstudentsTable {
 	background: #ffebeb !IMPORTANT;
+	margin-bottom: 90px;
 }
 
 #attempedstudentsTable tr th {
