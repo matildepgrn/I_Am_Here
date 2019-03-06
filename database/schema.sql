@@ -227,11 +227,16 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE InsertStudentToAttendance(my_ist_id varchar(255), my_attendanceID int)
 BEGIN
-		INSERT IGNORE INTO User (ist_id)
+	DECLARE existsInTable INTEGER;
+        
+	INSERT IGNORE INTO User (ist_id)
 		VALUES (my_ist_id);
 		
-	INSERT IGNORE INTO AttendanceHistory (attendanceID, ist_id, success, manually)
-		VALUES(my_attendanceID, my_ist_id, true, true);
+	SELECT ist_id INTO existsInTable FROM AttendanceHistory WHERE ist_id = my_ist_id LIMIT 1;
+    IF existsInTable IS NULL THEN
+		INSERT IGNORE INTO AttendanceHistory (attendanceID, ist_id, success, manually)
+			VALUES(my_attendanceID, my_ist_id, true, true);
+	END IF;
 END
 //
 DELIMITER ;
