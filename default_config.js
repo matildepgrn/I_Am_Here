@@ -20,6 +20,7 @@ d.tls_cert_crt = config.tls_cert_crt;
 d.tls_cert_ca = config.tls_cert_ca;
 d.mysql_database = config.mysql_database;
 d.WEBSITE_URL = config.WEBSITE_URL;
+d.WEBSITE_URL_COMPLETE = config.WEBSITE_URL_COMPLETE;
 d.WEBSITE_REDIRECT = config.WEBSITE_REDIRECT;
 d.isBehindProxy = config.isBehindProxy || false; //when true, the client's IP address is read from an header instead of connection details
 

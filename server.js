@@ -506,6 +506,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 								function(error, randomID, attendanceID) {
 									var json_res = {};
 									json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;
+									json_res.url_complete = config.WEBSITE_URL_COMPLETE + "/a?c=" + randomID;
 									json_res.randomID = randomID;
 									sendJSON(res, json_res);
 								}

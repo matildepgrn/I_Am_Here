@@ -332,7 +332,7 @@ function sendForm(){
 		if(this.readyState == 4 && this.status == 200) {
 			var json = JSON.parse(this.responseText);
 			randomID = json.randomID;
-			generateQRCode(json.url);
+			generateQRCode(json.url_complete);
 			document.getElementById("attendance_link").innerHTML = json.url;
 			document.getElementById("view_consecutivecodes").innerHTML = o.consecutivecodes;
 			switchView(1);
