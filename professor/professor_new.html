@@ -74,7 +74,7 @@
 				<tr class="clickable">
 					<td></td>
 					<td></td>
-					<td><button onclick="this.parentElement.parentElement.classList.add('removedStyle');removeStudent('/api/manuallyRemoveStudent?i='+this.parentElement.parentElement.ist_id+'&a='+this.parentElement.parentElement.parentElement.attendanceID);this.disabled=true;">-</button></td>
+					<td><button onclick="manuallyRemoveStudent(this)">-</button></td>
 				</tr>
 			</template>
 		</table>
@@ -280,16 +280,22 @@ function addStudent(table, template, ist_id, name, studentCheating) {
 	table.appendChild(tr_clone);
 }
 
-function removeStudent(url) {
+function manuallyRemoveStudent(button_element) {
+	button_element.parentElement.parentElement.classList.add('removedStyle');
+	var ist_id = button_element.parentElement.parentElement.ist_id;
+	var attendanceID = button_element.parentElement.parentElement.parentElement.attendanceID;
+	removeStudent('/api/manuallyRemoveStudent?i='+ist_id+'&a='+attendanceID, button_element);
+}
+
+function removeStudent(url, button_element) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
-				var history = JSON.parse(this.responseText);
-				showHistory(history);
+				button_element.disabled=true;
 			} else {
-				//todo
 				console.log("Error removing student:", this.status);
+				alert("Error removing student. Try again please.");
 			}
 		}
 	};
