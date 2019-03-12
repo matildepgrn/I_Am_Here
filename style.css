@@ -22,6 +22,10 @@ ul {
 	margin-bottom: 90px;
 }
 
+.removedStyle {
+	text-decoration: line-through;
+}
+
 th {
 	background: #a4c1da;
 	padding: 1px 3px;

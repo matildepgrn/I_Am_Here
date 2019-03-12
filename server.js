@@ -108,6 +108,7 @@ function handleRequest(req, res) {
 		case "/api/history":
 		case "/api/fingerprint":
 		case "/api/pcm1819attendance":
+		case "/api/manuallyRemoveStudent":
 			disableCache(res);
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
@@ -169,6 +170,19 @@ function handleRequest(req, res) {
 							break;
 						case "/api/pcm1819attendance":
 							sendFile(res, 'studentsattending.tsv', 'text/plain; charset=utf-8');
+							break;
+						case "/api/manuallyRemoveStudent":
+							var student_id = parsedURL.query.i;
+							var attendanceID_int = parseInt(parsedURL.query.a);
+							service.manuallyRemoveStudent(db, student_id, attendanceID_int,
+								function(error){
+									if(error) {
+										sendText(res, "Could not manuallyRemoveStudent", 500);
+									} else{
+										sendText(res, "Student removed.");	
+									}
+								}
+							);
 							break;
 					}
 				},

@@ -74,7 +74,7 @@
 				<tr class="clickable">
 					<td></td>
 					<td></td>
-					<td></td>
+					<td><button onclick="this.parentElement.parentElement.classList.add('removedStyle');removeStudent('/api/manuallyRemoveStudent?i='+this.parentElement.parentElement.ist_id+'&a='+this.parentElement.parentElement.parentElement.attendanceID);this.disabled=true;">-</button></td>
 				</tr>
 			</template>
 		</table>
@@ -278,6 +278,24 @@ function addStudent(table, template, ist_id, name, studentCheating) {
 	};
 
 	table.appendChild(tr_clone);
+}
+
+function removeStudent(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				var history = JSON.parse(this.responseText);
+				showHistory(history);
+			} else {
+				//todo
+				console.log("Error removing student:", this.status);
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
 }
 
 function loadFingerprint(url) {

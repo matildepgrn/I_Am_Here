@@ -6,6 +6,8 @@ drop PROCEDURE if exists GetFingerprintInfo;
 drop PROCEDURE if exists InsertProfessorandCourse;
 DROP FUNCTION IF EXISTS CheckAttendance;
 drop PROCEDURE if exists AttendanceMapping;
+drop PROCEDURE if exists RemoveStudentFromAttendance;
+drop table if exists StudentsManuallyRemoved;
 drop table if exists Evaluation;
 drop table if exists AttendanceHistory;
 drop table if exists Code;
@@ -140,6 +142,27 @@ CREATE TABLE Evaluation (
 	FOREIGN KEY(ist_id) REFERENCES User(ist_id),
 	FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID)
 );
+
+create table StudentsManuallyRemoved (
+	removedID				int AUTO_INCREMENT,
+	ist_id						varchar(255),
+	attendanceID			int,
+    
+	PRIMARY KEY(removedID),
+	FOREIGN KEY(ist_id) REFERENCES User(ist_id),
+	FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID)
+);
+
+DELIMITER //
+CREATE PROCEDURE RemoveStudentFromAttendance (my_ist_id varchar(255), my_attendanceID int)
+BEGIN
+INSERT INTO StudentsManuallyRemoved(ist_id, attendanceID)
+		VALUES(my_ist_id, my_attendanceID);
+        
+DELETE FROM AttendanceHistory WHERE attendanceID =  my_attendanceID and ist_id = my_ist_id;
+END
+//
+DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE AttendanceMapping (ist_id varchar(255), randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, date varchar(255), open boolean)
