@@ -153,6 +153,16 @@ create table StudentsManuallyRemoved (
 	FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID)
 );
 
+CREATE TABLE PCM1819 (
+	pcm1819_id					int AUTO_INCREMENT,
+	ist_id						varchar(255),
+	std_number					int,
+	name 						varchar(255),
+
+	PRIMARY KEY(pcm1819_id),
+	FOREIGN KEY(ist_id) REFERENCES User(ist_id)
+);
+
 DELIMITER //
 CREATE PROCEDURE RemoveStudentFromAttendance (my_ist_id varchar(255), my_attendanceID int)
 BEGIN
