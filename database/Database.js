@@ -284,7 +284,11 @@ database.prototype.createClass = function(ist_id, courseID, callback) {
 };
 
 database.prototype.getAttendanceHistory = function(ist_id, callback) {
-	var sql = "SELECT date, code_type, code_length, total_time_s, consecutive_codes, attendanceID FROM Attendance WHERE ist_id = ?;";
+	//"SELECT date, code_type, code_length, total_time_s, consecutive_codes, attendanceID FROM Attendance WHERE ist_id = ?;";
+	var sql = "SELECT date, a.code_type, a.code_length, a.total_time_s, a.consecutive_codes, a.attendanceID, count(distinct ah.ist_id) as count \
+		FROM Attendance a, AttendanceHistory ah \
+			WHERE a.ist_id = ? \
+				and a.attendanceID = ah.attendanceID group by ah.attendanceID;";
 	var arg = [ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {

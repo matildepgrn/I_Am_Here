@@ -32,7 +32,7 @@
 				<th colspan="2">Code</th>
 				<th rowspan="2">Time</th>
 				<th rowspan="2">Consecutive codes</th>
-				<!--<th rowspan="2"># Students</th>-->
+				<th rowspan="2"># Students</th> 
 			</tr>
 			<tr>
 				<th>Type</th>
@@ -47,7 +47,7 @@
 					<td></td>
 					<td></td>
 					<td></td>
-					<!--<td></td>-->
+					<td></td>
 				</tr>
 			</template>
 
@@ -161,11 +161,11 @@ function showHistory(history) {
 	var table = document.getElementById("historyTable");
 
 	for(let i = 0; i < history.length; i++) {
-		addHistory(table, template, history[i].attendanceID, i+1, history[i].date, history[i].code_type, history[i].code_length, history[i].total_time_s, history[i].consecutive_codes);
+		addHistory(table, template, history[i].attendanceID, i+1, history[i].date, history[i].code_type, history[i].code_length, history[i].total_time_s, history[i].consecutive_codes, history[i].count);
 	} 
 };
 
-function addHistory(table, template, attendanceID, classcounter, date, code_type, code_length, total_time_s, consecutive_codes) {
+function addHistory(table, template, attendanceID, classcounter, date, code_type, code_length, total_time_s, consecutive_codes, count) {
 
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
