@@ -368,10 +368,11 @@ function sendForm(){
 			var json = JSON.parse(this.responseText);
 			var template = document.getElementById("studentsTemplate");
 			var table = document.getElementById("studentsTable");
-			addStudent(table, template, o.ist_id, "");
+			addStudent(table, template, o.ist_id, "(loading)");
 
 			var inputadd_student = document.getElementById("inputadd_student");
 			inputadd_student.value = "";
+			loadStudents('/api/getattendancehistory?rid='+table.attendanceID);
 		}
 	};
 
