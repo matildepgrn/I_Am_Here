@@ -360,3 +360,7 @@ li a:hover {
 #attempedstudentsTable tr th {
 	background: #daa4a4 !IMPORTANT;
 }
+
+#showStudents {
+	font-size: 25px;
+}
