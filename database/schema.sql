@@ -189,6 +189,7 @@ CREATE FUNCTION CheckAttendance(my_attendanceID int, my_ist_id varchar(255), my_
 RETURNS boolean
 BEGIN
 DECLARE row_sequence INTEGER;
+DECLARE prev_row_sequence INTEGER;
 DECLARE row_correct boolean;
 DECLARE count INTEGER DEFAULT 0;
 DECLARE finished INTEGER DEFAULT 0;
@@ -209,17 +210,25 @@ myLoop: LOOP
 	END IF;
     IF row_correct = 1 THEN
 		SET count = count + 1;
-        IF count = my_consecutive_codes THEN
-			CLOSE consecutiveTrue;
-			SELECT ist_id INTO @old_ist_id FROM AttendanceHistory WHERE attendanceID = my_attendanceID AND ist_id = my_ist_id LIMIT 1;
-			IF(@old_ist_id IS NULL) THEN
-            	INSERT IGNORE INTO AttendanceHistory(attendanceID, ist_id, success, manually) VALUES (my_attendanceID, my_ist_id, true, false);
-            END IF;
-			RETURN true;
-        END IF;
+		IF count > 1 THEN
+			IF row_sequence = prev_row_sequence + 1 THEN
+				/*ok*/
+				IF count = my_consecutive_codes THEN
+					CLOSE consecutiveTrue;
+					SELECT ist_id INTO @old_ist_id FROM AttendanceHistory WHERE attendanceID = my_attendanceID AND ist_id = my_ist_id LIMIT 1;
+						IF(@old_ist_id IS NULL) THEN
+		            		INSERT IGNORE INTO AttendanceHistory(attendanceID, ist_id, success, manually) VALUES (my_attendanceID, my_ist_id, true, false);
+		            	END IF;
+					RETURN true;
+		        END IF;
+			ELSE
+				SET count = 1;
+			END IF;
+		END IF;
 	ELSE
 		SET count = 0;
 	END IF;
+	SET prev_row_sequence = row_sequence;
 END LOOP myLoop;
 CLOSE consecutiveTrue;
 RETURN false;
