@@ -155,7 +155,7 @@ Code.prototype.validateCode = function(code_client){
 
 Code.prototype.insertStudent = function(ist_id){
 	if(!this.studentsList.includes(ist_id)){
-		this.studentsList.push(ist_id);
+		this.studentsList.unshift(ist_id);
 	}
 }
 
