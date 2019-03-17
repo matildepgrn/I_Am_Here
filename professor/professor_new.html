@@ -62,7 +62,7 @@
 		<div style="text-align: left">
 			<a onclick="switchView(0);"	class="previous round">&#8249;</a>
 		</div>
-
+		
 		<table id="studentsTable">
 			<tr>
 				<th>IST ID</th>
@@ -284,15 +284,17 @@ function manuallyRemoveStudent(button_element) {
 	button_element.parentElement.parentElement.classList.add('removedStyle');
 	var ist_id = button_element.parentElement.parentElement.ist_id;
 	var attendanceID = button_element.parentElement.parentElement.parentElement.attendanceID;
-	removeStudent('/api/manuallyRemoveStudent?i='+ist_id+'&a='+attendanceID, button_element);
+	removeStudent('/api/manuallyRemoveStudent?i='+ist_id+'&a='+attendanceID, button_element, attendanceID);
 }
 
-function removeStudent(url, button_element) {
+function removeStudent(url, button_element, attendanceID) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				button_element.disabled=true;
+				// to reload the page
+				loadStudents('/api/getattendancehistory?rid='+attendanceID);
 			} else {
 				console.log("Error removing student:", this.status);
 				alert("Error removing student. Try again please.");
