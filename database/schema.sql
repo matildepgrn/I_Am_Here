@@ -254,14 +254,10 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE GetFingerprintInfo(my_ist_id varchar(255), my_attendanceID int)
 BEGIN
-	SELECT distinct f.ip, f.useragent
-		FROM FingerprintData f, Attendance a, AttendanceHistory ah
-        WHERE
-			a.attendanceID = my_attendanceID AND
-			ah.attendanceID = my_attendanceID AND
-            ah.attendanceID = a.attendanceID AND
-            f.ist_id = my_ist_id AND
-            ah.ist_id = my_ist_id;
+SELECT distinct f.ip, f.useragent
+	FROM FingerprintData f
+		WHERE f.ist_id = my_ist_id AND
+				f.attendanceID = my_attendanceID;
 END
 //
 DELIMITER ;
