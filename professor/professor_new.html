@@ -279,7 +279,7 @@ function addStudent(table, template, ist_id, name, studentCheating) {
 
 	tds[1].onclick = function() {
 		var table = document.getElementById("studentsTable");
-		loadFingerprint("/api/fingerprint?f="+table.attendanceID+"&i="+this.ist_id);
+		loadFingerprint("/api/fingerprint?f="+table.attendanceID+"&i="+this.parentElement.ist_id);
 		switchView(2);
 	};
 
