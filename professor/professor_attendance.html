@@ -153,6 +153,8 @@
 
 <script>
 
+var students_count = 0;
+
 function goTo(url) {
 	window.location.replace(url);
 }
@@ -240,8 +242,9 @@ function updateStatus(jsonStr) {
 	code_element.innerHTML = json.current_code;
 	var showStudents = document.getElementById("showStudents");
 	var count = document.getElementById("studentsCount");
-	count.innerHTML = json.studentsList.length;
-	showStudents.innerHTML = json.studentsList.join('\n');
+	students_count += json.studentsList.length;
+	count.innerHTML = students_count;
+	showStudents.innerHTML = json.studentsList.join('\n') + showStudents.innerHTML;
 	if(json.current_code == "Expired") {
 		code_element.className = "expired"; // EXPIRED class
 	} else {

@@ -74,12 +74,15 @@ Code.prototype.customizeTest = function(num_char, code_type, time, consecutive_c
 } 
 
 Code.prototype.status = function() {
+	
+	var old_studentsList = this.studentsList.slice();
+	this.studentsList.length = 0;
 	return {
 		current_code: this.current_code,
 		code_counter: this.code_counter,
 		time_ms: this.time_ms/1000,
 		running: this.running,
-		studentsList: this.studentsList
+		studentsList: old_studentsList
 	};
 }
 
