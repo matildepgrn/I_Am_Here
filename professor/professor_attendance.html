@@ -251,11 +251,11 @@ function updateStatus(jsonStr) {
 	}
 	var showStudents = document.getElementById("showStudents");
 	var count = document.getElementById("studentsCount");
-	if(json.studentsList) {
+	if(json.studentsList && json.studentsList.length > 0) {
 		students_count += json.studentsList.length;
+		count.innerHTML = students_count;
+		showStudents.innerHTML = json.studentsList.join('\n') + "\n" + showStudents.innerHTML;
 	}
-	count.innerHTML = students_count;
-	showStudents.innerHTML = json.studentsList.join('\n') + showStudents.innerHTML;
 	var time_remaining = document.getElementById("time_remaining");
 	time_remaining.innerHTML = json.time_ms;
 	if(json.time_ms <= 3) {
