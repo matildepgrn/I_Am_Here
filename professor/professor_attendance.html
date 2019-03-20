@@ -239,17 +239,23 @@ function loadStatus(url) {
 function updateStatus(jsonStr) {
 	var json = JSON.parse(jsonStr);
 	var code_element = document.getElementById("randomcode");
-	code_element.innerHTML = json.current_code;
+	if(json.current_code == undefined) {
+		code_element.innerHTML = "&#8635;";
+		code_element.classList.add("loadingIcon");
+	} else if(json.current_code == "Expired") {
+		code_element.classList.add("expired");
+	} else {
+		code_element.classList.remove("loadingIcon");
+		code_element.classList.remove("expired");
+		code_element.innerHTML = json.current_code;
+	}
 	var showStudents = document.getElementById("showStudents");
 	var count = document.getElementById("studentsCount");
-	students_count += json.studentsList.length;
+	if(json.studentsList) {
+		students_count += json.studentsList.length;
+	}
 	count.innerHTML = students_count;
 	showStudents.innerHTML = json.studentsList.join('\n') + showStudents.innerHTML;
-	if(json.current_code == "Expired") {
-		code_element.className = "expired"; // EXPIRED class
-	} else {
-		code_element.className = "";
-	}
 	var time_remaining = document.getElementById("time_remaining");
 	time_remaining.innerHTML = json.time_ms;
 	if(json.time_ms <= 3) {
