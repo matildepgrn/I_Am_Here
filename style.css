@@ -8,6 +8,13 @@ ul {
 	user-select: none;
 }
 
+#index {
+	position: absolute;
+	left: 50%;
+	-ms-transform: translate(-50%, -50%);	
+	transform: translate(-50%, 0%);
+}
+
 #historyTable tr td:nth-child(1),
 #historyTable tr td:nth-child(2),
 #historyTable tr td:nth-child(3){
