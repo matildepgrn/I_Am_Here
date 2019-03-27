@@ -34,8 +34,9 @@ ul {
 }
 
 th {
-	background: #a4c1da;
-	padding: 1px 3px;
+	background: #008CBA; /*#a4c1da;*/
+	color: #f3f3f3;
+	padding: 4px 4px;
 }
 
 #b_attendance {
@@ -102,7 +103,11 @@ table {
 	border-radius: 4px;
 }
 
-td, th {
+th {
+	border: 1px solid #bbb;
+}
+
+td {
 	border: 1px solid #ddd;
 }
 
@@ -217,6 +222,10 @@ td {
 
 button:disabled {
 	opacity: 0.5;
+}
+
+.historyTable tr:nth-child(even) {
+	background-color: #f2f2f2;
 }
 
 .Bigbutton {
