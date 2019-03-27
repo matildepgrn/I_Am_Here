@@ -8,6 +8,12 @@ ul {
 	user-select: none;
 }
 
+.clickable:hover {
+	background-color: #bfbfbf !important;
+	opacity: 1;
+	cursor: pointer;
+}
+
 #index {
 	position: absolute;
 	left: 50%;
@@ -39,15 +45,11 @@ th {
 	padding: 4px 4px;
 }
 
+
+
 #b_attendance {
 	margin-top: 10px;
 	margin-bottom: 10px;
-}
-
-.clickable:hover {
-	background-color: #bfbfbf;
-	opacity: 1;
-	cursor: pointer;
 }
 
 .clickable:active {
@@ -104,15 +106,19 @@ table {
 }
 
 th {
-	border: 1px solid #bbb;
+	border: 2px solid #bbb;
 }
 
 td {
 	border: 1px solid #ddd;
 }
 
+tr {
+	border: 2px solid #ddd;
+}
+
 .less_suspicious {
-	background: #ffffdd;
+	background: #ffffdd !important;
 }
 
 #fingerprintTable table td:nth-child(2) {
@@ -126,16 +132,17 @@ td {
 
 .less_suspicious:hover {
 	cursor:pointer;
-	background: #ffffee;
+	background: #ffffee !important;
+	border: 2px solid yellow !important;
 }
 
 .suspicious_tr {
-	background: #ffdddd;
+	background: #ffdddd !important;
 }
 
 .suspicious_tr:hover {
 	cursor:pointer;
-	background: #ffeeee;
+	background: #ffeeee !important;
 }
 
 #total_tr {
@@ -224,8 +231,8 @@ button:disabled {
 	opacity: 0.5;
 }
 
-.historyTable tr:nth-child(even) {
-	background-color: #f2f2f2;
+table tr:nth-child(even) {
+	background-color: #e6e6e6;
 }
 
 .Bigbutton {
