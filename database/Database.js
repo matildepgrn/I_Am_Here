@@ -195,8 +195,9 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 };
 
 database.prototype.insertFingerprintData = function(ist_id, useragent, ip, attendanceID, callback) {
-	var sql = "INSERT INTO FingerprintData(ist_id, useragent, ip, attendanceID) VALUES(?,?,?,?);";
-	var arg = [ist_id, useragent, ip, attendanceID];
+	//var sql = "INSERT INTO FingerprintData(ist_id, useragent, ip, attendanceID) VALUES(?,?,?,?);";
+	var sql = "CALL InsertFingerprint(?,?,?,?);"
+	var arg = [attendanceID, ist_id, ip, useragent];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
@@ -241,6 +242,13 @@ database.prototype.manuallyRemoveStudent = function(ist_id, attendanceID, callba
 
 database.prototype.checkFingerprint = function(attendanceID, callback) {
 	var sql = "CALL CheckFingerprint(?);";
+	//var sql = "SELECT distinct f.ist_id \
+			//	FROM FingerprintData f, Attendance a, AttendanceHistory ah \
+			//		WHERE f.attendanceID = ? AND \
+			//		ah.attendanceID = f.attendanceID AND \
+				//	a.attendanceID = f.attendanceID \
+				//group by f.ist_id, f.ip \
+				//	having count(*) > 1";
 	var arg = [attendanceID];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {

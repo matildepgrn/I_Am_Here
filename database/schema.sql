@@ -1,5 +1,6 @@
 use ist182083;
 
+drop PROCEDURE if exists InsertFingerprint;
 drop PROCEDURE if exists CheckFingerprint;
 drop PROCEDURE if exists InsertStudentToAttendance;
 drop PROCEDURE if exists GetFingerprintInfo;
@@ -290,6 +291,18 @@ SELECT distinct f.ist_id
             a.attendanceID = f.attendanceID
             group by f.ist_id, f.ip
             having count(*) > 1;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE InsertFingerprint(my_attendanceID int, my_ist_id varchar(255), my_ip varchar (255), my_usergante varchar(255))
+BEGIN
+DECLARE existsInTable INTEGER;
+SELECT ist_id INTO existsInTable from FingerprintData where attendanceID = my_attendanceID and ist_id = my_ist_id LIMIT 1;
+IF existsInTable IS NULL THEN
+	INSERT INTO FingerprintData(ist_id, useragent, ip, attendanceID) VALUES(my_ist_id,my_usergante,my_ip,my_attendanceID);
+END IF;
 END
 //
 DELIMITER ;
