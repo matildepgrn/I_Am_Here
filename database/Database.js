@@ -114,6 +114,21 @@ database.prototype.getUserName = function(ist_id, callback) {
 	})
 };
 
+database.prototype.getFingerprintDataTable = function(attendanceID, callback) {
+	var sql = "SELECT ist_id, ip FROM FingerprintData WHERE attendanceID = ?";
+	var arg = [attendanceID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error getting the fingerprint table.");
+			callback(err);
+		}
+		else{
+			callback(err, rows);
+		}
+	})
+};
+
 database.prototype.removeIAmHereToken = function(ist_id, callback) {
 	var sql = "UPDATE User SET iamhere_token = null WHERE ist_id = ?;";
 	var arg = [ist_id];

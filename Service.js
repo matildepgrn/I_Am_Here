@@ -109,6 +109,36 @@ Service.prototype.getFingerprintData = function(db, ist_id, attendanceID, callba
 	); 
 }
 
+Service.prototype.getFingerprintDataTable = function(db, attendanceID, callback) {
+	db.getFingerprintDataTable(attendanceID,
+		function(error, rows) {
+			if(error) {
+				callback(error);
+			} else {
+				let result = [];
+				// for each ist_id
+				for(let k = 0; k < rows.length; k++) {
+					let ist_id = rows[k].ist_id;
+					let ip = rows[k].ip;
+
+					// for each ip
+					for(let j = 0; j < rows.length; j++) {
+						let next_ip = rows[j].ip;
+						let next_istid = rows[j].ist_id;
+						if(next_ip == ip && next_istid != ist_id) {
+							if(!result.includes(next_istid)){
+								result.push(next_istid);
+							}
+						}
+					}
+				}
+				console.log(result);
+				callback(error, result);
+			}
+		}
+	); 
+}
+
 Service.prototype.isProfessor = function(db, ist_id, callback) {
 	db.isProfessor(ist_id,
 		function(error, is_professor) {
@@ -245,12 +275,15 @@ Service.prototype.getAttendanceHistory = function(db, ist_id, callback) {
 };
 
 Service.prototype.getClassHistory = function(db, attendanceID, callback) {
+	let thisService = this;
 	db.getClassHistory(attendanceID, function(err, rows) {
 		if(err) {
 			callback(err);
 		} else {
-			db.checkFingerprint(attendanceID,
+			thisService.getFingerprintDataTable(db, attendanceID, 
+			//db.checkFingerprint(attendanceID,
 				function(error, rows_fingerprints) {
+					console.log(rows_fingerprints);
 					if(error) {
 						callback(error);
 					} else {

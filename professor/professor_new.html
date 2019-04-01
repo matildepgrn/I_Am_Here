@@ -256,12 +256,7 @@ function showStudents(studentshistory) {
 };
 
 function isCheating(rows_fingerprints, ist_id) {
-	for(let i = 0; i < rows_fingerprints.length; i++) {
-		if(rows_fingerprints[i].ist_id == ist_id) {
-			return true;
-		}
-	}
-	return false;
+	return rows_fingerprints.includes(ist_id);
 }
 
 function addStudent(table, template, ist_id, name, studentCheating) {
