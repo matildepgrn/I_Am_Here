@@ -1,5 +1,6 @@
 use ist182083;
 
+drop procedure if exists RemoveAttendanceFromProfessor;
 drop PROCEDURE if exists InsertFingerprint;
 drop PROCEDURE if exists CheckFingerprint;
 drop PROCEDURE if exists InsertStudentToAttendance;
@@ -8,6 +9,7 @@ drop PROCEDURE if exists InsertProfessorandCourse;
 DROP FUNCTION IF EXISTS CheckAttendance;
 drop PROCEDURE if exists AttendanceMapping;
 drop PROCEDURE if exists RemoveStudentFromAttendance;
+drop table if exists AttendancesRemoved;
 drop table if exists StudentsManuallyRemoved;
 drop table if exists Evaluation;
 drop table if exists AttendanceHistory;
@@ -164,6 +166,14 @@ CREATE TABLE PCM1819 (
 	FOREIGN KEY(ist_id) REFERENCES User(ist_id)
 );
 
+CREATE TABLE AttendancesRemoved (
+	ist_id								varchar(255),
+	attendanceID					int AUTO_INCREMENT,
+
+	PRIMARY KEY(attendanceID),
+    FOREIGN KEY(ist_id) REFERENCES Professor(ist_id)
+);
+
 DELIMITER //
 CREATE PROCEDURE RemoveStudentFromAttendance (my_ist_id varchar(255), my_attendanceID int)
 BEGIN
@@ -303,6 +313,15 @@ SELECT ist_id INTO existsInTable from FingerprintData where attendanceID = my_at
 IF existsInTable IS NULL THEN
 	INSERT INTO FingerprintData(ist_id, useragent, ip, attendanceID) VALUES(my_ist_id,my_usergante,my_ip,my_attendanceID);
 END IF;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE RemoveAttendanceFromProfessor(my_attendanceID int)
+BEGIN
+	INSERT INTO AttendancesRemoved(attendanceID)
+		VALUES (my_attendanceID);
 END
 //
 DELIMITER ;
