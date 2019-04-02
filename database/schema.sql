@@ -170,7 +170,7 @@ CREATE TABLE AttendancesRemoved (
 	ist_id								varchar(255),
 	attendanceID					int AUTO_INCREMENT,
 
-	PRIMARY KEY(attendanceID),
+ 	PRIMARY KEY(attendanceID),
     FOREIGN KEY(ist_id) REFERENCES Professor(ist_id)
 );
 
@@ -318,10 +318,10 @@ END
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE RemoveAttendanceFromProfessor(my_attendanceID int)
+CREATE PROCEDURE RemoveAttendanceFromProfessor(my_attendanceID int, my_ist_id varchar(255))
 BEGIN
-	INSERT INTO AttendancesRemoved(attendanceID)
-		VALUES (my_attendanceID);
+	INSERT INTO AttendancesRemoved(attendanceID, ist_id)
+		VALUES (my_attendanceID, my_ist_id);
 END
 //
 DELIMITER ;

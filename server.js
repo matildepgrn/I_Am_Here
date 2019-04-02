@@ -109,6 +109,7 @@ function handleRequest(req, res) {
 		case "/api/fingerprint":
 		case "/api/pcm1819attendance":
 		case "/api/manuallyRemoveStudent":
+		case "/api/manuallyRemoveAttendance":
 			disableCache(res);
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
@@ -146,11 +147,11 @@ function handleRequest(req, res) {
 							break;
 						case "/api/history":
 							service.getAttendanceHistory(db, ist_id,
-								function(error, rows) {
+								function(error, result) {
 									if(error) {
 										sendText(res, "Could not get attendande history.", 500);
 									} else {
-										sendJSON(res, rows);
+										sendJSON(res, result);
 									}
 								}
 							);
@@ -180,6 +181,19 @@ function handleRequest(req, res) {
 										sendText(res, "Could not manuallyRemoveStudent", 500);
 									} else{
 										sendText(res, "Student removed.");	
+									}
+								}
+							);
+							break;
+						case "/api/manuallyRemoveAttendance":
+							var attendanceID_int = parseInt(parsedURL.query.a);
+							var prof_id = parsedURL.query.i;
+							service.manuallyRemoveAttendance(db, attendanceID_int, prof_id,
+								function(error){
+									if(error) {
+										sendText(res, "Could not manuallyRemoveAttendance", 500);
+									} else{
+										sendText(res, "Attendance removed.");	
 									}
 								}
 							);

@@ -255,6 +255,21 @@ database.prototype.manuallyRemoveStudent = function(ist_id, attendanceID, callba
 	})
 };
 
+database.prototype.manuallyRemoveAttendance = function(attendanceID, ist_id, callback) {
+	var sql = "CALL RemoveAttendanceFromProfessor(?,?)";
+	var arg = [attendanceID, ist_id];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error removing attendance manually.", err);
+			callback(err);
+		}
+		else{
+			callback(err);
+		}
+	})
+};
+
 database.prototype.checkFingerprint = function(attendanceID, callback) {
 	var sql = "CALL CheckFingerprint(?);";
 	//var sql = "SELECT distinct f.ist_id \
@@ -321,7 +336,10 @@ database.prototype.getAttendanceHistory = function(ist_id, callback) {
 			console.log("Error in getAttendanceHistory:", err);
 			callback(err);
 		} else {
-			callback(err, rows);
+			var res = {};
+			res.rows = rows;
+			res.ist_id = ist_id;
+			callback(err, res);
 		}
 	})
 };

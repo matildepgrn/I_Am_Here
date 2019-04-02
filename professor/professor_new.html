@@ -32,7 +32,8 @@
 				<th colspan="2">Code</th>
 				<th rowspan="2">Time</th>
 				<th rowspan="2">Consecutive codes</th>
-				<th rowspan="2"># Students</th> 
+				<th rowspan="2"># Students</th>
+				<th rowspan="2"></th>
 			</tr>
 			<tr>
 				<th>Type</th>
@@ -48,6 +49,7 @@
 					<td></td>
 					<td></td>
 					<td></td>
+					<td title="Remove attendance"><button onclick="return manuallyRemoveAttendance(this, event)">-</button></td>
 				</tr>
 			</template>
 
@@ -162,9 +164,13 @@ function loadHistory(url) {
 	xhttp.send();
 }
 
-function showHistory(history) {
+function showHistory(history_wrapper) {
 	var template = document.getElementById("historyTemplate");
 	var table = document.getElementById("historyTable");
+	var history = history_wrapper.rows;
+	table.ist_id = history_wrapper.ist_id;
+
+	removeTrs(table.getElementsByTagName("tr"));
 
 	for(let i = 0; i < history.length; i++) {
 		addHistory(table, template, history[i].attendanceID, i+1, history[i].date, history[i].code_type, history[i].code_length, history[i].total_time_s, history[i].consecutive_codes, history[i].count);
@@ -178,7 +184,7 @@ function addHistory(table, template, attendanceID, classcounter, date, code_type
 
 	tr_clone.myattendanceID = attendanceID;
 
-	for(let x = 0; x < tds.length; x++) {
+	for(let x = 0; x < tds.length - 1; x++) {
 		tds[x].innerText = arguments[x+3];
 	}
 
@@ -286,6 +292,36 @@ function manuallyRemoveStudent(button_element) {
 	var ist_id = button_element.parentElement.parentElement.ist_id;
 	var attendanceID = button_element.parentElement.parentElement.parentElement.attendanceID;
 	removeStudent('/api/manuallyRemoveStudent?i='+ist_id+'&a='+attendanceID, button_element, attendanceID);
+}
+
+function manuallyRemoveAttendance(button_element, event) {
+
+	if(confirm("Are you sure you want to delete this attendance?")) {
+		var attendanceID = button_element.parentElement.parentElement.myattendanceID;
+		var prof_id = button_element.parentElement.parentElement.parentElement.ist_id;
+		removeAttendance('api/manuallyRemoveAttendance?a='+attendanceID+'&i='+prof_id, button_element, attendanceID);
+	}
+
+	event.preventDefault();
+}
+
+function removeAttendance(url, button_element, attendanceID) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				button_element.disabled=true;
+				loadHistory("/api/history");
+				switchView(0);
+			} else {
+				console.log("Error removing attendance:", this.status);
+				alert("Error removing attendance. Try again please.");
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
 }
 
 function removeStudent(url, button_element, attendanceID) {

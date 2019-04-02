@@ -97,6 +97,14 @@ Service.prototype.manuallyRemoveStudent = function(db, ist_id, attendanceID, cal
 	); 
 }
 
+Service.prototype.manuallyRemoveAttendance = function(db, attendanceID, ist_id, callback) {
+	db.manuallyRemoveAttendance(attendanceID, ist_id,
+		function(error) {
+			callback(error);
+		}
+	); 
+}
+
 Service.prototype.getFingerprintData = function(db, ist_id, attendanceID, callback) {
 	db.getFingerprintData(ist_id, attendanceID,
 		function(error, rows) {
@@ -132,7 +140,6 @@ Service.prototype.getFingerprintDataTable = function(db, attendanceID, callback)
 						}
 					}
 				}
-				console.log(result);
 				callback(error, result);
 			}
 		}
@@ -265,11 +272,11 @@ Service.prototype.selectCourseInfo = function(db, ist_id, callback) {
 };
 
 Service.prototype.getAttendanceHistory = function(db, ist_id, callback) {
-	db.getAttendanceHistory(ist_id, function(err, rows) {
+	db.getAttendanceHistory(ist_id, function(err, res) {
 		if(err) {
 			callback(err);
 		} else {
-			callback(err, rows);
+			callback(err, res);
 		}
 	});
 };
@@ -283,7 +290,6 @@ Service.prototype.getClassHistory = function(db, attendanceID, callback) {
 			thisService.getFingerprintDataTable(db, attendanceID, 
 			//db.checkFingerprint(attendanceID,
 				function(error, rows_fingerprints) {
-					console.log(rows_fingerprints);
 					if(error) {
 						callback(error);
 					} else {
