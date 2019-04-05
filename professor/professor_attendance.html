@@ -264,6 +264,8 @@ function updateStatus(jsonStr) {
 		students_count += json.studentsList.length;
 		count.innerHTML = students_count;
 		showStudents.innerHTML = json.studentsList.join('\n') + "\n" + showStudents.innerHTML;
+	} else {
+		count.innerHTML = 0;
 	}
 	var time_remaining = document.getElementById("time_remaining");
 	time_remaining.innerHTML = json.time_ms;
