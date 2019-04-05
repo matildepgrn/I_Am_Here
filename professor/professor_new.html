@@ -288,10 +288,12 @@ function addStudent(table, template, ist_id, name, studentCheating) {
 }
 
 function manuallyRemoveStudent(button_element) {
+	if(confirm("Are you sure you want to remove this students from this attendance?")) {
 	button_element.parentElement.parentElement.classList.add('removedStyle');
 	var ist_id = button_element.parentElement.parentElement.ist_id;
 	var attendanceID = button_element.parentElement.parentElement.parentElement.attendanceID;
 	removeStudent('/api/manuallyRemoveStudent?i='+ist_id+'&a='+attendanceID, button_element, attendanceID);
+	}
 }
 
 function manuallyRemoveAttendance(button_element, event) {
