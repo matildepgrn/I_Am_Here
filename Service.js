@@ -271,8 +271,8 @@ Service.prototype.selectCourseInfo = function(db, ist_id, callback) {
 	});
 };
 
-Service.prototype.getAttendanceHistory = function(db, ist_id, callback) {
-	db.getAttendanceHistory(ist_id, function(err, res) {
+Service.prototype.getAttendanceHistory = function(db, ist_id, courseID, callback) {
+	db.getAttendanceHistory(ist_id, courseID, function(err, res) {
 		if(err) {
 			callback(err);
 		} else {
@@ -349,14 +349,14 @@ Service.prototype.getUserName = function(db, ist_id, callback) {
 	); 
 }
 
-Service.prototype.getAttendanceRandomID = function(db, ist_id, code_type, code_length, total_time_s, consecutive_codes, callback) {
+Service.prototype.getAttendanceRandomID = function(db, ist_id, code_type, code_length, total_time_s, consecutive_codes, courseID, callback) {
 	var randomID;
 	do {
 		randomID = Math.floor(Math.random() * Math.floor(999999));
 	} while(codeByRandomID.has(randomID));
 	codeByRandomID.set(randomID, null);
 
-	db.generateRandomAttendanceCode(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes,
+	db.generateRandomAttendanceCode(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID,
 		function(error, attendanceID) {
 			var new_code = new Code(db, randomID, attendanceID);
 			new_code.customizeTest(code_length, code_type, total_time_s, consecutive_codes);

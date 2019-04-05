@@ -41,7 +41,7 @@ function handleRequest(req, res) {
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
 					if(is_professor) {
-						sendFile(res, 'professor/professor_new.html');
+						sendFile(res, 'professor/professor_classes.html');
 					} else {		//os alunos que sao profs nao vao ter acesso a pagina index.html dos alunos
 						sendFile(res, 'student/student_index.html');
 					}
@@ -146,7 +146,8 @@ function handleRequest(req, res) {
 							);
 							break;
 						case "/api/history":
-							service.getAttendanceHistory(db, ist_id,
+							var courseID = parsedURL.query.c;
+							service.getAttendanceHistory(db, ist_id, courseID,
 								function(error, result) {
 									if(error) {
 										sendText(res, "Could not get attendande history.", 500);
@@ -255,6 +256,7 @@ function handleRequest(req, res) {
 		case "/professor/new":
 		case "/professor/attendance":
 		case "/professor/courses":
+		case "/professor/classes":
 			makeProfessorLogin(res, cookies, parsedURL,
 				function(ist_id, is_professor){
 					if(false == is_professor){
@@ -272,6 +274,9 @@ function handleRequest(req, res) {
 							sendFile(res, 'professor/professor_attendance.html');
 							break;
 						case "/professor/courses":
+							sendFile(res, 'professor/professor_classes.html');
+							break;
+						case "/professor/classes":
 							sendFile(res, 'professor/professor_classes.html');
 							break;
 						default:
@@ -530,7 +535,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 						break;
 						case "/api/createAttendanceSession":
 							var json = JSON.parse(data);
-							service.getAttendanceRandomID(db, ist_id, json.code_type, json.code_length, json.time, json.consecutivecodes,
+							service.getAttendanceRandomID(db, ist_id, json.code_type, json.code_length, json.time, json.consecutivecodes, json.courseID,
 								function(error, randomID, attendanceID) {
 									var json_res = {};
 									json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;

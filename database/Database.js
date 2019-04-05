@@ -161,11 +161,10 @@ database.prototype.closeAttendance = function(randomID, callback) {
 	})
 };
 
-database.prototype.generateRandomAttendanceCode = function(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, callback) {
-	//var sql = "INSERT INTO Attendance(randomID, code_type, code_length, total_time_s, consecutive_codes) VALUES(?, ?, ?, ?, ?);";
-	var sql = "CALL AttendanceMapping(?,?,?,?,?,?,?,?);";
+database.prototype.generateRandomAttendanceCode = function(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, callback) {
+	var sql = "CALL AttendanceMapping(?,?,?,?,?,?,?,?,?);";
 	var date = moment().format('YYYY-MM-DD HH:mm:ss');
-	var arg = [ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, true];
+	var arg = [ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, true, courseID];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
@@ -321,10 +320,14 @@ database.prototype.createClass = function(ist_id, courseID, callback) {
 	})
 };
 
-database.prototype.getAttendanceHistory = function(ist_id, callback) {
-	var sql = "SELECT date, a.code_type, a.code_length, a.total_time_s, a.consecutive_codes, a.attendanceID, count(distinct ah.ist_id) as count FROM Attendance a, AttendanceHistory ah WHERE a.ist_id = ? and a.attendanceID = ah.attendanceID AND a.attendanceID NOT IN (SELECT ar.attendanceID FROM AttendancesRemoved ar where ar.ist_id = ?) group by a.attendanceID;";
+database.prototype.getAttendanceHistory = function(ist_id, courseID, callback) {
+	var sql = "SELECT date, a.code_type, a.code_length, a.total_time_s, a.consecutive_codes, a.attendanceID, \
+count(distinct ah.ist_id) as count FROM Attendance a, AttendanceHistory ah \
+WHERE a.ist_id = ? and a.attendanceID = ah.attendanceID AND a.courseID = ? AND a.attendanceID \
+NOT IN (SELECT ar.attendanceID FROM AttendancesRemoved ar where ar.ist_id = ?) \
+group by a.attendanceID";
 	
-	var arg = [ist_id, ist_id];
+	var arg = [ist_id, courseID, ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if(err) {
@@ -389,7 +392,9 @@ database.prototype.getClassHistory = function(attendanceID, callback) {
 };
 
 database.prototype.selectCourseInfo = function(ist_id, callback) {
-	var sql = "SELECT c.academicTerm, c.courseName, c.courseID FROM Professor as p, Course as c WHERE  p.ist_id = ? ORDER BY courseName;";
+	var sql = "select c.courseName, c.courseID from ProfessorTeachesCourse as p\
+					NATURAL JOIN Course as c where p.ist_id = ? \
+						and c.academicTerm = '2ºSemestre 2018/2019'";
 	var arg = [ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {

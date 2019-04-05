@@ -52,6 +52,11 @@ th {
 	margin-bottom: 10px;
 }
 
+#b_newcourse {
+	margin-top: 50px;
+	margin-bottom: 10px;
+}
+
 .clickable:active {
 	color: white;
 	background-color: #008CBA;

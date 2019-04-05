@@ -20,7 +20,7 @@
 
 <div class="center" id="maincontainer">
 <div class="container" id="attendance_personalization">
-		<a href="/professor/new"	class="previous round">&#8249;</a>
+		<a href="/professor/new" id="goBackToHistoryTable" class="previous round">&#8249;</a>
 		
 		<h3 style="text-align: center">
 			Personalize the attendance checking:
@@ -153,9 +153,18 @@
 
 <script>
 
+const urlParams = new URLSearchParams(window.location.search);
+let courseID = urlParams.get("c");
+
+if(courseID && courseID != 'undefined') {
+	var goBackToHistoryTable = document.getElementById("goBackToHistoryTable");
+	goBackToHistoryTable.href += "?c=" + courseID;
+}
+
 var students_count = 0;
 
 function goTo(url) {
+	url += window.location.search;
 	window.location.replace(url);
 }
 
@@ -329,6 +338,10 @@ function sendForm(){
 	var formEl = document.getElementById("formId");
 	var data = new FormData(formEl);
 	var o = {};
+
+	if(courseID && courseID != 'undefined') {
+		o.courseID = courseID;
+	}
 
 	for(var e of data) {
 		o[e[0]] = e[1];

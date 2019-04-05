@@ -12,8 +12,6 @@
 
 <ul>
 	<li style="float:left"><span class="logoname" >I Am Here!</span></li>
-	<li style="float:left" class="current"><a href="/professor/courses">Courses</a></li>
-	<li style="float:left"><a href="/professor/attendance">Attendance</a></li>
 
 	<li style="float:right"><a href="/logout">Log Out</a></li>
 	<li style="float:right"><span class="name" id="IST_NAME"></span></li>
@@ -28,108 +26,45 @@
 			(select a course to start the attendance)
 		</h6>
 
-		<table id="courseListTable">
+		<table id="courseListTable" class="clickable">
 			<template id="courseListTemplate">
 				<tr class="courserow">
 					<td class="coursename"></td>
+					<td class="courseid"></td>
 				</tr>
 			</template>
 		</table>
+
+		<button id="b_newcourse" type="button"
+		onclick=""
+		title="Create new course">New course
+		</button>
 	</center>
 </div>
 
 <center>
 
-
-<div class="center" id="classTable" style="display:none">
-<div class="container" >
-	<div style="text-align: left">
-		<a onclick="switchView(0);"	class="previous round" id="back_qrcode">&#8249;</a>
-	</div>
-	
-	<h3 id="courseName_2">
-	</h3>
-
-	
-	<table id="courseHistoryTable">
-		<tr>
-			<th>Class #</th>
-			<th>Date</th>
-			<th>Students attending</th>
-		</tr>
-		<template id="courseHistoryTemplate">
-		<tr>
-			<td class="classnumber">1</td>
-			<td class="classdate"></td>
-			<td class="studentsPresent"><a class="w3-button w3-circle w3-small w3-black" onclick="switchView(3)">&#9654;</td>
-		</tr>
-		</template>
-	</table>
-
-</div>
-</div>
-
-
-<div class="center" id="maincontainer" style="display:none">
-<div class="container" id="studentsTable">
-	<div style="text-align: left">
-		<a onclick=""	class="previous round" id="back_qrcode">&#8249;</a>
-	</div>
-		<h3 class="classNumber">
-			Present in class: 
-		</h3>
-
-		<template>
-			<table>
-				<tr>
-					<th>IST ID</th>
-					<th>Name</th>
-				</tr>
-
-				<tr>
-					<td class="studentID"></td>
-					<td class="studentName"></td>
-				</tr>
-			</table>
-		</template>
-
-</div>
-</div>
-
-
 <script>
+
+document.getElementById("b_newcourse").disabled = true;
 
 // COURSES
 
-function addCourse(table, template, coursename, academicTerm, courseid) {
+function addCourse(table, template, coursename, courseID) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
-	var el_coursename = tr_clone.getElementsByClassName("coursename")[0];
+	var tds = tr_clone.children;
 
-	el_coursename.innerText = coursename;
+	tr_clone.mycourseid = courseID;
 
-	tr_clone.mycourseid = coursename;
+	for(let x = 0; x < tds.length; x++) {
+		tds[x].innerText = arguments[x+2];
+	}
 
 	tr_clone.onclick = function() {
-		//getCourseInfo(this.mycourseid);
-		document.getElementById("courseName_2").innerHTML = this.mycourseid;
-		switchView(1);
+		window.location.replace("/professor/new?c=" + this.mycourseid);
 	};
 
 	table.appendChild(tr_clone);
-}
- 
-function getCourseInfo(courseid) {		// envia coursename para o server
-	var url = "/api/courseInfo";
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4 && this.status == 200) {
-			var json = JSON.parse(this.responseText);
-			document.getElementsByClassName("coursename").innerHTML = json.coursename;
-		}
-	};
-
-	xhttp.open("POST", url, true);
-	xhttp.send(json);
 }
 
 function showCourses(courses) {
@@ -137,7 +72,7 @@ function showCourses(courses) {
 	var table = document.getElementById("courseListTable");
 
 	for(let i = 0; i < courses.length; i++) {
-		addCourse(table, template, courses[i].courseName, courses[i].academicTerm, courses[i].courseID);
+		addCourse(table, template, courses[i].courseName, courses[i].courseID);
 	}
 }
 
@@ -159,76 +94,6 @@ function loadCourses(url) {
 	xhttp.send();
 }
 
-// CLASSES
-
-function loadClasses(url) {
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4) {
-			if(this.status == 200) {
-				var classes = JSON.parse(this.responseText);
-				showClasses(classes);
-			} else {
-				//todo
-				console.log("Error loading courses:", this.status);
-			}
-		}
-	};
-
-	xhttp.open("GET", url, true);
-	xhttp.send();
-}
-
-function showClasses(classes) {
-	var template = document.getElementById("courseHistoryTemplate");
-	var table = document.getElementById("courseHistoryTable");
-
-	for(let i = 0; i < classes.length; i++) {
-		addClass(table, template, classes[i].date, classes[i].studentsPresent);
-	}
-}
-
-function addClase(table, template, date, studentsPresent) {
-	var tr_clone = template.content.querySelector("tr").cloneNode(true);
-	var el_studentspresent = tr_clone.getElementsByClassName("studentsPresent")[0];
-	var el_classdate = tr_clone.getElementsByClassName("classdate")[0];
-
-	el_studentspresent.innerText = studentspresent;
-	el_classdate.innerText = classdate;
-
-	tr_clone.myclassid = "";
-
-	tr_clone.onclick = function() {
-		//document.getElementById("courseName_2").innerHTML = this.myclassid;
-		switchView(2);
-	};
-
-	table.appendChild(tr_clone);
-}
-
-function switchView(arg){
-	switch(arg) {
-		case 0:
-			document.getElementById("container1").style.display = "";
-			document.getElementById("classTable").style.display = "none";
-			document.getElementById("studentsTable").style.display = "none";
-			break;
-		case 1:
-			document.getElementById("container1").style.display = "none";
-			document.getElementById("classTable").style.display = "";
-			document.getElementById("studentsTable").style.display = "none";
-			break;
-		case 2:
-			document.getElementById("container1").style.display = "none";
-			document.getElementById("classTable").style.display = "none";
-			document.getElementById("studentsTable").style.display = "";
-			break;
-		default:
-			console.log("unknown arg", arg);
-			break;
-	}
-}
-
 function loadName(url) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -247,6 +112,5 @@ function loadName(url) {
 
 loadName("/api/name");
 loadCourses("/api/courses");
-loadClasses("/api/classes");
 
 </script>

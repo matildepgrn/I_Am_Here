@@ -18,14 +18,16 @@
 	<li style="float:right"><span class="name" id="IST_NAME">Name</span></li>
 </ul>
 
-<div class="container" id="showHistoryofProfessor">
+<div class="container" id="showHistoryofProfessor">	
 	<center class="center">
+
+	<a href="/professor/classes" class="previous round">&#8249;</a>
 		
-		<button id="b_attendance" type="button"
-		onclick="goTo('/professor/attendance')"
+	<button id="b_attendance" type="button"
+		onclick="goTo('/professor/attendance?c='+courseID)"
 		title="Generate a new sequence">Start new attendance</button>
 
-		<table id="historyTable">
+	<table id="historyTable">
 			<tr>
 				<th rowspan="2">Class #</th>
 				<th rowspan="2">Date</th>
@@ -55,6 +57,8 @@
 
 
 		</table>
+
+		<p id="historyTable_error"></p>
 
 	</center>
 </div>
@@ -142,11 +146,24 @@
 
 <script>
 
+const urlParams = new URLSearchParams(window.location.search);
+let courseID = urlParams.get("c");
+let historyTable_error = document.getElementById("historyTable_error");
+if(courseID) {
+	historyTable_error.innerHTML = "";
+	loadHistory(courseID);
+} else {
+	historyTable_error.innerHTML = "CourseID not defined.";
+	document.getElementById("historyTable").style.display = "none";
+	document.getElementById("b_attendance").style.display = "none";
+}
+
 function goTo(url) {
 	window.location.replace(url);
 }
 
-function loadHistory(url) {
+function loadHistory(courseID) {
+	let url = "/api/history?c="+courseID;
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
@@ -313,7 +330,7 @@ function removeAttendance(url, button_element, attendanceID) {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				button_element.disabled=true;
-				loadHistory("/api/history");
+				loadHistory();
 				switchView(0);
 			} else {
 				console.log("Error removing attendance:", this.status);
@@ -450,6 +467,5 @@ function switchView(arg){
 }
 
 loadName("/api/name");
-loadHistory("/api/history");
 
 </script>

@@ -72,6 +72,7 @@ CREATE TABLE Class (
 CREATE TABLE Attendance (
 	ist_id								varchar(255),
 	attendanceID					int AUTO_INCREMENT,
+    courseID							varchar(255),
 	randomID						int,
 	code_type						varchar(255),
 	code_length						int,
