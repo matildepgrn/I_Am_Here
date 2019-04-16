@@ -91,6 +91,10 @@
 			<tr title="ist_id">
 				<td>
 					<input id="inputadd_student" name="ist_id" placeholder="IST ID (ist1XXXXX)">
+					<select name="ontime" required>
+						<option value="ontime">On time</option>
+						<option value="late" selected="selected">Late</option>
+					</select>
 					<button id="add_student" type="button" onclick="sendForm();" 
 							title="">Add student</button>
 				</td>

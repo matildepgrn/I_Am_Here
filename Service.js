@@ -2,6 +2,7 @@ var fenix_api = require('./fenix_api');
 
 var Service = function() {};
 var Code = require('./Code');
+var CSV_SEPARATOR = "\t";
 
 var codeByRandomID = new Map();		// randomID --> code;
 
@@ -83,6 +84,14 @@ Service.prototype.insertFingerprintData = function(db, ist_id, useragent, ip, at
 
 Service.prototype.manuallyInsertStudent = function(db, ist_id, attendanceID, callback) {
 	db.manuallyInsertStudent(ist_id, attendanceID,
+		function(error) {
+			callback(error);
+		}
+	); 
+}
+
+Service.prototype.manuallyInsertLateStudent = function(db, ist_id, attendanceID, callback) {
+	db.manuallyInsertLateStudent(ist_id, attendanceID,
 		function(error) {
 			callback(error);
 		}

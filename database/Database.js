@@ -239,6 +239,21 @@ database.prototype.manuallyInsertStudent = function(ist_id, attendanceID, callba
 	})
 };
 
+database.prototype.manuallyInsertLateStudent = function(ist_id, attendanceID, callback) {
+	var sql = "CALL InsertLateStudentToAttendance(?,?)";
+	var arg = [ist_id, attendanceID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error inserting student manually.", err);
+			callback(err);
+		}
+		else{
+			callback(err);
+		}
+	})
+};
+
 database.prototype.manuallyRemoveStudent = function(ist_id, attendanceID, callback) {
 	var sql = "CALL RemoveStudentFromAttendance(?,?)";
 	var arg = [ist_id, attendanceID];

@@ -3,6 +3,7 @@ use ist182083;
 drop procedure if exists RemoveAttendanceFromProfessor;
 drop PROCEDURE if exists InsertFingerprint;
 drop PROCEDURE if exists CheckFingerprint;
+drop procedure if exists InsertLateStudentToAttendance;
 drop PROCEDURE if exists InsertStudentToAttendance;
 drop PROCEDURE if exists GetFingerprintInfo;
 drop PROCEDURE if exists InsertProfessorandCourse;
@@ -129,6 +130,7 @@ CREATE TABLE AttendanceHistory (
     ist_id						varchar(255),
 	success						boolean,
     manually						boolean,
+    late 						boolean,
     
     PRIMARY KEY(attendancehistoryID),
 	FOREIGN KEY(attendanceID) REFERENCES Attendance(attendanceID),
@@ -285,6 +287,23 @@ BEGIN
 	SELECT ist_id INTO existsInTable FROM AttendanceHistory WHERE ist_id = my_ist_id AND attendanceID = my_attendanceID LIMIT 1;
     IF existsInTable IS NULL THEN
 		INSERT IGNORE INTO AttendanceHistory (attendanceID, ist_id, success, manually)
+			VALUES(my_attendanceID, my_ist_id, true, true);
+	END IF;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE InsertLateStudentToAttendance(my_ist_id varchar(255), my_attendanceID int)
+BEGIN
+	DECLARE existsInTable INTEGER;
+        
+	INSERT IGNORE INTO User (ist_id)
+		VALUES (my_ist_id);
+		
+	SELECT ist_id INTO existsInTable FROM AttendanceHistory WHERE ist_id = my_ist_id AND attendanceID = my_attendanceID LIMIT 1;
+    IF existsInTable IS NULL THEN
+		INSERT IGNORE INTO AttendanceHistory (attendanceID, ist_id, success, late)
 			VALUES(my_attendanceID, my_ist_id, true, true);
 	END IF;
 END
