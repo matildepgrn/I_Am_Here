@@ -70,16 +70,19 @@
 		</div>
 
 		<div style="margin-right: 40px" class="historycolumn">
-		<p>Students on time:</p>
+		<!--<p>Students on time:</p>-->
 		<table id="studentsTable">
 			<tr>
 				<th>IST ID</th>
-				<th colspan="2">Name</th>
+				<th>Name</th>
+				<th>Late</th>
+				<th></th>
 
 			</tr>
 			
 			<template id="studentsTemplate">
 				<tr class="clickable">
+					<td></td>
 					<td></td>
 					<td></td>
 					<td><button onclick="manuallyRemoveStudent(this)">-</button></td>
@@ -91,10 +94,12 @@
 			<tr title="ist_id">
 				<td>
 					<input id="inputadd_student" name="ist_id" placeholder="IST ID (ist1XXXXX)">
-					<select name="ontime" required>
+					<!--<select name="ontime" required>
 						<option value="ontime">On time</option>
 						<option value="late" selected="selected">Late</option>
-					</select>
+					</select>-->
+
+					  <input id="late_checkbox" type="checkbox" name="late" value="late">Late
 					<button id="add_student" type="button" onclick="sendForm();" 
 							title="">Add student</button>
 				</td>
@@ -269,24 +274,33 @@ function showStudents(studentshistory) {
 	var rows = studentshistory.rows;
 	var rows_fingerprints = studentshistory.rows_fingerprints;
 	var rows_studentsThatTried = studentshistory.rows_studentsThatTried;
+	var rows_late = studentshistory.rows_late;
+	var rows_manually = studentshistory.rows_manually;
 	table.attendanceID = studentshistory.attendanceID;
 
 	for(let i = 0; i < rows.length; i++) {
-		var studentCheating = isCheating(rows_fingerprints, rows[i].ist_id);
-		addStudent(table, template, rows[i].ist_id, rows[i].name, studentCheating);
+		var studentCheating = isIn(rows_fingerprints, rows[i].ist_id);
+		var studentLate = isIn(rows_late, rows[i].ist_id);
+		var studentManually = isIn(rows_manually, rows[i].ist_id);
+		addStudent(table, template, rows[i].ist_id, rows[i].name, studentLate, studentManually, studentCheating);
 	}
 
 	for(let j = 0; j < rows_studentsThatTried.length; j++) {
-		addStudent(table_tried, template_tried, rows_studentsThatTried[j].ist_id, rows_studentsThatTried[j].name, false);
+		addStudent(table_tried, template_tried, rows_studentsThatTried[j].ist_id, rows_studentsThatTried[j].name, false, false, false);
 	}
 
 };
 
-function isCheating(rows_fingerprints, ist_id) {
-	return rows_fingerprints.includes(ist_id);
+function isIn(rows, ist_id) {
+	for(let x = 0; x < rows.length; x++) {
+		if(rows[x].ist_id == ist_id) {
+			return true;
+		}
+	}
+	return false;
 }
 
-function addStudent(table, template, ist_id, name, studentCheating) {
+function addStudent(table, template, ist_id, name, late, manually, studentCheating) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 
@@ -421,6 +435,7 @@ function sendForm(){
 		o[e[0]] = e[1];
 	}
 	
+	console.log(o);
 	var json_string = JSON.stringify(o);
 
 	var xhttp = new XMLHttpRequest();

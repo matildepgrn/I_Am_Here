@@ -129,6 +129,36 @@ database.prototype.getFingerprintDataTable = function(attendanceID, callback) {
 	})
 };
 
+database.prototype.getManuallyInsertedStudents = function(attendanceID, callback) {
+	var sql = "SELECT ist_id FROM AttendanceHistory WHERE attendanceID = ? and manually = 1";
+	var arg = [attendanceID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error getting the manually inserted students.");
+			callback(err);
+		}
+		else{
+			callback(err, rows);
+		}
+	})
+};
+
+database.prototype.getLateStudents = function(attendanceID, callback) {
+	var sql = "SELECT ist_id FROM AttendanceHistory WHERE attendanceID = ? and late = 1";
+	var arg = [attendanceID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error getting the late students.");
+			callback(err);
+		}
+		else{
+			callback(err, rows);
+		}
+	})
+};
+
 database.prototype.removeIAmHereToken = function(ist_id, callback) {
 	var sql = "UPDATE User SET iamhere_token = null WHERE ist_id = ?;";
 	var arg = [ist_id];

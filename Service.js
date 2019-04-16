@@ -155,6 +155,30 @@ Service.prototype.getFingerprintDataTable = function(db, attendanceID, callback)
 	); 
 }
 
+Service.prototype.getManuallyInsertedStudents = function(db, attendanceID, callback) {
+	db.getManuallyInsertedStudents(attendanceID,
+		function(error, rows) {
+			if(error) {
+				callback(error);
+			} else {
+				callback(error, rows);
+			}
+		}
+	); 
+}
+
+Service.prototype.getLateStudents = function(db, attendanceID, callback) {
+	db.getLateStudents(attendanceID,
+		function(error, rows) {
+			if(error) {
+				callback(error);
+			} else {
+				callback(error, rows);
+			}
+		}
+	); 
+}
+
 Service.prototype.isProfessor = function(db, ist_id, callback) {
 	db.isProfessor(ist_id,
 		function(error, is_professor) {
@@ -307,11 +331,30 @@ Service.prototype.getClassHistory = function(db, attendanceID, callback) {
 								if(error2) {
 									callback(error2);
 								} else {
-									var o = {attendanceID: attendanceID,
-										rows: rows,
-										rows_fingerprints: rows_fingerprints,
-										rows_studentsThatTried: rows_studentsThatTried};
-									callback(null, o);
+									thisService.getManuallyInsertedStudents(db, attendanceID,
+										function(error3, rows_manually) {
+											if(error3) {
+												callback(error3);
+											} else {
+												thisService.getLateStudents(db, attendanceID,
+													function(error4, rows_late) {
+														if(error4) {
+															callback(error4);
+														} else {
+															var o = {attendanceID: attendanceID,
+															rows: rows,
+															rows_fingerprints: rows_fingerprints,
+															rows_studentsThatTried: rows_studentsThatTried,
+															rows_manually: rows_manually,
+															rows_late: rows_late};
+															callback(null, o);
+														}
+													}
+
+												)
+											}
+										}
+									)
 								}
 							}
 						)

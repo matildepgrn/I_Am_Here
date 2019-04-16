@@ -547,9 +547,8 @@ function handlePost(req, res, cookies, parsedURL, data) {
 							break;
 						case "/api/addmanually":
 							var json = JSON.parse(data);
-							var info = json.ontime;
-							console.log(json);
-							if(info == "ontime") {
+							var isLate = json.late && json.late == "late";
+							if(!isLate) {			// on time
 								service.manuallyInsertStudent(db, json.ist_id, json.attendanceID,
 								function(error){
 									if(error) {
@@ -558,7 +557,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 										sendJSON(res, "Student mannually added", 200);
 									}
 								});
-							} else if(info == "late") {
+							} else {		// late
 								service.manuallyInsertLateStudent(db, json.ist_id, json.attendanceID,
 								function(error){
 									if(error) {
@@ -567,8 +566,6 @@ function handlePost(req, res, cookies, parsedURL, data) {
 										sendJSON(res, "Student mannually added", 200);
 									}
 								});
-							} else {
-								sendText(res, "Could not manually insert student", 500);
 							}
 							break;
 					}
