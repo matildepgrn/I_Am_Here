@@ -425,21 +425,25 @@ function sendForm(){
 
 	var xhttp = new XMLHttpRequest();
 	var url = "/api/addmanually";
-	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4 && this.status == 200) {
-			var json = JSON.parse(this.responseText);
-			var template = document.getElementById("studentsTemplate");
-			var table = document.getElementById("studentsTable");
-			addStudent(table, template, o.ist_id, "(loading)");
+	if(confirm("Are you sure you want to add this students?")) {
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				var json = JSON.parse(this.responseText);
+				var template = document.getElementById("studentsTemplate");
+				var table = document.getElementById("studentsTable");
+				addStudent(table, template, o.ist_id, "(loading)");
 
-			var inputadd_student = document.getElementById("inputadd_student");
-			inputadd_student.value = "";
-			loadStudents('/api/getattendancehistory?rid='+table.attendanceID);
-		}
-	};
+				var inputadd_student = document.getElementById("inputadd_student");
+				inputadd_student.value = "";
+				loadStudents('/api/getattendancehistory?rid='+table.attendanceID);
+			}
+		};
 
 	xhttp.open("POST", url, true);
 	xhttp.send(json_string);
+
+	}
+
 }
 
 function copyISTIDToAddStudent(button) {
