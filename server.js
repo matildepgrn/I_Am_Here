@@ -34,7 +34,16 @@ function handleRequest(req, res) {
 
 	switch(parsedURL.pathname) {
 		case "/api/H6YsZVWpIkXKeORd291yYLvEFfowzTcP3O5tRp9m/pcm1819_attendance.tsv":
-			sendFile(res, 'studentsattending.tsv', 'text/plain; charset=utf-8');
+			service.getAttendances(db,
+				function(error, result) {
+					if(error) {
+						sendText(res, "Could not load PCM1819 attendances.", 500);
+					} else {
+						sendFile(res, 'studentsattending.tsv', 'text/plain; charset=utf-8', result);
+					}
+
+				}
+				);
 			break;
 		case "/":
 		case "/index.html":
@@ -418,17 +427,23 @@ function sendText(res, text, status = 200) {
 	res.end();
 }
 
-function sendFile(res, filename, type = 'text/html') {
+function sendFile(res, filename, type = 'text/html', moreText = "") {
 	var filePath = path.join(__dirname, filename);
     var stat = fs.statSync(filePath);
 
     res.writeHead(200, {
         'Content-Type': type,
-        'Content-Length': stat.size
+        'Content-Length': stat.size + moreText.length
     });
 
     var readStream = fs.createReadStream(filePath);
-    readStream.pipe(res);
+    readStream.pipe(res, {end: moreText.length == 0});
+    if(moreText.length != 0){
+    	readStream.on("end", () => {
+    		res.write(moreText);
+    		res.end();
+    	});
+    }
 }
 
 function sendJSON(res, json, status = 200) {

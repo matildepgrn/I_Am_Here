@@ -185,9 +185,10 @@ function initStream(filename) {
 	return stream;
 }
 
+
 // Date Total_time_s Code_length Code_type Code_generated Code_input Correct Time_left_s
-function appendToFile(code_client) {
-	stream.write(new Date() + CSV_SEPARATOR +
+function appendToFile(rows) {
+	stream.write( + CSV_SEPARATOR +
 		this.INTERVAL/1000 + CSV_SEPARATOR +
 		this.NUM_CHAR + CSV_SEPARATOR +
 		this.CODE_TYPE + CSV_SEPARATOR +

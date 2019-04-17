@@ -436,5 +436,59 @@ Service.prototype.removeIAmHereToken = function(db, ist_id, callback) {
 	); 
 }
 
+Service.prototype.getAttendances = function(db, callback) {
+	db.getAttendances(function(error, rows) {
+			let result = appendToFile(rows);
+			callback(error, result);
+		}
+	);
+}
+
+function initStream(filename) {
+	var exists = false;
+	try {
+		fs.accessSync(filename, fs.constants.R_OK | fs.constants.W_OK);
+		exists = true;
+	} catch (err) {
+		exists = false;
+	}
+	var stream = fs.createWriteStream(filename, {flags:'a'});
+	if(exists == false) {
+		stream.write("prof" + CSV_SEPARATOR +
+			"student_nr" + CSV_SEPARATOR +
+			"student_name" + CSV_SEPARATOR +
+			"attended" + CSV_SEPARATOR +
+			"type" + CSV_SEPARATOR +
+			"class" + "\n"
+		);
+	}
+	return stream;
+}
+
+// prof student_nr student_name attended type class
+function appendToFile(rows) {
+	let ontime = "attended lecture";
+	let res = "";
+	for(i = 0; i < rows.length; i ++) {
+		let line = rows[0][i].ist_id + CSV_SEPARATOR +
+					rows[0][i].student_number + CSV_SEPARATOR +
+					rows[0][i].name + CSV_SEPARATOR +
+					ontime;
+		if(rows[0][i].late == 1) {
+			line += " (late)";
+		}
+		if(rows[0][i].manually = 0) {
+			line += CSV_SEPARATOR + CSV_SEPARATOR;
+		} else {
+			line += CSV_SEPARATOR + "M" + CSV_SEPARATOR;
+		}
+
+		line += rows[0][i].class + "\n";
+		res += line;
+	}
+	return res;
+
+}
+
 
 module.exports = Service;

@@ -485,4 +485,19 @@ function randomInt(size){
 	return crypto.randomBytes(size).toString('hex');
 };
 
+database.prototype.getAttendances = function(callback) {
+	var sql = "CALL ShowAttendances();";
+	var arg = [];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error getting attendances data", err);
+			callback(err);
+		}
+		else{
+			callback(err, rows);
+		}
+	})
+};
+
 module.exports = database;
