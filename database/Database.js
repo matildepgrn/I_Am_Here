@@ -495,7 +495,7 @@ database.prototype.getAttendances = function(callback) {
 			callback(err);
 		}
 		else{
-			callback(err, rows);
+			callback(err, rows[0]);
 		}
 	})
 };

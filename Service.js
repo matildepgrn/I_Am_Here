@@ -469,21 +469,24 @@ function initStream(filename) {
 function appendToFile(rows) {
 	let ontime = "attended lecture";
 	let res = "";
+	if(rows == undefined) {
+		return res;
+	}
 	for(i = 0; i < rows.length; i ++) {
-		let line = rows[0][i].ist_id + CSV_SEPARATOR +
-					rows[0][i].student_number + CSV_SEPARATOR +
-					rows[0][i].name + CSV_SEPARATOR +
+		let line = rows[i].ist_id + CSV_SEPARATOR +
+					rows[i].student_number + CSV_SEPARATOR +
+					rows[i].name + CSV_SEPARATOR +
 					ontime;
-		if(rows[0][i].late == 1) {
+		if(rows[i].late == 1) {
 			line += " (late)";
 		}
-		if(rows[0][i].manually = 0) {
+		if(rows[i].manually = 0) {
 			line += CSV_SEPARATOR + CSV_SEPARATOR;
 		} else {
 			line += CSV_SEPARATOR + "M" + CSV_SEPARATOR;
 		}
 
-		line += rows[0][i].class + "\n";
+		line += rows[i].class + "\n";
 		res += line;
 	}
 	return res;
