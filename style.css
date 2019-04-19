@@ -8,6 +8,10 @@ ul {
 	user-select: none;
 }
 
+#courseName_id {
+	font-weight: bold;	
+}
+
 .clickable:hover {
 	background-color: #bfbfbf !important;
 	opacity: 1;

@@ -18,10 +18,13 @@
 	<li style="float:right"><span class="name" id="IST_NAME">Name</span></li>
 </ul>
 
-<div class="container" id="showHistoryofProfessor">	
+<div class="container" id="showHistoryofProfessor">
+	<a href="/professor/classes" class="previous round" style="margin-left:100px;margin-top:5px">&#8249;</a>
+
 	<center class="center">
 
-	<a href="/professor/classes" class="previous round">&#8249;</a>
+	<h3 style="margin-top:-30px"><span id="courseName_id"></span></h3>
+	<h5>History Table</h5>
 		
 	<button id="b_attendance" type="button"
 		onclick="goTo('/professor/attendance?c='+courseID)"
@@ -157,6 +160,8 @@
 
 const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
+let courseName = urlParams.get("n");
+document.getElementById("courseName_id").innerHTML = courseName;
 let historyTable_error = document.getElementById("historyTable_error");
 if(courseID) {
 	historyTable_error.innerHTML = "";
@@ -277,6 +282,7 @@ function showStudents(studentshistory) {
 	var rows_late = studentshistory.rows_late;
 	var rows_manually = studentshistory.rows_manually;
 	table.attendanceID = studentshistory.attendanceID;
+	table.courseID = courseID;
 
 	for(let i = 0; i < rows.length; i++) {
 		var studentCheating = isIn(rows_fingerprints, rows[i].ist_id);
