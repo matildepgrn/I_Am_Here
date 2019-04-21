@@ -519,4 +519,22 @@ database.prototype.getStudentAttendanceHistory = function(ist_id, callback) {
 	})
 };
 
+database.prototype.getPCM1819AttendanceFlow = function(callback) {
+	var sql = "select pcm.std_number, pcm.name, count(distinct ah.attendanceID) as c \
+					from PCM1819 pcm \
+						join AttendanceHistory ah \
+							on ah.ist_id = pcm.ist_id \
+					group by ah.ist_id;";
+	var arg = [];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in selectCourseInfo:", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
 module.exports = database;
