@@ -444,6 +444,15 @@ Service.prototype.getAttendances = function(db, callback) {
 	);
 }
 
+Service.prototype.getStudentAttendanceHistory = function(db, ist_id, callback) {
+	db.getStudentAttendanceHistory(ist_id,
+		function(error, rows) {
+			callback(error, rows);
+		}
+	); 
+}
+
+
 function initStream(filename) {
 	var exists = false;
 	try {

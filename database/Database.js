@@ -500,4 +500,24 @@ database.prototype.getAttendances = function(callback) {
 	})
 };
 
+database.prototype.getStudentAttendanceHistory = function(ist_id, callback) {
+	var sql = "select distinct a.number, ah.late \
+				from Attendance a \
+					join AttendanceHistory ah \
+						on ah.attendanceID = a.attendanceID \
+				where ah.success = 1 \
+						and ah.ist_id = ?;";
+	var arg = [ist_id];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in selectCourseInfo:", err);
+			callback(err);
+		} else {
+			console.log(rows);
+			callback(err, rows);
+		}
+	})
+};
+
 module.exports = database;

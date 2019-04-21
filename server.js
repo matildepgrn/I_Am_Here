@@ -119,6 +119,7 @@ function handleRequest(req, res) {
 		case "/api/pcm1819attendance":
 		case "/api/manuallyRemoveStudent":
 		case "/api/manuallyRemoveAttendance":
+		case "/api/students/attendanceHistory":
 			disableCache(res);
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
@@ -204,6 +205,18 @@ function handleRequest(req, res) {
 										sendText(res, "Could not manuallyRemoveAttendance", 500);
 									} else{
 										sendText(res, "Attendance removed.");	
+									}
+								}
+							);
+							break;
+						case "/api/students/attendanceHistory":
+							var student_id = parsedURL.query.n;
+							service.getStudentAttendanceHistory(db, student_id,
+								function(error, rows){
+									if(error) {
+										sendText(res, "Could not get student's attendance history", 500);
+									} else{
+										sendJSON(res, rows);	
 									}
 								}
 							);

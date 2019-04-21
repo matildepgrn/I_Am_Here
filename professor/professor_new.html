@@ -74,6 +74,8 @@
 
 	<center class="center">
 
+		<h4>Class <span id="currentClass"></span></h4>
+
 		<div style="margin-right: 20px" class="historycolumn">
 		<!--<p>Students on time:</p>-->
 		<table id="studentsTable">
@@ -99,10 +101,6 @@
 			<tr title="ist_id">
 				<td>
 					<input id="inputadd_student" name="ist_id" placeholder="IST ID (ist1XXXXX)">
-					<!--<select name="ontime" required>
-						<option value="ontime">On time</option>
-						<option value="late" selected="selected">Late</option>
-					</select>-->
 
 					  <input id="late_checkbox" type="checkbox" name="late" value="late">Late
 					<button id="add_student" type="button" onclick="sendForm();" 
@@ -135,10 +133,15 @@
 </div>
 
 <div class="container" id="showFingerprintHistory" style="display: none">
+
+	<div style="text-align: left">
+		<a onclick="switchView(1);"	class="previous round"
+		style="margin-left:100px;margin-top:5px">&#8249;</a>
+	</div>
+
 	<center class="center">
-		<div style="text-align: left">
-			<a onclick="switchView(1);"	class="previous round">&#8249;</a>
-		</div>
+		<h3 style="margin-top:-30px"><span id="courseName_id"></span></h3>
+		<h5>Student's fingerprint</h5>
 
 		<table id="fingerprintTable">
 			<tr>
@@ -155,6 +158,25 @@
 
 
 		</table>
+
+
+		<h5 style="margin-top:30px">Has attended the following classes:</h5>
+
+		<table id="attendanceHistoryTable">
+			<tr>
+				<th>Class</th>
+				<th>Late</th>
+			</tr>
+			
+			<template id="attendanceHistoryTemplate">
+				<tr>
+					<td></td>
+					<td></td>
+				</tr>
+			</template>
+
+
+		</table>
 	</center>
 </div>
 
@@ -163,6 +185,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
 let courseName = urlParams.get("n");
+let curClass;
 document.getElementById("courseName_id").innerHTML = courseName;
 let historyTable_error = document.getElementById("historyTable_error");
 if(courseID) {
@@ -216,6 +239,7 @@ function addHistory(table, template, attendanceID, classcounter, date, code_type
 	var tds = tr_clone.children;
 
 	tr_clone.myattendanceID = attendanceID;
+	tr_clone.classcounter = classcounter;
 
 	for(let x = 0; x < tds.length - 1; x++) {
 		tds[x].innerText = arguments[x+3];
@@ -284,7 +308,10 @@ function showStudents(studentshistory) {
 	var rows_late = studentshistory.rows_late;
 	var rows_manually = studentshistory.rows_manually;
 	table.attendanceID = studentshistory.attendanceID;
+	table.classcounter = studentshistory.classcounter;
 	table.courseID = courseID;
+
+	//document.getElementById("currentClass") = table.classcounter;	
 
 	for(let i = 0; i < rows.length; i++) {
 		var studentCheating = isIn(rows_fingerprints, rows[i].ist_id);
@@ -324,6 +351,7 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 	tds[1].onclick = function() {
 		var table = document.getElementById("studentsTable");
 		loadFingerprint("/api/fingerprint?f="+table.attendanceID+"&i="+this.parentElement.ist_id);
+		loadStudentsAttendanceHistory("/api/students/attendanceHistory?n=" + this.parentElement.ist_id);
 		switchView(2);
 	};
 
@@ -406,6 +434,24 @@ function loadFingerprint(url) {
 	xhttp.send();
 }
 
+function loadStudentsAttendanceHistory(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				var attendance_history = JSON.parse(this.responseText);
+				showStudentsAttendanceHistory(attendance_history);
+			} else {
+				//todo
+				console.log("Error loading fingerprint:", this.status);
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
 function showFingerprint(fingerprint) {
 	var template = document.getElementById("fingerprintTemplate");
 	var table = document.getElementById("fingerprintTable");
@@ -417,7 +463,38 @@ function showFingerprint(fingerprint) {
 	} 
 };
 
+function showStudentsAttendanceHistory(attendance_history) {
+	var template = document.getElementById("attendanceHistoryTemplate");
+	var table = document.getElementById("attendanceHistoryTable");
+
+	removeTrs(table.getElementsByTagName("tr"));
+
+	for(let i = 0; i < attendance_history.length; i++) {
+		let isLate;
+		if(attendance_history[i].late == 1) {
+			isLate = true;
+		} else {
+			isLate = false;
+		}
+		addStudentsAttendanceHistory(table, template, attendance_history[i].number, isLate);
+	} 
+};
+
 function addFingerprint(table, template, useragent, ip) {
+	var tr_clone = template.content.querySelector("tr").cloneNode(true);
+	var tds = tr_clone.children;
+
+	for(let x = 0; x < tds.length; x++) {
+		tds[x].innerText = arguments[x+2];
+	}
+
+	tr_clone.onclick = function() {
+	};
+
+	table.appendChild(tr_clone);
+}
+
+function addStudentsAttendanceHistory(table, template, number, late) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 
