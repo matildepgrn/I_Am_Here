@@ -514,7 +514,6 @@ database.prototype.getStudentAttendanceHistory = function(ist_id, callback) {
 			console.log("Error in selectCourseInfo:", err);
 			callback(err);
 		} else {
-			console.log(rows);
 			callback(err, rows);
 		}
 	})

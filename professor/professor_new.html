@@ -476,7 +476,9 @@ function showStudentsAttendanceHistory(attendance_history) {
 		} else {
 			isLate = false;
 		}
-		addStudentsAttendanceHistory(table, template, attendance_history[i].number, isLate);
+		if(attendance_history[i].number != null) {
+			addStudentsAttendanceHistory(table, template, attendance_history[i].number, isLate);
+		}
 	} 
 };
 
