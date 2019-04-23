@@ -483,19 +483,19 @@ function appendToFile(rows) {
 	}
 	for(i = 0; i < rows.length; i ++) {
 		let line = rows[i].ist_id + CSV_SEPARATOR +
-					rows[i].student_number + CSV_SEPARATOR +
+					rows[i].std_number + CSV_SEPARATOR +
 					rows[i].name + CSV_SEPARATOR +
 					ontime;
 		if(rows[i].late == 1) {
 			line += " (late)";
 		}
-		if(rows[i].manually = 0) {
-			line += CSV_SEPARATOR + CSV_SEPARATOR;
-		} else {
+		if(rows[i].manually == 1) {
 			line += CSV_SEPARATOR + "M" + CSV_SEPARATOR;
+		} else {
+			line += CSV_SEPARATOR + CSV_SEPARATOR;
 		}
 
-		line += rows[i].class + "\n";
+		line += rows[i].number + "\n";
 		res += line;
 	}
 	return res;
