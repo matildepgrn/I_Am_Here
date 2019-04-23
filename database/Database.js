@@ -520,7 +520,7 @@ database.prototype.getStudentAttendanceHistory = function(ist_id, callback) {
 	})
 };
 
-database.prototype.getPCM1819AttendanceFlow = function(callback) {
+database.prototype.getPCM1819StudentsAttendanceFlow = function(callback) {
 	var sql = "select pcm.std_number, pcm.name, count(distinct ah.attendanceID) as c \
 					from PCM1819 pcm \
 						join AttendanceHistory ah \
@@ -530,7 +530,26 @@ database.prototype.getPCM1819AttendanceFlow = function(callback) {
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if(err) {
-			console.log("Error in selectCourseInfo:", err);
+			console.log("Error in getPCM1819StudentsAttendanceFlow", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
+database.prototype.getPCM1819AttendanceFlow = function(callback) {
+	var sql = "select a.number, count(distinct ah.ist_id) \
+				from Attendance a \
+					join AttendanceHistory ah \
+						on ah.attendanceID = a.attendanceID \
+				where a.number is not null \
+				group by a.number;";
+	var arg = [];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getPCM1819AttendanceFlow", err);
 			callback(err);
 		} else {
 			callback(err, rows);
