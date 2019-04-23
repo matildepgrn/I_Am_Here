@@ -440,7 +440,9 @@ database.prototype.getClassHistory = function(attendanceID, callback) {
 database.prototype.selectCourseInfo = function(ist_id, callback) {
 	var sql = "select c.courseName, c.courseID from ProfessorTeachesCourse as p\
 					NATURAL JOIN Course as c where p.ist_id = ? \
-						and c.academicTerm = '2ºSemestre 2018/2019'";
+						and c.academicTerm = '2ºSemestre 2018/2019' and \
+						c.courseName != 'Dissertação - Mestrado em Engenharia Informática e de Computadores' \
+						and c.courseName != 'Projecto de Mestrado em Engenharia Informática e de Computadores'";
 	var arg = [ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
