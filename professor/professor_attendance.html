@@ -90,9 +90,9 @@
 </div>
 
 <div id="attendance_links" style="display:none">
-	<a onclick="switchView(0)"	class="previous round" id="back_qrcode">&#8249;</a>
+	<a onclick="switchView(0)" style="margin-left:-135px;margin-top:-16px" class="previous round" id="back_qrcode">&#8249;</a>
 	
-	<div class="text-center" id="attendance_qrcode">
+	<div class="text-center" id="attendance_qrcode" style="margin-top:-10px">
 	</div>
 
 	<p class="text-center" id="attendance_link" style="font-size: 40px">
@@ -107,6 +107,9 @@
 	<p>Time remaining: <span id="time_remaining"></span>s</p>
 	<p>Insert <span id="view_consecutivecodes"></span> consecutive codes:</p>
 	<p><span id="randomcode"></span></p>
+
+	<div id="barra_remaining">
+	</div>
 
 	<p id="status"> </p>
 
@@ -220,6 +223,17 @@ function startAttendance() {
 	loadStatus('/api/getcode');
 }
 
+function timeRemaining(time, maxTime) {
+	var barra_remaining = document.getElementById("barra_remaining");
+	if(time == maxTime) {
+		barra_remaining.style.transition = "none";
+	} else {
+		barra_remaining.style.transition = "";
+	}
+
+	barra_remaining.style.width = (100*(time/maxTime)) + "%";
+}
+
 function stopTimer() {
 	if(timer) {
 		clearInterval(timer);	
@@ -269,6 +283,9 @@ function updateStatus(jsonStr) {
 	
 	var time_remaining = document.getElementById("time_remaining");
 	time_remaining.innerHTML = json.time_ms;
+
+	timeRemaining(json.time_ms, json.total_time_ms/1000);
+
 	if(json.time_ms <= 3) {
 		time_remaining.classList.add('time_remaining_short');
 	} else {
@@ -293,6 +310,7 @@ function switchView(arg){
 			document.getElementById("attendance_info").style.display = "none";
 			document.getElementById("maincontainer").classList.remove("left");
 			document.getElementById("maincontainer").classList.add("center");
+			document.getElementById("goBackToHistoryTable").style.display = "";
 			break;
 		case 1:
 			if(state == 2) {
@@ -300,6 +318,7 @@ function switchView(arg){
 			}
 			document.getElementById("back_qrcode").style.display = "";
 			document.getElementById("attendance_personalization").style.display = "none";
+			document.getElementById("goBackToHistoryTable").style.display = "none";
 			document.getElementById("buttons_startstop").style.display = "";
 			document.getElementById("button_finishAttendance").style.display = "none";
 			document.getElementById("attendance_links").style.display = "";
@@ -310,6 +329,7 @@ function switchView(arg){
 
 			break;
 		case 2:
+			document.getElementById("goBackToHistoryTable").style.display = "none";
 			document.getElementById("back_qrcode").style.display = "none";
 			document.getElementById("attendance_personalization").style.display = "none";
 			document.getElementById("buttons_startstop").style.display = "none";

@@ -82,7 +82,8 @@ Code.prototype.status = function() {
 		code_counter: this.code_counter,
 		time_ms: this.time_ms/1000,
 		running: this.running,
-		studentsList: old_studentsList
+		studentsList: old_studentsList,
+		total_time_ms: this.INTERVAL
 	};
 }
 

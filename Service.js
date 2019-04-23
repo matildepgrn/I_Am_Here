@@ -452,6 +452,14 @@ Service.prototype.getStudentAttendanceHistory = function(db, ist_id, callback) {
 	); 
 }
 
+Service.prototype.getPCM1819AttendanceFlow = function(db, callback) {
+	db.getPCM1819AttendanceFlow(
+		function(error, rows) {
+			callback(error, rows);
+		}
+	); 
+}
+
 
 function initStream(filename) {
 	var exists = false;

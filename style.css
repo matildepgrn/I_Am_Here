@@ -8,6 +8,12 @@ ul {
 	user-select: none;
 }
 
+#barra_remaining {
+	height: 25px;
+	background: black;
+	transition: width 1s linear;
+}
+
 #courseName_id {
 	font-weight: bold;	
 }
