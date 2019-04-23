@@ -77,7 +77,7 @@
 
 		<h4>Class #<span id="currentClass"></span></h4>
 
-		<div style="margin-right: 20px" class="historycolumn">
+		<div style="margin-right: 20px" class="historycolumn" id="historycolumnDiv">
 		<!--<p>Students on time:</p>-->
 		<table id="studentsTable">
 			<tr>
@@ -331,8 +331,10 @@ function showStudents(studentshistory, classcounter) {
 
 	if(rows_studentsThatTried.length == 0) {
 		document.getElementById("attempedstudentsDiv").style.display = "none";
+		document.getElementById("historycolumnDiv").classList.add("emptyColumn");
 	}
 	else {
+		document.getElementById("historycolumnDiv").classList.remove("emptyColumn");
 		for(let j = 0; j < rows_studentsThatTried.length; j++) {
 			addStudent(table_tried, template_tried, rows_studentsThatTried[j].ist_id, rows_studentsThatTried[j].name, false, false, false);
 	}

@@ -405,6 +405,10 @@ li a:hover {
 	min-width: 380px;
 }
 
+.emptyColumn {
+	float: none;
+}
+
 #attendancePersonalization{
 	margin: auto;
 }
