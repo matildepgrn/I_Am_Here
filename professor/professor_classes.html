@@ -55,14 +55,13 @@ function addCourse(table, template, coursename, courseID) {
 	var tds = tr_clone.children;
 
 	tr_clone.mycourseid = courseID;
-	tr_clone.mycoursename = coursename;
 
 	for(let x = 0; x < tds.length; x++) {
 		tds[x].innerText = arguments[x+2];
 	}
 
 	tr_clone.onclick = function() {
-		window.location.replace("/professor/new?c=" + this.mycourseid + "&n=" + this.mycoursename);
+		window.location.replace("/professor/new?c=" + this.mycourseid);
 	};
 
 	table.appendChild(tr_clone);

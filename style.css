@@ -412,4 +412,29 @@ li a:hover {
 .loadingIcon {
 	animation:spin 4s linear infinite;
 }
+
+#goUp_div {
+	position: fixed;
+	bottom: 0;
+	right: 100px;
+}
+
+#goUp_div a {
+	text-decoration: none;
+	color: #008CBA;
+	font-size: 30px;
+	padding: 10px;
+	background: #ddd;
+	padding-bottom: 20px;
+	line-height: 70px;
+}
+
+#goUp_div a:hover {
+	background: #eee;
+}
+
+#goUp_spacer {
+	
+}
+
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }

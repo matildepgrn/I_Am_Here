@@ -446,7 +446,7 @@ function sendFile(res, filename, type = 'text/html', moreText = "") {
 
     res.writeHead(200, {
         'Content-Type': type,
-        'Content-Length': stat.size + moreText.length
+        'Content-Length': stat.size + Buffer.byteLength(moreText, 'utf8') //moreText.length
     });
 
     var readStream = fs.createReadStream(filePath);

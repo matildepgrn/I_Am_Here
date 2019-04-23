@@ -66,6 +66,7 @@
 	</center>
 </div>
 
+<div>
 <div class="container" id="showStudentsHistory" style="display: none">
 	<div style="text-align: left;">
 		<a onclick="switchView(0);"	class="previous round"
@@ -74,7 +75,7 @@
 
 	<center class="center">
 
-		<h4>Class <span id="currentClass"></span></h4>
+		<h4>Class #<span id="currentClass"></span></h4>
 
 		<div style="margin-right: 20px" class="historycolumn">
 		<!--<p>Students on time:</p>-->
@@ -111,7 +112,7 @@
 		</div>
 
 
-		<div style="margin-left: 20px" class="historycolumn">
+		<div style="margin-left: 20px" class="historycolumn" id="attempedstudentsDiv">
 		<p>Students that failed to take the attendance:</p>
 		<table id="attempedstudentsTable">
 			<tr>
@@ -130,6 +131,15 @@
 		</div>
 
 	</center>
+
+</div>
+	<div id="goUp_spacer">
+		
+	</div>
+	<div id="goUp_div" title="Go up">
+		<a id="goUp" href="#top">&#9650;</a>
+	</div>
+
 </div>
 
 <div class="container" id="showFingerprintHistory" style="display: none">
@@ -178,15 +188,13 @@
 
 		</table>
 	</center>
+
 </div>
 
 <script>
 
 const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
-let courseName = urlParams.get("n");
-let curClass;
-document.getElementById("courseName_id").innerHTML = courseName;
 let historyTable_error = document.getElementById("historyTable_error");
 if(courseID) {
 	historyTable_error.innerHTML = "";
@@ -228,6 +236,8 @@ function showHistory(history_wrapper) {
 
 	removeTrs(table.getElementsByTagName("tr"));
 
+	document.getElementById("courseName_id").innerHTML = history[0].courseName;
+
 	for(let i = 0; i < history.length; i++) {
 		addHistory(table, template, history[i].attendanceID, i+1, history[i].date, history[i].code_type, history[i].code_length, history[i].total_time_s, history[i].consecutive_codes, history[i].count);
 	} 
@@ -246,7 +256,7 @@ function addHistory(table, template, attendanceID, classcounter, date, code_type
 	}
 
 	tr_clone.onclick = function() {
-		loadStudents("/api/getattendancehistory?rid="+this.myattendanceID);
+		loadStudents("/api/getattendancehistory?rid="+this.myattendanceID, this.classcounter);
 		switchView(1);
 	};
 
@@ -269,13 +279,13 @@ function loadName(url) {
 	xhttp.send();
 }
 
-function loadStudents(url) {
+function loadStudents(url, classcounter) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				var studentshistory = JSON.parse(this.responseText);
-				showStudents(studentshistory);
+				showStudents(studentshistory, classcounter);
 			} else {
 				//todo
 				console.log("Error loading students:", this.status);
@@ -293,7 +303,7 @@ function removeTrs(old_tr) {
 	}
 }
 
-function showStudents(studentshistory) {
+function showStudents(studentshistory, classcounter) {
 	var template = document.getElementById("studentsTemplate");
 	var table = document.getElementById("studentsTable");
 	var template_tried = document.getElementById("attempedstudentsTemplate");
@@ -308,10 +318,9 @@ function showStudents(studentshistory) {
 	var rows_late = studentshistory.rows_late;
 	var rows_manually = studentshistory.rows_manually;
 	table.attendanceID = studentshistory.attendanceID;
-	table.classcounter = studentshistory.classcounter;
 	table.courseID = courseID;
 
-	//document.getElementById("currentClass") = table.classcounter;	
+	document.getElementById("currentClass").innerHTML = classcounter;	
 
 	for(let i = 0; i < rows.length; i++) {
 		var studentCheating = isIn(rows_fingerprints, rows[i].ist_id);
@@ -320,8 +329,14 @@ function showStudents(studentshistory) {
 		addStudent(table, template, rows[i].ist_id, rows[i].name, studentLate, studentManually, studentCheating);
 	}
 
-	for(let j = 0; j < rows_studentsThatTried.length; j++) {
-		addStudent(table_tried, template_tried, rows_studentsThatTried[j].ist_id, rows_studentsThatTried[j].name, false, false, false);
+	if(rows_studentsThatTried.length == 0) {
+		document.getElementById("attempedstudentsDiv").style.display = "none";
+	}
+	else {
+		for(let j = 0; j < rows_studentsThatTried.length; j++) {
+			addStudent(table_tried, template_tried, rows_studentsThatTried[j].ist_id, rows_studentsThatTried[j].name, false, false, false);
+	}
+
 	}
 
 };

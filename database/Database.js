@@ -366,11 +366,12 @@ database.prototype.createClass = function(ist_id, courseID, callback) {
 };
 
 database.prototype.getAttendanceHistory = function(ist_id, courseID, callback) {
-	var sql = "SELECT date, a.code_type, a.code_length, a.total_time_s, a.consecutive_codes, a.attendanceID, \
-count(distinct ah.ist_id) as count FROM Attendance a, AttendanceHistory ah \
-WHERE a.ist_id = ? and a.attendanceID = ah.attendanceID AND a.courseID = ? AND a.attendanceID \
-NOT IN (SELECT ar.attendanceID FROM AttendancesRemoved ar where ar.ist_id = ?) \
-group by a.attendanceID";
+	var sql = "SELECT date, a.code_type, a.code_length, a.total_time_s, a.consecutive_codes, a.attendanceID, c.courseName, \
+					count(distinct ah.ist_id) as count FROM Attendance a, AttendanceHistory ah , Course c \
+					WHERE a.ist_id = ? and a.attendanceID = ah.attendanceID AND a.courseID = ? \
+						AND c.courseID = a.courseID AND a.attendanceID \
+							NOT IN (SELECT ar.attendanceID FROM AttendancesRemoved ar where ar.ist_id = ?) \
+					group by a.attendanceID";
 	
 	var arg = [ist_id, courseID, ist_id];
 
