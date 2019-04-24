@@ -8,6 +8,17 @@ ul {
 	user-select: none;
 }
 
+.toGreen {
+	color: green;
+	text-align: center;
+}
+
+.toRed {
+	color: red;
+	font-weight: bold;
+	text-align: center;
+}
+
 #barra_remaining {
 	height: 25px;
 	background: black;

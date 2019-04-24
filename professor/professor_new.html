@@ -88,7 +88,7 @@
 			<tr>
 				<th>IST ID</th>
 				<th>Name</th>
-				<th>Late</th>
+				<th>On time</th>
 				<th></th>
 
 			</tr>
@@ -366,8 +366,16 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 		tr_clone.classList.add("less_suspicious");
 	}
 
-	for(let x = 0; x < tds.length - 1; x++) {		// -1 por causa da coluna "extra"
+	for(let x = 0; x < tds.length - 2; x++) {		// -2 por causa da coluna "extra" e do "on time"
 		tds[x].innerText = arguments[x+2];
+	}
+
+	if(late) {			// coluna: on time
+		tds[2].classList.add("toRed");
+		tds[2].innerHTML = "X";	//cruz
+	} else {
+		tds[2].classList.add("toGreen");
+		tds[2].innerHTML = "&#10004;";	//check
 	}
 
 	tds[1].onclick = function() {
