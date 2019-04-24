@@ -30,9 +30,9 @@
 			(select a course to start the attendance)
 		</h6>
 
-		<table id="courseListTable" class="clickable">
+		<table id="courseListTable">
 			<template id="courseListTemplate">
-				<tr class="courserow">
+				<tr class="courserow clickable">
 					<td class="coursename"></td>
 					<td class="courseid"></td>
 				</tr>
@@ -43,12 +43,20 @@
 		onclick=""
 		title="Create new course">New course
 		</button>
+		<button id="b_invitedlecture" type="button"
+		onclick="goTo('/professor/newCourse')"
+		title="Create invited lecture">Invited lecture
+		</button>
 	</center>
 </div>
 
 <center>
 
 <script>
+
+function goTo(url) {
+	window.location.replace(url);
+}
 
 document.getElementById("b_newcourse").disabled = true;
 

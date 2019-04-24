@@ -415,7 +415,13 @@ li a:hover {
 	float: none;
 }
 
-#attendancePersonalization{
+#newCoursePersonalization {
+	margin: auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#attendancePersonalization {
 	margin: auto;
 }
 
