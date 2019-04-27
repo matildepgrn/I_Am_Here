@@ -30,6 +30,15 @@
 		<table id="attendancePersonalization">
 		<form id="formId" method="post">
 
+			<tr title="Title">
+				<td>Title:</td>
+				<td>
+					<input type="text" name="title" placeholder="e.g. Invited Lecture">
+					<span title="Invited lecture or extraordinary class">
+						<input type="checkbox" name="is_extra" value="is_extra"> Extra Class</span>
+				</td>
+			</tr>
+
 			<tr title="Type of code">
 				<td>Type:</td>
 				<td>
@@ -49,12 +58,12 @@
 						<option value="6" selected="selected">6</option>
 						<option value="7">7</option>
 						<option value="8">8</option>
-						</select>
+						</select> characters
 				</td>
 			</tr>
 			
 			<tr title="Time to type each code in seconds">	
-				<td>Time (in seconds) for each code:</td>
+				<td>Time for each code:</td>
 				<td>
 					<select name="time" required>
 						<option value="8">8</option>
@@ -62,7 +71,7 @@
 						<option value="10" selected="selected">10</option>
 						<option value="11">11</option>
 						<option value="12">12</option>
-					</select>
+					</select> seconds
 				</td>
 			</tr>
 

@@ -1,5 +1,6 @@
 use ist182083;
 
+drop procedure if exists GetAttendances;
 drop procedure if exists ShowAttendances;
 drop procedure if exists RemoveAttendanceFromProfessor;
 drop PROCEDURE if exists InsertFingerprint;
@@ -190,17 +191,21 @@ END
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE AttendanceMapping (ist_id varchar(255), randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, date varchar(255), open boolean, my_courseID varchar(255))
+CREATE PROCEDURE AttendanceMapping (ist_id varchar(255), randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, date varchar(255), open boolean, my_courseID varchar(255), my_is_extra varchar(255), my_title varchar(255))
 BEGIN
 DECLARE count_nr INTEGER;
-
-SELECT number INTO count_nr FROM Attendance a, AttendanceHistory ah 
+IF my_is_extra = 1 THEN
+	SET count_nr = null;
+ELSE
+	SELECT number INTO count_nr FROM Attendance a, AttendanceHistory ah 
 		WHERE a.ist_id = ist_id and a.attendanceID = ah.attendanceID AND a.courseID = my_courseID AND a.attendanceID 
 			NOT IN (SELECT ar.attendanceID FROM AttendancesRemoved ar where ar.ist_id = ist_id) 
 			group by a.attendanceID DESC limit 1;
+	SET count_nr = count_nr + 1;
+END IF;
 
-INSERT INTO Attendance(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, number, courseID)
-		VALUES(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, count_nr + 1, my_courseID);
+INSERT INTO Attendance(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, number, courseID, is_extra, title)
+		VALUES(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, count_nr, my_courseID, my_is_extra, my_title);
 
 SELECT LAST_INSERT_ID() AS attendanceID;
 END
@@ -367,6 +372,23 @@ select a.ist_id, ah.attendanceID, pcm.std_number, pcm.name, ah.late, ah.manually
 	where (a.ist_id = 'ist13909' or a.ist_id = 'ist13898')
 		and a.courseID = 'PCM26'
 		and a.attendanceID > 107;
+END
+//
+DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE GetAttendances(my_courseID varchar(255), my_ist_id varchar(255))
+BEGIN
+select a.ist_id, u.ist_id as std_number, u.name, ah.late, ah.manually, a.number
+	from Attendance a
+		join AttendanceHistory ah
+			on ah.attendanceID = a.attendanceID
+		join User u
+			on ah.ist_id = u.ist_id
+	where a.ist_id = my_ist_id
+		and a.courseID = my_courseID
+		order by a.attendanceID;
 END
 //
 DELIMITER ;

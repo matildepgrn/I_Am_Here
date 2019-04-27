@@ -401,14 +401,14 @@ Service.prototype.getUserName = function(db, ist_id, callback) {
 	); 
 }
 
-Service.prototype.getAttendanceRandomID = function(db, ist_id, code_type, code_length, total_time_s, consecutive_codes, courseID, callback) {
+Service.prototype.getAttendanceRandomID = function(db, ist_id, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, callback) {
 	var randomID;
 	do {
 		randomID = Math.floor(Math.random() * Math.floor(999999));
 	} while(codeByRandomID.has(randomID));
 	codeByRandomID.set(randomID, null);
 
-	db.generateRandomAttendanceCode(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID,
+	db.generateRandomAttendanceCode(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title,
 		function(error, attendanceID) {
 			var new_code = new Code(db, randomID, attendanceID);
 			new_code.customizeTest(code_length, code_type, total_time_s, consecutive_codes);
@@ -458,6 +458,41 @@ Service.prototype.getPCM1819AttendanceFlow = function(db, callback) {
 			callback(error, rows);
 		}
 	); 
+}
+
+Service.prototype.getAllAttendances = function(db, courseID, ist_id, callback) {
+	db.getAllAttendances(function(error, rows) {
+			let result = appendToFile_general(rows);
+			callback(error, result);
+		}
+	);
+}
+
+function appendToFile_general(rows) {
+	let ontime = "attended lecture";
+	let res = "";
+	if(rows == undefined) {
+		return res;
+	}
+	for(i = 0; i < rows.length; i ++) {
+		let line = rows[i].ist_id + CSV_SEPARATOR +
+					rows[i].std_number + CSV_SEPARATOR +
+					rows[i].name + CSV_SEPARATOR +
+					ontime;
+		if(rows[i].late == 1) {
+			line += " (late)";
+		}
+		if(rows[i].manually == 1) {
+			line += CSV_SEPARATOR + "M" + CSV_SEPARATOR;
+		} else {
+			line += CSV_SEPARATOR + CSV_SEPARATOR;
+		}
+
+		line += rows[i].number + "\n";
+		res += line;
+	}
+	return res;
+
 }
 
 

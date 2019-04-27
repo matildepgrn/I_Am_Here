@@ -40,10 +40,11 @@
 	<table id="historyTable">
 			<tr>
 				<th rowspan="2">Class #</th>
+				<th rowspan="2">Title</th>
 				<th rowspan="2">Date</th>
 				<th colspan="2">Code</th>
 				<th rowspan="2">Time</th>
-				<th rowspan="2">Consecutive codes</th>
+				<th rowspan="2" title="Consecutive Codes"># Codes</th>
 				<th rowspan="2"># Students</th>
 				<th rowspan="2"></th>
 			</tr>
@@ -55,6 +56,7 @@
 			<template id="historyTemplate">
 				<tr class="clickable">
 					<td class="classCounter"></td>
+					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -249,12 +251,17 @@ function showHistory(history_wrapper) {
 
 	document.getElementById("courseName_id").innerHTML = history[0].courseName;
 
+	let class_c = 0;
 	for(let i = 0; i < history.length; i++) {
-		addHistory(table, template, history[i].attendanceID, i+1, history[i].date, history[i].code_type, history[i].code_length, history[i].total_time_s, history[i].consecutive_codes, history[i].count);
+		if(history[i].is_extra != 1){
+			class_c++;
+		}
+		addHistory(table, template, history[i].attendanceID, class_c, history[i].title, history[i].date, history[i].code_type, history[i].code_length, history[i].total_time_s, history[i].consecutive_codes, history[i].count, history[i].is_extra);
+
 	} 
 };
 
-function addHistory(table, template, attendanceID, classcounter, date, code_type, code_length, total_time_s, consecutive_codes, count) {
+function addHistory(table, template, attendanceID, classcounter, title, date, code_type, code_length, total_time_s, consecutive_codes, count, is_extra) {
 
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
@@ -262,7 +269,9 @@ function addHistory(table, template, attendanceID, classcounter, date, code_type
 	tr_clone.myattendanceID = attendanceID;
 	tr_clone.classcounter = classcounter;
 
-	for(let x = 0; x < tds.length - 1; x++) {
+	tds[0].innerText = (is_extra == 1) ? "-" : classcounter;
+	
+	for(let x = 1; x < tds.length - 1; x++) {	//a partir de "date"
 		tds[x].innerText = arguments[x+3];
 	}
 

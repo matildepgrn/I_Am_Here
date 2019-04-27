@@ -41,7 +41,6 @@ function handleRequest(req, res) {
 					} else {
 						sendFile(res, 'studentsattending.tsv', 'text/plain; charset=utf-8', result);
 					}
-
 				}
 				);
 			break;
@@ -291,6 +290,7 @@ function handleRequest(req, res) {
 		case "/professor/attendance":
 		case "/professor/courses":
 		case "/professor/classes":
+		case "/professor/newCourse":
 			makeProfessorLogin(res, cookies, parsedURL,
 				function(ist_id, is_professor){
 					if(false == is_professor){
@@ -312,6 +312,9 @@ function handleRequest(req, res) {
 							break;
 						case "/professor/classes":
 							sendFile(res, 'professor/professor_classes.html');
+							break;
+						case "/professor/newCourse":
+							sendFile(res, 'professor/professor_newCourse.html');
 							break;
 						default:
 							console.log('This sould not happen');
@@ -446,8 +449,8 @@ function makeProfessorLogin(res, cookies, parsedURL, callback) {
 	);
 }
 
-function sendText(res, text, status = 200) {
-	res.writeHead(status, {'Content-Type': 'text/plain'});
+function sendText(res, text, status = 200, mime = 'text/plain') {
+	res.writeHead(status, {'Content-Type': mime});
 	res.write(text);
 	res.end();
 }
@@ -575,7 +578,9 @@ function handlePost(req, res, cookies, parsedURL, data) {
 						break;
 						case "/api/createAttendanceSession":
 							var json = JSON.parse(data);
-							service.getAttendanceRandomID(db, ist_id, json.code_type, json.code_length, json.time, json.consecutivecodes, json.courseID,
+							let is_extra = json.is_extra == "is_extra" ? 1 : 0;
+							
+							service.getAttendanceRandomID(db, ist_id, json.code_type, json.code_length, json.time, json.consecutivecodes, json.courseID, is_extra, json.title,
 								function(error, randomID, attendanceID) {
 									var json_res = {};
 									json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;
