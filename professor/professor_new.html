@@ -24,15 +24,18 @@
 
 <div class="container" id="showHistoryofProfessor">
 	<a href="/professor/classes" class="previous round" style="margin-left:100px;margin-top:5px">&#8249;</a>
-
 	<center class="center">
-
-	<h3 style="margin-top:-30px"><span id="courseName_id"></span></h3>
+	<div>
+		<h3 style="margin-top:-30px"><span id="courseName_id"></span></h3>
+	</div>
 	<h5>History Table</h5>
 		
 	<button id="b_attendance" type="button"
 		onclick="goTo('/professor/attendance?c='+courseID)"
 		title="Generate a new sequence">Start new attendance</button>
+	<button onclick="goTo()" title="History TSV" id="tsvlink_b">
+		&#11008;
+	</button>
 
 	<table id="historyTable">
 			<tr>
@@ -155,8 +158,9 @@
 	</div>
 
 	<center class="center">
-		<h3 style="margin-top:-30px"><span id="courseName_id"></span></h3>
-		<h5>Student's fingerprint</h5>
+		<h4 style="margin-top:-40px">
+			<span style="font-weight: bold" id="currentStudent"></span>'s fingerprint
+		</h4>
 
 		<table id="fingerprintTable">
 			<tr>
@@ -175,12 +179,12 @@
 		</table>
 
 
-		<h5 style="margin-top:30px">Has attended the following classes:</h5>
+		<h5 style="margin-top:30px">Attended the following classes:</h5>
 
 		<table id="attendanceHistoryTable" style="margin-bottom: 90px">
 			<tr>
 				<th>Class</th>
-				<th>Late</th>
+				<th>On time</th>
 			</tr>
 			
 			<template id="attendanceHistoryTemplate">
@@ -197,6 +201,8 @@
 </div>
 
 <script>
+
+document.getElementById("tsvlink_b").disabled = true;
 
 const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
@@ -362,6 +368,7 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 	var tds = tr_clone.children;
 
 	tr_clone.ist_id = ist_id;
+	tr_clone.std_name = name;
 	if(studentCheating){
 		tr_clone.classList.add("less_suspicious");
 	}
@@ -378,12 +385,16 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 		tds[2].innerHTML = "&#10004;";	//check
 	}
 
-	tds[1].onclick = function() {
-		var table = document.getElementById("studentsTable");
-		loadFingerprint("/api/fingerprint?f="+table.attendanceID+"&i="+this.parentElement.ist_id);
-		loadStudentsAttendanceHistory("/api/students/attendanceHistory?n=" + this.parentElement.ist_id);
+	tds[0].onclick = tds[1].onclick = function() {
+		let table = document.getElementById("studentsTable");
+		let tr = this.parentElement;
+		document.getElementById("currentStudent").innerHTML = tr.std_name;
+		loadFingerprint("/api/fingerprint?f="+table.attendanceID+"&i="+tr.ist_id);
+		loadStudentsAttendanceHistory("/api/students/attendanceHistory?n=" + tr.ist_id);
 		switchView(2);
 	};
+
+	//tds[2]
 
 	table.appendChild(tr_clone);
 }
@@ -507,7 +518,7 @@ function showStudentsAttendanceHistory(attendance_history) {
 			isLate = false;
 		}
 		if(attendance_history[i].number != null) {
-			addStudentsAttendanceHistory(table, template, attendance_history[i].number, isLate);
+			addStudentsAttendanceHistory(table, template, attendance_history[i].number, attendance_history[i].late);
 		}
 	} 
 };
@@ -530,7 +541,15 @@ function addStudentsAttendanceHistory(table, template, number, late) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 
-	for(let x = 0; x < tds.length; x++) {
+	if(late == 1) {			// coluna: on time
+		tds[1].classList.add("toRed");
+		tds[1].innerHTML = "X";	//cruz
+	} else {
+		tds[1].classList.add("toGreen");
+		tds[1].innerHTML = "&#10004;";	//check
+	}
+
+	for(let x = 0; x < tds.length - 1; x++) {
 		tds[x].innerText = arguments[x+2];
 	}
 
