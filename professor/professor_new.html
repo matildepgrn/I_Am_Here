@@ -17,22 +17,25 @@
 			<span class="logoname" >I Am Here!</span>	
 		</li>
 	</a>
-
 	<li style="float:right"><a href="/logout">Log Out</a></li>
 	<li style="float:right"><span class="name" id="IST_NAME">Name</span></li>
+
 </ul>
 
 <div class="container" id="showHistoryofProfessor">
-	<a href="/professor/classes" class="previous round" style="margin-left:100px;margin-top:5px">&#8249;</a>
+	<a href="/professor/classes" class="goBack previous round">&#8249;</a>
 	<center class="center">
 	<div>
-		<h3 style="margin-top:-30px"><span id="courseName_id"></span></h3>
+		<h3 class="firstTitle"><span id="courseName_id"></span></h3>
 	</div>
+	
 	<h5>History Table</h5>
 		
 	<button id="b_attendance" type="button"
 		onclick="goTo('/professor/attendance?c='+courseID)"
-		title="Generate a new sequence">Start new attendance</button>
+		title="Generate a new sequence">Start new attendance
+	</button>
+	
 	<button onclick="goTo()" title="History TSV" id="tsvlink_b">
 		&#11008;
 	</button>
@@ -78,13 +81,12 @@
 <div>
 <div class="container" id="showStudentsHistory" style="display: none">
 	<div style="text-align: left;">
-		<a onclick="switchView(0);"	class="previous round"
-			style="margin-left:100px;margin-top:5px">&#8249;</a>
+		<a onclick="switchView(0);"	class="goBack previous round">&#8249;</a>
 	</div>
 
 	<center class="center">
 
-		<h4 style="margin-top:-40px">Class #<span id="currentClass"></span></h4>
+		<h4 class="firstTitle">Class #<span id="currentClass"></span></h4>
 		<h6>Attendance History Table</h6>
 
 		<div style="margin-right: 20px" class="historycolumn" id="historycolumnDiv">
@@ -107,6 +109,7 @@
 				</tr>
 			</template>
 		</table>
+		
 		<form id="formStudent" method="post" style="margin-top: 20px;margin-bottom: 90px">
 
 			<tr title="ist_id">
@@ -155,12 +158,12 @@
 <div class="container" id="showFingerprintHistory" style="display: none">
 
 	<div style="text-align: left">
-		<a onclick="switchView(1);"	class="previous round"
-		style="margin-left:100px;margin-top:5px">&#8249;</a>
+		<a onclick="switchView(1);"	class="goBack previous round">
+			&#8249;</a>
 	</div>
 
 	<center class="center">
-		<h4 style="margin-top:-40px">
+		<h4 class="firstTitle">
 			<span style="font-weight: bold" id="currentStudent"></span>'s fingerprint
 		</h4>
 

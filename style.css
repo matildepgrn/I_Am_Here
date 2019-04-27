@@ -8,6 +8,15 @@ ul {
 	user-select: none;
 }
 
+.goBack {
+	margin-left:100px;
+	margin-top:5px;
+}
+
+.firstTitle {
+	margin-top:-30px;
+}
+
 .toGreen {
 	color: green;
 	text-align: center;
