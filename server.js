@@ -290,7 +290,7 @@ function handleRequest(req, res) {
 		case "/professor/attendance":
 		case "/professor/courses":
 		case "/professor/classes":
-		case "/professor/newCourse":
+		case "/professor/addcourse":
 			makeProfessorLogin(res, cookies, parsedURL,
 				function(ist_id, is_professor){
 					if(false == is_professor){
@@ -313,8 +313,8 @@ function handleRequest(req, res) {
 						case "/professor/classes":
 							sendFile(res, 'professor/professor_classes.html');
 							break;
-						case "/professor/newCourse":
-							sendFile(res, 'professor/professor_newCourse.html');
+						case "/professor/addcourse":
+							sendFile(res, 'professor/professor_addcourse.html');
 							break;
 						default:
 							console.log('This sould not happen');

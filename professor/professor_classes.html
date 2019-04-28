@@ -39,13 +39,9 @@
 			</template>
 		</table>
 
-		<button id="b_newcourse" type="button"
-		onclick=""
-		title="Create new course">New course
-		</button>
-		<button id="b_invitedlecture" type="button"
-		onclick="goTo('/professor/newCourse')"
-		title="Create invited lecture">Invited lecture
+		<button id="b_addcourse" type="button" class="marginTop"
+		onclick="goTo('/professor/addcourse')"
+		title="Create invited lecture">Add course
 		</button>
 	</center>
 </div>
@@ -53,13 +49,12 @@
 <center>
 
 <script>
+	
+document.getElementById("b_addcourse").disabled = true;
 
 function goTo(url) {
 	window.location.replace(url);
 }
-
-document.getElementById("b_newcourse").disabled = true;
-document.getElementById("b_invitedlecture").disabled = true;
 
 // COURSES
 

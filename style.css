@@ -12,6 +12,10 @@ ul {
 	background: #d9d9d9;
 }
 
+.marginTop {
+	margin-top: 20px;
+}
+
 .goBack {
 	margin-left:100px;
 	margin-top:5px;
