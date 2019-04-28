@@ -424,7 +424,7 @@ database.prototype.getAttendanceByRandomID = function(randomID, ist_id, callback
 };
 
 database.prototype.getClassHistory = function(attendanceID, callback) {
-	var sql = "SELECT distinct ah.ist_id, u.name from AttendanceHistory ah, User u WHERE ah.attendanceID = ? and u.ist_id = ah.ist_id;";
+	var sql = "SELECT distinct ah.ist_id, u.name, ah.attendanceID from AttendanceHistory ah, User u WHERE ah.attendanceID = ? and u.ist_id = ah.ist_id;";
 	var arg = [attendanceID];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
@@ -573,5 +573,21 @@ database.prototype.getPCM1819AttendanceFlow = function(callback) {
 		}
 	})
 };
+
+database.prototype.setLate = function(attendanceID, ist_id, isLate, callback) {
+	var sql = "Call setLate(?,?,?);";
+	var arg = [attendanceID, ist_id, isLate];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in setLate", err);
+			callback(err);
+		} else {
+			callback(err);
+		}
+	})
+};
+
+
 
 module.exports = database;

@@ -495,7 +495,7 @@ function getPostData(req, res, cookies, parsedURL) {
 }
 
 function handlePost(req, res, cookies, parsedURL, data) {
-	switch(req.url) {
+	switch(parsedURL.pathname) {
 		case "/api/validatecode":
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id) {
@@ -527,6 +527,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 		case "/api/getcode":
 		case "/api/getcode/stop":
 		case "/api/addmanually":
+		case "/api/setLate":
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
 					if(false == is_professor){
@@ -536,6 +537,20 @@ function handlePost(req, res, cookies, parsedURL, data) {
 					var json = JSON.parse(data);
 					var randomID = json.randomID;
 					switch(req.url) {
+						case "/api/setLate":
+							var attendanceID_int = json.a;
+							var ist_id = json.i;
+							var isLate = json.late;
+							service.setLate(db, attendanceID_int, ist_id, isLate,
+								function(error) {
+									if(error) {
+										sendText(res, "Could not setLate.", 500);
+									} else {
+										sendText(res, "Ok");
+									}
+								}
+							);
+							break;
 						case "/api/closeAttendance":
 							service.closeAttendance(db, randomID,
 								function(status) {
@@ -622,6 +637,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 			break;
 		default:
 			sendText(res, "File not found (POST).", 404);
+			console.log("POST not found:",req.url);
 			break;
 	}
 }

@@ -1,5 +1,6 @@
 use ist182083;
 
+drop procedure if exists setLate;
 drop procedure if exists GetAttendances;
 drop procedure if exists ShowAttendances;
 drop procedure if exists RemoveAttendanceFromProfessor;
@@ -389,6 +390,14 @@ select a.ist_id, u.ist_id as std_number, u.name, ah.late, ah.manually, a.number
 	where a.ist_id = my_ist_id
 		and a.courseID = my_courseID
 		order by a.attendanceID;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE setLate(my_attendanceID int, my_ist_id varchar(255), isLate boolean)
+BEGIN
+	UPDATE AttendanceHistory SET late = isLate WHERE (attendanceID = my_attendanceID and ist_id = my_ist_id);
 END
 //
 DELIMITER ;

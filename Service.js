@@ -468,6 +468,14 @@ Service.prototype.getAllAttendances = function(db, courseID, ist_id, callback) {
 	);
 }
 
+Service.prototype.setLate = function(db, attendanceID, ist_id, isLate, callback) {
+	db.setLate(attendanceID, ist_id, isLate,
+		function(error) {
+			callback(error);
+		}
+	); 
+}
+
 function appendToFile_general(rows) {
 	let ontime = "attended lecture";
 	let res = "";

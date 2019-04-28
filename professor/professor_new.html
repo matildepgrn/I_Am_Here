@@ -396,6 +396,7 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 		tds[2].classList.add("toGreen");
 		tds[2].innerHTML = "&#10004;";	//check
 	}
+	tds[2].my_isLate = late;
 
 	tds[0].onclick = tds[1].onclick = function() {
 		let table = document.getElementById("studentsTable");
@@ -406,7 +407,17 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 		switchView(2);
 	};
 
-	//tds[2]
+	tds[2].onclick = function() {
+		let table = document.getElementById("studentsTable");
+		let tr = this.parentElement;
+		let new_isLate = !this.my_isLate;	//toggle state
+		json = {};
+		json.a = table.attendanceID;
+		json.i = tr.ist_id;
+		json.late = new_isLate;
+
+		loadisLate("/api/setLate", json);
+	};
 
 	table.appendChild(tr_clone);
 }
@@ -477,7 +488,6 @@ function loadFingerprint(url) {
 				var fingerprint = JSON.parse(this.responseText);
 				showFingerprint(fingerprint);
 			} else {
-				//todo
 				console.log("Error loading fingerprint:", this.status);
 			}
 		}
@@ -607,6 +617,24 @@ function sendForm(){
 
 	}
 
+}
+
+function loadisLate(url, json) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				//TODO
+			} else {
+				console.log("Error loading isLate", this.status);
+			}
+		}
+	};
+
+	var json_string = JSON.stringify(json);
+
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);
 }
 
 function copyISTIDToAddStudent(button) {
