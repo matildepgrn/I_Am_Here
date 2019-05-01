@@ -401,7 +401,7 @@ SELECT number INTO count_nr FROM Attendance a, AttendanceHistory ah
 		WHERE a.ist_id = my_ist_id and a.attendanceID = ah.attendanceID AND a.courseID = my_courseID AND a.is_extra != 1 AND a.attendanceID 
 			NOT IN (SELECT ar.attendanceID FROM AttendancesRemoved ar where ar.ist_id = my_ist_id) 
 			group by a.attendanceID DESC limit 1;
-	IF number = null OR number = 0 THEN
+	IF count_nr is null THEN
 		SET count_nr = 1;
 	ELSE
 		SET count_nr = count_nr + 1;
