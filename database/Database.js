@@ -365,6 +365,20 @@ database.prototype.createClass = function(ist_id, courseID, callback) {
 	})
 };
 
+database.prototype.getCourseName = function(courseID, callback) {
+	var sql = "SELECT courseName from Course where courseID = ?";
+	var arg = [courseID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getCourseName:", err);
+			callback(err);
+		} else {
+			callback(err, rows[0]);
+		}
+	})
+};
+
 database.prototype.getAttendanceHistory = function(ist_id, courseID, callback) {
 	var sql = "SELECT date, a.code_type, a.code_length, a.total_time_s, a.consecutive_codes, a.attendanceID, c.courseName, a.title, a.is_extra, \
 					count(distinct ah.ist_id) as count FROM Attendance a, AttendanceHistory ah , Course c \

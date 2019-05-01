@@ -248,12 +248,11 @@ function loadHistory(courseID) {
 function showHistory(history_wrapper) {
 	var template = document.getElementById("historyTemplate");
 	var table = document.getElementById("historyTable");
-	var history = history_wrapper.rows;
-	table.ist_id = history_wrapper.ist_id;
-
+	var history = history_wrapper.history.rows;
+	table.ist_id = history_wrapper.history.ist_id;
 	removeTrs(table.getElementsByTagName("tr"));
 
-	document.getElementById("courseName_id").innerHTML = history[0].courseName;
+	document.getElementById("courseName_id").innerHTML = history_wrapper.courseName;
 
 	let class_c = 0;
 	for(let i = 0; i < history.length; i++) {

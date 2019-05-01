@@ -309,7 +309,16 @@ Service.prototype.getAttendanceHistory = function(db, ist_id, courseID, callback
 		if(err) {
 			callback(err);
 		} else {
-			callback(err, res);
+			db.getCourseName(courseID, function(err1, res1) {
+				if(err1) {
+					callback(err1);
+				} else {
+					var json = {history: res,
+								courseName: res1.courseName};
+
+					callback(err1, json);
+				}
+			});
 		}
 	});
 };
