@@ -528,6 +528,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 		case "/api/getcode/stop":
 		case "/api/addmanually":
 		case "/api/setLate":
+		case "/api/addcourse":
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
 					if(false == is_professor){
@@ -537,6 +538,20 @@ function handlePost(req, res, cookies, parsedURL, data) {
 					var json = JSON.parse(data);
 					var randomID = json.randomID;
 					switch(req.url) {
+						case "/api/addcourse":
+							var courseName = json.courseName;
+							var courseID = json.courseID;
+							var academicTerm = json.academicTerm;
+							service.insertProfessorandCourse(db, ist_id, courseID, courseName, academicTerm,
+								function(error) {
+									if(error) {
+										sendText(res, "Could not addcourse.", 500);
+									} else {
+										sendText(res, "Ok");
+									}
+								}
+							);
+							break;
 						case "/api/setLate":
 							var attendanceID_int = json.a;
 							var ist_id = json.i;

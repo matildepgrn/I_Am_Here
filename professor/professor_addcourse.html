@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<head>
+  <title>I Am Here!</title>
+</head>
+
+<link rel="stylesheet" type="text/css" href="/style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+
+<ul>
+	<a href="/professor/courses" style="">
+		<li style="float:left" href="/professor/courses">
+			<span class="logoname" >I Am Here!</span>	
+		</li>
+	</a>
+
+	<li style="float:right"><a href="/logout">Log Out</a></li>
+	<li style="float:right"><span class="name" id="IST_NAME">Name</span></li>
+</ul>
+
+<div class="center" id="maincontainer">
+	<a href="/professor/courses" id="" class="previous round"
+		style="margin-left:-135px;margin-top:-16px">&#8249;</a>
+	
+	<div class="container" id="newCourse_personalization">
+		
+		<h3 style="text-align: center">
+			Personalize the course:
+		</h3>
+
+		<table id="newCoursePersonalization">
+		<form id="formId" method="post">
+
+			<tr title="Type of code">
+				<td>Name/Title:</td>
+				<td>
+					<input type="text" name="courseName" placeholder="Advanced Programming" checked>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					ID:
+				</td>
+				<td>
+					<input type="text" name="courseID" placeholder="AP201819" checked>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Academic Term:
+				</td>
+				<td>
+					<input type="text" name="academicTerm" placeholder="1ºSemestre 2019/2020" checked>
+				</td>
+			</tr>			
+
+			
+		</form>
+		</table>
+
+		<div style="text-align: center">
+			<button id="newCourse-button"
+				onclick="sendForm()" title="Create a new course">
+					Create
+			</button>
+		</div>
+</div>
+
+<div class="container">
+	<center class="center">
+
+
+	</center>
+</div>
+
+
+<script>
+
+function goTo(url) {
+	window.location.replace(url);
+}
+
+function loadName(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				document.getElementById("IST_NAME").innerHTML = this.responseText;
+			} else {
+				document.getElementById("IST_NAME").innerHTML = "<i>error getting username: " + this.status + "</i>";
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+function sendForm(){
+	var formEl = document.getElementById("formId");
+	var data = new FormData(formEl);
+	var o = {};
+
+	for(var e of data) {
+		o[e[0]] = e[1];
+	}
+	
+	var json_string = JSON.stringify(o);
+
+	var xhttp = new XMLHttpRequest();
+	var url = "/api/addcourse";
+	if(confirm("Are you sure you want to add this course?")) {
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				goTo('/professor/courses');
+			}
+		};
+	}
+
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);
+}
+
+loadName("/api/name");
+
+</script>

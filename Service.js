@@ -476,6 +476,14 @@ Service.prototype.setLate = function(db, attendanceID, ist_id, isLate, callback)
 	); 
 }
 
+Service.prototype.insertProfessorandCourse = function(db, ist_id, courseID, courseName, academicTerm, callback) {
+	db.insertProfessorandCourse(ist_id, courseID, courseName, academicTerm,
+		function(error, result) {
+			callback(error);
+		}
+	); 
+}
+
 function appendToFile_general(rows) {
 	let ontime = "attended lecture";
 	let res = "";
