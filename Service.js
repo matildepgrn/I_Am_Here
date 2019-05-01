@@ -410,14 +410,14 @@ Service.prototype.getUserName = function(db, ist_id, callback) {
 	); 
 }
 
-Service.prototype.getAttendanceRandomID = function(db, ist_id, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, callback) {
+Service.prototype.getAttendanceRandomID = function(db, ist_id, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, number, callback) {
 	var randomID;
 	do {
 		randomID = Math.floor(Math.random() * Math.floor(999999));
 	} while(codeByRandomID.has(randomID));
 	codeByRandomID.set(randomID, null);
 
-	db.generateRandomAttendanceCode(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title,
+	db.generateRandomAttendanceCode(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, number,
 		function(error, attendanceID) {
 			var new_code = new Code(db, randomID, attendanceID);
 			new_code.customizeTest(code_length, code_type, total_time_s, consecutive_codes);
@@ -568,6 +568,13 @@ function appendToFile(rows) {
 	}
 	return res;
 
+}
+
+Service.prototype.getNextClassNumber = function(db, courseID, ist_id, callback) {
+	db.getNextClassNumber(courseID, ist_id, function(error, rows) {
+			callback(error, rows);
+		}
+	);
 }
 
 

@@ -192,21 +192,11 @@ END
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE AttendanceMapping (ist_id varchar(255), randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, date varchar(255), open boolean, my_courseID varchar(255), my_is_extra varchar(255), my_title varchar(255))
+CREATE PROCEDURE AttendanceMapping (ist_id varchar(255), randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, date varchar(255), open boolean, my_courseID varchar(255), my_is_extra varchar(255), my_title varchar(255), my_number int)
 BEGIN
-DECLARE count_nr INTEGER;
-IF my_is_extra = 1 THEN
-	SET count_nr = null;
-ELSE
-	SELECT number INTO count_nr FROM Attendance a, AttendanceHistory ah 
-		WHERE a.ist_id = ist_id and a.attendanceID = ah.attendanceID AND a.courseID = my_courseID AND a.attendanceID 
-			NOT IN (SELECT ar.attendanceID FROM AttendancesRemoved ar where ar.ist_id = ist_id) 
-			group by a.attendanceID DESC limit 1;
-	SET count_nr = count_nr + 1;
-END IF;
 
 INSERT INTO Attendance(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, number, courseID, is_extra, title)
-		VALUES(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, count_nr, my_courseID, my_is_extra, my_title);
+		VALUES(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, my_number, my_courseID, my_is_extra, my_title);
 
 SELECT LAST_INSERT_ID() AS attendanceID;
 END
@@ -398,6 +388,27 @@ DELIMITER //
 CREATE PROCEDURE setLate(my_attendanceID int, my_ist_id varchar(255), isLate boolean)
 BEGIN
 	UPDATE AttendanceHistory SET late = isLate WHERE (attendanceID = my_attendanceID and ist_id = my_ist_id);
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE getNextClassNumber(my_courseID varchar(255), my_ist_id varchar(255))
+BEGIN
+DECLARE count_nr INTEGER;
+
+SELECT number INTO count_nr FROM Attendance a, AttendanceHistory ah 
+		WHERE a.ist_id = my_ist_id and a.attendanceID = ah.attendanceID AND a.courseID = my_courseID AND a.is_extra != 1 AND a.attendanceID 
+			NOT IN (SELECT ar.attendanceID FROM AttendancesRemoved ar where ar.ist_id = my_ist_id) 
+			group by a.attendanceID DESC limit 1;
+	IF number = null OR number = 0 THEN
+		SET count_nr = 1;
+	ELSE
+		SET count_nr = count_nr + 1;
+	END IF;
+    
+    SELECT count_nr;
+
 END
 //
 DELIMITER ;

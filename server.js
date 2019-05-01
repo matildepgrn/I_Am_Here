@@ -112,6 +112,7 @@ function handleRequest(req, res) {
 			);
 			break;
 		case "/api/getattendancehistory":
+		case "/api/getnextclassnumber":
 		case "/api/courses":
 		case "/api/history":
 		case "/api/fingerprint":
@@ -128,6 +129,18 @@ function handleRequest(req, res) {
 						return;
 					}
 					switch(parsedURL.pathname) {
+						case "/api/getnextclassnumber":
+							var courseID = parsedURL.query.c;
+							service.getNextClassNumber(db, courseID, ist_id,
+								function(error, rows) {
+									if(error) {
+										sendText(res, "Could not getNextClassNumber.", 500);
+									} else {
+										sendJSON(res, rows);
+									}
+								}
+							);
+							break;
 						case "/api/getattendancehistory":
 							var attendanceID_int = parseInt(parsedURL.query.rid);
 							if(attendanceID_int){
@@ -610,7 +623,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 							var json = JSON.parse(data);
 							let is_extra = json.is_extra == "is_extra" ? 1 : 0;
 							
-							service.getAttendanceRandomID(db, ist_id, json.code_type, json.code_length, json.time, json.consecutivecodes, json.courseID, is_extra, json.title,
+							service.getAttendanceRandomID(db, ist_id, json.code_type, json.code_length, json.time, json.consecutivecodes, json.courseID, is_extra, json.title, json.number,
 								function(error, randomID, attendanceID) {
 									var json_res = {};
 									json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;

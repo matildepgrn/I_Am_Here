@@ -191,10 +191,10 @@ database.prototype.closeAttendance = function(randomID, callback) {
 	})
 };
 
-database.prototype.generateRandomAttendanceCode = function(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, callback) {
-	var sql = "CALL AttendanceMapping(?,?,?,?,?,?,?,?,?,?,?);";
+database.prototype.generateRandomAttendanceCode = function(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, number, callback) {
+	var sql = "CALL AttendanceMapping(?,?,?,?,?,?,?,?,?,?,?,?);";
 	var date = moment().format('YYYY-MM-DD HH:mm:ss');
-	var arg = [ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, true, courseID, is_extra, title];
+	var arg = [ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, true, courseID, is_extra, title, number];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
@@ -380,7 +380,7 @@ database.prototype.getCourseName = function(courseID, callback) {
 };
 
 database.prototype.getAttendanceHistory = function(ist_id, courseID, callback) {
-	var sql = "SELECT date, a.code_type, a.code_length, a.total_time_s, a.consecutive_codes, a.attendanceID, c.courseName, a.title, a.is_extra, \
+	var sql = "SELECT date, a.number, a.code_type, a.code_length, a.total_time_s, a.consecutive_codes, a.attendanceID, c.courseName, a.title, a.is_extra, \
 					count(distinct ah.ist_id) as count FROM Attendance a, AttendanceHistory ah , Course c \
 					WHERE a.ist_id = ? and a.attendanceID = ah.attendanceID AND a.courseID = ? \
 						AND c.courseID = a.courseID AND a.attendanceID \
@@ -600,6 +600,20 @@ database.prototype.setLate = function(attendanceID, ist_id, isLate, callback) {
 			callback(err);
 		} else {
 			callback(err);
+		}
+	})
+};
+
+database.prototype.getNextClassNumber = function(courseID, ist_id, callback) {
+	var sql = "Call getNextClassNumber(?,?);";
+	var arg = [courseID, ist_id];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getNextClassNumber", err);
+			callback(err);
+		} else {
+			callback(err, rows[0][0]);
 		}
 	})
 };

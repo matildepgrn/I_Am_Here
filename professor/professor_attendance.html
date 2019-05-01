@@ -33,7 +33,7 @@
 			<tr title="Class number">
 				<td>Number:</td>
 				<td>
-					<input type="number" name="number" placeholder="27">
+					<input id="class_number" type="number" name="number" placeholder="27">
 				</td>
 			</tr>
 
@@ -404,6 +404,25 @@ function sendForm(){
 	xhttp.send(json_string);
 }
 
+function loadClassNumber(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+			var json = JSON.parse(this.responseText);
+			document.getElementById("class_number").value = json.count_nr;
+			}
+			else {
+				console.log("Error in loading class number:", this.responseText);
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
 loadName("/api/name");
+loadClassNumber("/api/getnextclassnumber?c="+courseID);
 
 </script>
