@@ -87,10 +87,11 @@
 	<center class="center">
 
 		<h4 class="firstTitle">Class #<span id="currentClass"></span></h4>
-		<h6>Attendance History Table</h6>
+
 
 		<div style="margin-right: 20px" class="historycolumn" id="historycolumnDiv">
 		<!--<p>Students on time:</p>-->
+		<p>Attendance History Table:</p>
 		<table id="studentsTable">
 			<tr>
 				<th>IST ID</th>
@@ -342,6 +343,8 @@ function showStudents(studentshistory, classcounter) {
 	var rows_manually = studentshistory.rows_manually;
 	table.attendanceID = studentshistory.attendanceID;
 	table.courseID = courseID;
+	table.classcounter = classcounter;
+	table_tried.classcounter = classcounter;
 
 	document.getElementById("currentClass").innerHTML = classcounter;	
 
@@ -349,19 +352,10 @@ function showStudents(studentshistory, classcounter) {
 		var studentCheating = isIn(rows_fingerprints, rows[i].ist_id);
 		var studentLate = isIn(rows_late, rows[i].ist_id);
 		var studentManually = isIn(rows_manually, rows[i].ist_id);
-		addStudent(table, template, rows[i].ist_id, rows[i].name, studentLate, studentManually, studentCheating);
+		addStudent(table, template, rows[i].ist_id, rows[i].name, studentLate, studentManually, studentCheating, false);
 	}
-
-	if(rows_studentsThatTried.length == 0) {
-		document.getElementById("attempedstudentsDiv").style.display = "none";
-		document.getElementById("historycolumnDiv").classList.add("emptyColumn");
-	}
-	else {
-		document.getElementById("historycolumnDiv").classList.remove("emptyColumn");
-		for(let j = 0; j < rows_studentsThatTried.length; j++) {
-			addStudent(table_tried, template_tried, rows_studentsThatTried[j].ist_id, rows_studentsThatTried[j].name, false, false, false);
-	}
-
+	for(let j = 0; j < rows_studentsThatTried.length; j++) {
+		addStudent(table_tried, template_tried, rows_studentsThatTried[j].ist_id, rows_studentsThatTried[j].name, false, false, false, true);
 	}
 
 };
@@ -375,7 +369,7 @@ function isIn(rows, ist_id) {
 	return false;
 }
 
-function addStudent(table, template, ist_id, name, late, manually, studentCheating) {
+function addStudent(table, template, ist_id, name, late, manually, studentCheating, isTableTried) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 
@@ -385,17 +379,23 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 		tr_clone.classList.add("less_suspicious");
 	}
 
-	for(let x = 0; x < tds.length - 2; x++) {		// -2 por causa da coluna "extra" e do "on time"
-		tds[x].innerText = arguments[x+2];
-	}
-
-	if(late) {			// coluna: on time
-		tds[2].classList.add("toRed");
-		tds[2].innerHTML = "X";	//cruz
+	if(isTableTried == true) {
+		for(let x = 0; x < tds.length - 1; x++) {
+			tds[x].innerText = arguments[x+2];
+		}
 	} else {
-		tds[2].classList.add("toGreen");
-		tds[2].innerHTML = "&#10004;";	//check
-	}
+		for(let x = 0; x < tds.length - 2; x++) {		// -2 por causa da coluna "extra" e do "on time"
+			tds[x].innerText = arguments[x+2];
+		}
+		if(late) {			// coluna: on time
+			tds[2].classList.add("toRed");
+			tds[2].innerHTML = "X";	//cruz
+		} else {
+			tds[2].classList.add("toGreen");
+			tds[2].innerHTML = "&#10004;";	//check
+		}
+	
+
 	tds[2].my_isLate = late;
 
 	tds[0].onclick = tds[1].onclick = function() {
@@ -419,6 +419,9 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 		loadisLate("/api/setLate", json, this);
 	};
 
+
+	}
+
 	table.appendChild(tr_clone);
 }
 
@@ -427,7 +430,8 @@ function manuallyRemoveStudent(button_element) {
 	button_element.parentElement.parentElement.classList.add('removedStyle');
 	var ist_id = button_element.parentElement.parentElement.ist_id;
 	var attendanceID = button_element.parentElement.parentElement.parentElement.attendanceID;
-	removeStudent('/api/manuallyRemoveStudent?i='+ist_id+'&a='+attendanceID, button_element, attendanceID);
+	var classcounter = button_element.parentElement.parentElement.parentElement.classcounter;
+	removeStudent('/api/manuallyRemoveStudent?i='+ist_id+'&a='+attendanceID, button_element, attendanceID, classcounter);
 	}
 }
 
@@ -461,14 +465,14 @@ function removeAttendance(url, button_element, attendanceID) {
 	xhttp.send();
 }
 
-function removeStudent(url, button_element, attendanceID) {
+function removeStudent(url, button_element, attendanceID, classcounter) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				button_element.disabled=true;
 				// to reload the page
-				loadStudents('/api/getattendancehistory?rid='+attendanceID);
+				loadStudents('/api/getattendancehistory?rid='+attendanceID, classcounter);
 			} else {
 				console.log("Error removing student:", this.status);
 				alert("Error removing student. Try again please.");
@@ -604,11 +608,12 @@ function sendForm(){
 				var json = JSON.parse(this.responseText);
 				var template = document.getElementById("studentsTemplate");
 				var table = document.getElementById("studentsTable");
+				var classcounter = table.classcounter;
 				addStudent(table, template, o.ist_id, "(loading)");
 
 				var inputadd_student = document.getElementById("inputadd_student");
 				inputadd_student.value = "";
-				loadStudents('/api/getattendancehistory?rid='+table.attendanceID);
+				loadStudents('/api/getattendancehistory?rid='+table.attendanceID, classcounter);
 			}
 		};
 
