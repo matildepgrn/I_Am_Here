@@ -512,7 +512,7 @@ function appendToFile_general(rows) {
 		} else {
 			line += CSV_SEPARATOR + CSV_SEPARATOR;
 		}
-
+		
 		line += rows[i].number + "\n";
 		res += line;
 	}
@@ -549,6 +549,7 @@ function appendToFile(rows) {
 	if(rows == undefined) {
 		return res;
 	}
+
 	for(i = 0; i < rows.length; i ++) {
 		let line = rows[i].ist_id + CSV_SEPARATOR +
 					rows[i].std_number + CSV_SEPARATOR +
@@ -563,7 +564,11 @@ function appendToFile(rows) {
 			line += CSV_SEPARATOR + CSV_SEPARATOR;
 		}
 
-		line += rows[i].number + "\n";
+		if(rows[i].is_extra == 1) {
+			line += "IL" + "\n";
+		} else {
+			line += rows[i].number + "\n";
+		}
 		res += line;
 	}
 	return res;
