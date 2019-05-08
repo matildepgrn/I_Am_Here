@@ -354,7 +354,7 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE ShowAttendances()
 BEGIN
-select a.ist_id, ah.attendanceID, pcm.std_number, pcm.name, ah.late, ah.manually, a.number
+select a.ist_id, ah.attendanceID, pcm.std_number, pcm.name, ah.late, ah.manually, a.number, a.is_extra
 	from Attendance a
 		join AttendanceHistory ah
 			on ah.attendanceID = a.attendanceID
@@ -371,7 +371,7 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE GetAttendances(my_courseID varchar(255), my_ist_id varchar(255))
 BEGIN
-select a.ist_id, u.ist_id as std_number, u.name, ah.late, ah.manually, a.number
+select a.ist_id, u.ist_id as std_number, u.name, ah.late, ah.manually, a.number, a.is_extra
 	from Attendance a
 		join AttendanceHistory ah
 			on ah.attendanceID = a.attendanceID
