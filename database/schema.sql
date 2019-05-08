@@ -360,7 +360,7 @@ select a.ist_id, ah.attendanceID, pcm.std_number, pcm.name, ah.late, ah.manually
 			on ah.attendanceID = a.attendanceID
 		join PCM1819 pcm
 			on ah.ist_id = pcm.ist_id
-	where (a.ist_id = 'ist13909' or a.ist_id = 'ist13898')
+	where (a.ist_id = 'ist13909' or a.ist_id = 'ist13898' or a.ist_id = 'ist168202')
 		and a.courseID = 'PCM26'
 		and a.attendanceID > 107;
 END
