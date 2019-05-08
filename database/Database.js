@@ -456,9 +456,9 @@ database.prototype.selectCourseInfo = function(ist_id, callback) {
 					join Course c  \
 						on c.courseID = p.courseID \
 					where p.ist_id = ? \
-						and c.academicTerm = '2ºSemestre 2018/2019' \
-			            and c.courseName != 'Dissertação - Mestrado em Engenharia Informática e de Computadores'  \
-						and c.courseName != 'Projecto de Mestrado em Engenharia Informática e de Computadores';";
+						and c.academicTerm = '2ºSemestre 2018/2019'  \
+                        and c.courseID in ( \
+                        select a.courseID from Attendance a);";
 	var arg = [ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
