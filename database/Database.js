@@ -457,8 +457,7 @@ database.prototype.selectCourseInfo = function(ist_id, callback) {
 						on c.courseID = p.courseID \
 					where p.ist_id = ? \
 						and c.academicTerm = '2ºSemestre 2018/2019'  \
-                        and c.courseID in ( \
-                        select a.courseID from Attendance a);";
+                        and p.in_use = 1;";
 	var arg = [ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {

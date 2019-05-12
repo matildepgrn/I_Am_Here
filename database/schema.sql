@@ -57,6 +57,7 @@ CREATE TABLE Course (
 CREATE TABLE ProfessorTeachesCourse (
 	ist_id 						varchar(255),
 	courseID					varchar(255),
+	in_use						boolean,
 
 	PRIMARY KEY(ist_id, courseID),
 	FOREIGN KEY(ist_id) REFERENCES Professor (ist_id),
