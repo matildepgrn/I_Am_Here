@@ -443,7 +443,8 @@ li a:hover {
 	float: none;
 }
 
-#newCoursePersonalization {
+#newCoursePersonalization,
+#inactiveCoursePersonalization {
 	margin: auto;
 	margin-top: 20px;
 	margin-bottom: 20px;

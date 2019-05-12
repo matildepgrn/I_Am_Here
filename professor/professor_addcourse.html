@@ -23,8 +23,43 @@
 </ul>
 
 <div class="center" id="maincontainer">
+	<div id="inactiveCourses_view">
 	<a href="/professor/courses" id="" class="previous round"
 		style="margin-left:-135px;margin-top:-16px">&#8249;</a>
+
+	
+	<div class="container" id="">
+		
+		<h3 style="text-align: center">
+			Courses listed on Fénix:
+		</h3>
+
+		<table id="inactiveCoursePersonalization">
+			<template id="FenixCourses_template">
+				<tr>
+					<td></td>
+					<td></td>
+					<td title="Add this course to attendance list"><button onclick="">+</button></td>
+				</tr>
+			</template>
+		</table>
+
+		<div style="text-align: center">
+			<button id="more-button"
+				onclick="switchView(1)" title="Create a new course">
+					New course
+			</button>
+		</div>
+	</div>
+
+	</div>
+
+
+	<div id="newCourse_view" style="display:none">
+
+	<a onclick="switchView(0)" id="" class="previous round"
+		style="margin-left:-135px;margin-top:-16px">&#8249;</a>
+
 	
 	<div class="container" id="newCourse_personalization">
 		
@@ -56,8 +91,7 @@
 				<td>
 					<input type="text" name="academicTerm" placeholder="1ºSemestre 2018/2019" checked>
 				</td>
-			</tr>			
-
+			</tr>
 			
 		</form>
 		</table>
@@ -68,6 +102,9 @@
 					Create
 			</button>
 		</div>
+
+	</div>
+
 </div>
 
 <div class="container">
@@ -80,8 +117,32 @@
 
 <script>
 
+function removeTrs(old_tr) {
+	for(let l = old_tr.length-1; l > 0; l--) {
+		old_tr[l].parentElement.removeChild(old_tr[l]);
+	}
+}
+
 function goTo(url) {
 	window.location.replace(url);
+}
+
+function loadInnactiveCourses(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				var courses = JSON.parse(this.responseText);
+				showInnactiveCourses(courses);
+			} else {
+				//todo
+				console.log("Error loading Innactive Courses:", this.status);
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
 }
 
 function loadName(url) {
@@ -98,6 +159,35 @@ function loadName(url) {
 
 	xhttp.open("GET", url, true);
 	xhttp.send();
+}
+
+function showInnactiveCourses(courses_wrapper) {
+	var template = document.getElementById("FenixCourses_template");
+	var table = document.getElementById("inactiveCoursePersonalization");
+	console.log(courses_wrapper);
+	var courses = courses_wrapper;
+	removeTrs(table.getElementsByTagName("tr"));
+
+	for(let i = 0; i < courses.length; i++) {
+		let courses_i = courses[i];
+		addInnactiveCourses(table, template, courses_i.courseName, courses_i.CourseID);
+
+	} 
+};
+
+function addInnactiveCourses(table, template, courseName, courseID) {
+
+	var tr_clone = template.content.querySelector("tr").cloneNode(true);
+	var tds = tr_clone.children;
+	
+	for(let x = 0; x < tds.length - 1; x++) {	//a partir de "date"
+		tds[x].innerText = arguments[x+2];
+	}
+
+	tr_clone.onclick = function() {
+	};
+
+	table.appendChild(tr_clone);
 }
 
 function sendForm(){
@@ -125,6 +215,23 @@ function sendForm(){
 	xhttp.send(json_string);
 }
 
+function switchView(arg){
+	switch(arg) {
+		case 0:
+			document.getElementById("inactiveCourses_view").style.display = "";
+			document.getElementById("newCourse_view").style.display = "none";
+			break;
+		case 1:
+			document.getElementById("inactiveCourses_view").style.display = "none";
+			document.getElementById("newCourse_view").style.display = "";
+			break;
+		default:
+			console.log("unknown arg", arg);
+			break;
+	}
+}
+
 loadName("/api/name");
+loadInnactiveCourses("/api/innactiveCourses");
 
 </script>

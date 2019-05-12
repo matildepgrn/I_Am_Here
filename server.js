@@ -111,6 +111,7 @@ function handleRequest(req, res) {
 				}
 			);
 			break;
+		case "/api/innactiveCourses":
 		case "/api/getattendancehistory":
 		case "/api/getnextclassnumber":
 		case "/api/courses":
@@ -129,6 +130,13 @@ function handleRequest(req, res) {
 						return;
 					}
 					switch(parsedURL.pathname) {
+						case "/api/innactiveCourses":
+							service.getInnactiveCourses(db, ist_id,
+								function(error, rows) {
+									sendJSON(res, rows);
+								}
+							);
+							break;
 						case "/api/getnextclassnumber":
 							var courseID = parsedURL.query.c;
 							service.getNextClassNumber(db, courseID, ist_id,

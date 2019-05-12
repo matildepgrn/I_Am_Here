@@ -589,6 +589,25 @@ database.prototype.getPCM1819AttendanceFlow = function(callback) {
 	})
 };
 
+database.prototype.getInnactiveCourses = function(ist_id, callback) {
+	var sql = "select c.courseName, c.CourseID from ProfessorTeachesCourse as p\
+				join Course c\
+					on c.courseID = p.courseID \
+				where p.ist_id = ?\
+					and c.academicTerm = '2ºSemestre 2018/2019'  \
+					and p.in_use != 1;";
+	var arg = [ist_id];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getInnactiveCourses", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
 database.prototype.setLate = function(attendanceID, ist_id, isLate, callback) {
 	var sql = "Call setLate(?,?,?);";
 	var arg = [attendanceID, ist_id, isLate];

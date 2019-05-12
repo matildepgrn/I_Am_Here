@@ -469,6 +469,14 @@ Service.prototype.getPCM1819AttendanceFlow = function(db, callback) {
 	); 
 }
 
+Service.prototype.getInnactiveCourses = function(db, ist_id, callback) {
+	db.getInnactiveCourses(ist_id,
+		function(error, rows) {
+			callback(error, rows);
+		}
+	); 
+}
+
 Service.prototype.getAllAttendances = function(db, courseID, ist_id, callback) {
 	db.getAllAttendances(function(error, rows) {
 			let result = appendToFile_general(rows);
