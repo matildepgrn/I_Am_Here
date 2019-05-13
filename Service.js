@@ -496,7 +496,15 @@ Service.prototype.setLate = function(db, attendanceID, ist_id, isLate, callback)
 Service.prototype.insertProfessorandCourse = function(db, ist_id, courseID, courseName, academicTerm, callback) {
 	db.insertProfessorandCourse(ist_id, courseID, courseName, academicTerm,
 		function(error, result) {
-			callback(error);
+			if(error) {
+				console.log("Error in insertProfessorandCourse:", error);
+			} else {
+				db.setCourseToInUse(ist_id, courseID,
+					function(error1, result1) {
+						callback(error1);
+					}
+				);
+			}
 		}
 	); 
 }

@@ -414,6 +414,14 @@ END
 //
 DELIMITER ;
 
+DELIMITER //
+CREATE PROCEDURE SetCourseToInUse(my_ist_id varchar(255), my_courseID varchar(255))
+BEGIN
+	UPDATE ProfessorTeachesCourse SET in_use = 1 where courseID = my_courseID and ist_id = my_ist_id;
+END
+//
+DELIMITER ;
+
 INSERT INTO User(ist_id) VALUES ('ist182083');
 INSERT INTO Professor(ist_id) VALUES ('ist182083');
 

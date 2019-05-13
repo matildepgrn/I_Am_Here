@@ -66,6 +66,21 @@ database.prototype.insertProfessorandCourse = function(ist_id, courseID, courseN
 	});
 }
 
+database.prototype.setCourseToInUse = function(ist_id, courseID, callback) {
+	var sql = "CALL SetCourseToInUse(?,?);";
+	var args = [ist_id, courseID];
+
+	this.pool.query(sql, args, function (err, result) {
+		if (err){
+			console.log("Error in setCourseToInUse:", err);
+			callback(err);
+		}
+		else{
+			callback(err);
+		}
+	});
+}
+
 database.prototype.updateAccessToken = function(access_token, refresh_token, newAccessToken, callback) {
 	var sql = "UPDATE User SET access_token = ? WHERE access_token = ? AND refresh_token = ?;";
 	var args = [newAccessToken, access_token, refresh_token];
