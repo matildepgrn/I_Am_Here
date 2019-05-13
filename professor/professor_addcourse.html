@@ -39,7 +39,7 @@
 				<tr>
 					<td></td>
 					<td></td>
-					<td title="Add this course to attendance list"><button onclick="">+</button></td>
+					<td title="Add this course to attendance list"><button onclick="return manuallyaddCourseToInUse(this, event)">+</button></td>
 				</tr>
 			</template>
 		</table>
@@ -215,6 +215,35 @@ function sendForm(){
 	xhttp.send(json_string);
 }
 
+function manuallyaddCourseToInUse(button_element, event) {
+	if(confirm("Are you sure you add this course to the attendance list?")) {
+		var courseID = button_element.parentElement.parentElement.childNodes[3].innerText;
+		addCourseToInUse('/api/courseInUse', courseID, button_element);
+	}
+
+	event.preventDefault();
+}
+
+function addCourseToInUse(url, courseID, button_element) {
+	var xhttp = new XMLHttpRequest();
+	var json = {courseID: courseID};
+	xhttp.onreadystatechange = function() {
+		console.log(this.readyState, this);
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				button_element.disabled=true;
+				goTo('/professor/courses');
+			} else {
+				console.log("Error in addCourseToInUse:", this.status);
+				alert("Error adding course. Try again please.");
+			}
+		}
+	};
+
+	xhttp.open("POST", url, true);
+	xhttp.send(JSON.stringify(json));
+}
+
 function switchView(arg){
 	switch(arg) {
 		case 0:
@@ -232,6 +261,6 @@ function switchView(arg){
 }
 
 loadName("/api/name");
-loadInnactiveCourses("/api/innactiveCourses");
+loadInnactiveCourses("/api/inactiveCourses");
 
 </script>

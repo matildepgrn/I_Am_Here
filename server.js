@@ -111,7 +111,7 @@ function handleRequest(req, res) {
 				}
 			);
 			break;
-		case "/api/innactiveCourses":
+		case "/api/inactiveCourses":
 		case "/api/getattendancehistory":
 		case "/api/getnextclassnumber":
 		case "/api/courses":
@@ -130,8 +130,8 @@ function handleRequest(req, res) {
 						return;
 					}
 					switch(parsedURL.pathname) {
-						case "/api/innactiveCourses":
-							service.getInnactiveCourses(db, ist_id,
+						case "/api/inactiveCourses":
+							service.getInactiveCourses(db, ist_id,
 								function(error, rows) {
 									sendJSON(res, rows);
 								}
@@ -543,6 +543,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 			);
 			break;
 		case "/api/closeAttendance":
+		case "/api/courseInUse":
 		case "/api/createAttendanceSession":
 		case "/api/status":
 		case "/api/getcode":
@@ -558,7 +559,19 @@ function handlePost(req, res, cookies, parsedURL, data) {
 					}
 					var json = JSON.parse(data);
 					var randomID = json.randomID;
-					switch(req.url) {
+					switch(parsedURL.pathname) {
+						case "/api/courseInUse":
+							var courseID = json.courseID;
+							service.setCourseToInUse(db, ist_id, courseID,
+								function(error) {
+									if(error) {
+										sendText(res, "Could not courseInUse.", 500);
+									} else {
+										sendText(res, "Ok.");
+									}
+								}
+							);
+							break;
 						case "/api/addcourse":
 							var courseName = json.courseName;
 							var courseID = json.courseID;

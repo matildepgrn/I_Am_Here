@@ -604,7 +604,7 @@ database.prototype.getPCM1819AttendanceFlow = function(callback) {
 	})
 };
 
-database.prototype.getInnactiveCourses = function(ist_id, callback) {
+database.prototype.getInactiveCourses = function(ist_id, callback) {
 	var sql = "select c.courseName, c.CourseID from ProfessorTeachesCourse as p\
 				join Course c\
 					on c.courseID = p.courseID \

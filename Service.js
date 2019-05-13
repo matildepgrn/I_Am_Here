@@ -469,8 +469,8 @@ Service.prototype.getPCM1819AttendanceFlow = function(db, callback) {
 	); 
 }
 
-Service.prototype.getInnactiveCourses = function(db, ist_id, callback) {
-	db.getInnactiveCourses(ist_id,
+Service.prototype.getInactiveCourses = function(db, ist_id, callback) {
+	db.getInactiveCourses(ist_id,
 		function(error, rows) {
 			callback(error, rows);
 		}
@@ -492,6 +492,16 @@ Service.prototype.setLate = function(db, attendanceID, ist_id, isLate, callback)
 		}
 	); 
 }
+
+Service.prototype.setCourseToInUse = function(db, ist_id, courseID, callback) {
+	db.setCourseToInUse(ist_id, courseID,
+		function(error) {
+			callback(error);
+		}
+	); 
+}
+
+
 
 Service.prototype.insertProfessorandCourse = function(db, ist_id, courseID, courseName, academicTerm, callback) {
 	db.insertProfessorandCourse(ist_id, courseID, courseName, academicTerm,
