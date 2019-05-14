@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<head>
+  <title>I Am Here!</title>
+</head>
+
+<link rel="stylesheet" type="text/css" href="/style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+
+<ul>
+	<a href="/professor/courses" style="">
+		<li style="float:left" href="/professor/courses">
+			<span class="logoname" >I Am Here!</span>	
+		</li>
+	</a>
+	<li style="float:left" class=""><a onclick="goTo('/professor/new?c='+courseID)">Attendance</a></li>
+	<li style="float:left" class="current"><a>Students</a></li>
+	<li style="float:right"><a href="/logout">Log Out</a></li>
+	<li style="float:right"><span class="name" id="IST_NAME">Name</span></li>
+
+</ul>
+
+<div class="container" >
+	<a href="/professor/classes" class="goBack previous round">&#8249;</a>
+	<center class="center">
+
+		<!-- Students table -->
+		<table id="allStudentsTable">
+			<tr>
+				<th>IST ID</th>
+				<th>Name</th>
+				<th>#</th>
+			</tr>
+			
+			<template id="allStudentsTemplate">
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</template>
+		</table>
+	
+	
+	</center>
+</div>
+
+<div class="margin_bottom"></div>
+
+
+</div>
+	<div id="goUp_spacer"></div>
+	
+	<div id="goUp_div" title="Go up">
+		<a id="goUp" href="#top">&#9650;</a>
+	</div>
+</div>
+
+<script>
+
+const urlParams = new URLSearchParams(window.location.search);
+let courseID = urlParams.get("c");
+let historyTable_error = document.getElementById("historyTable_error");
+
+function goTo(url) {
+	window.location.replace(url);
+}
+
+function loadFromServer(url, url_short) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				switch(url_short) {
+					case "/api/name":
+						document.getElementById("IST_NAME").innerHTML = this.responseText;
+						break;
+					case "/api/attendanceflow":
+						showTable(JSON.parse(this.responseText), "/api/attendanceflow");
+						break;
+				}
+			} else {
+				switch(url_short) {
+					case "/api/name":
+						document.getElementById("IST_NAME").innerHTML = "<i>error getting username: " + this.status + "</i>";
+						break;
+				}
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+function showTable(responseText, request) {
+	switch(request) {
+		case "/api/attendanceflow":
+			var template = document.getElementById("allStudentsTemplate");
+			var table = document.getElementById("allStudentsTable");
+			removeTrs(table.getElementsByTagName("tr"));
+
+			console.log(responseText);
+			for(let i = 0; i < responseText.length; i++){
+				var rows_i = responseText[i];
+				addToTable(table, template, rows_i.ist_id, rows_i.name, rows_i.c);
+			}
+			break;
+	}
+};
+
+function addToTable(table, template, row1, row2, row3) {
+	var tr_clone = template.content.querySelector("tr").cloneNode(true);
+	var tds = tr_clone.children;
+
+	for(let x = 0; x < tds.length; x++) {
+		tds[x].innerText = arguments[x+2];
+	}
+
+	table.appendChild(tr_clone);
+
+}
+
+function removeTrs(old_tr) {
+	for(let l = old_tr.length-1; l > 0; l--) {
+		old_tr[l].parentElement.removeChild(old_tr[l]);
+	}
+}
+
+loadFromServer("/api/name", "/api/name");
+loadFromServer("/api/attendanceflow?c="+courseID, "/api/attendanceflow");
+
+</script>

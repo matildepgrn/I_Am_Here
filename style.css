@@ -482,4 +482,8 @@ li a:hover {
 	
 }
 
+.margin_bottom {
+	margin-bottom: 90px;
+}
+
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
