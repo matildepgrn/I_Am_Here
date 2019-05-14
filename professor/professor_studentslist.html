@@ -28,6 +28,12 @@
 	<a href="/professor/classes" class="goBack previous round">&#8249;</a>
 	<center class="center">
 
+		<div>
+			<h3 class="firstTitle"><span id="courseName_id"></span></h3>
+		</div>
+
+		<h5>Number of attendances by student</h5>
+
 		<!-- Students table -->
 		<table id="allStudentsTable">
 			<tr>
@@ -104,7 +110,9 @@ function showTable(responseText, request) {
 			var table = document.getElementById("allStudentsTable");
 			removeTrs(table.getElementsByTagName("tr"));
 
-			console.log(responseText);
+			// to get the course name
+			document.getElementById("courseName_id").innerHTML = responseText[0].courseName;
+
 			for(let i = 0; i < responseText.length; i++){
 				var rows_i = responseText[i];
 				addToTable(table, template, rows_i.ist_id, rows_i.name, rows_i.c);

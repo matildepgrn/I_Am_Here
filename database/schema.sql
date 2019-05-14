@@ -426,12 +426,14 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE GetAllAttendances(my_courseID varchar(255))
 BEGIN
-	select distinct u.ist_id, u.name, count(distinct ah.attendanceID) as c 
+	select distinct u.ist_id, u.name, count(distinct ah.attendanceID) as c, co.courseName
 	from User u
 		join AttendanceHistory ah 
 			on ah.ist_id = u.ist_id
 				join Attendance a
 					on a.attendanceID = ah.attendanceID
+				join Course co
+					on co.courseID = a.courseID
 		where a.courseID = my_courseID
 			and ah.attendanceID not in
 				(select attendanceID from AttendancesRemoved)
