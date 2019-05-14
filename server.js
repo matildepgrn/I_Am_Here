@@ -116,6 +116,7 @@ function handleRequest(req, res) {
 		case "/api/getnextclassnumber":
 		case "/api/courses":
 		case "/api/history":
+		case "/api/attendanceflow":
 		case "/api/fingerprint":
 		case "/api/pcm1819attendance":
 		case "/api/manuallyRemoveStudent":
@@ -134,6 +135,18 @@ function handleRequest(req, res) {
 							service.getInactiveCourses(db, ist_id,
 								function(error, rows) {
 									sendJSON(res, rows);
+								}
+							);
+							break;
+						case "/api/attendanceflow":
+							var courseID = parsedURL.query.c;
+							service.getAttendanceFlow(db, courseID,
+								function(error, rows) {
+									if(error) {
+										sendText(res, "Could not getAttendanceFlow.", 500);
+									} else {
+										sendJSON(res, rows);
+									}
 								}
 							);
 							break;
@@ -309,6 +322,7 @@ function handleRequest(req, res) {
 		case "/professor":
 		case "/professor/new":
 		case "/professor/attendance":
+		case "/professor/studentslist":
 		case "/professor/courses":
 		case "/professor/classes":
 		case "/professor/addcourse":
@@ -321,6 +335,9 @@ function handleRequest(req, res) {
 					switch(parsedURL.pathname) {
 						case "/professor":
 							sendFile(res, 'professor/professor_classes.html');
+							break;
+						case "/professor/studentslist":
+							sendFile(res, 'professor/professor_studentslist.html');
 							break;
 						case "/professor/new":
 							sendFile(res, 'professor/professor_new.html');

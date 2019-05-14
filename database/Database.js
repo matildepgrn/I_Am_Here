@@ -567,24 +567,6 @@ database.prototype.getStudentAttendanceHistory = function(ist_id, callback) {
 	})
 };
 
-database.prototype.getPCM1819StudentsAttendanceFlow = function(callback) {
-	var sql = "select pcm.std_number, pcm.name, count(distinct ah.attendanceID) as c \
-					from PCM1819 pcm \
-						join AttendanceHistory ah \
-							on ah.ist_id = pcm.ist_id \
-					group by ah.ist_id;";
-	var arg = [];
-
-	this.pool.query(sql, arg, function(err, rows, fields) {
-		if(err) {
-			console.log("Error in getPCM1819StudentsAttendanceFlow", err);
-			callback(err);
-		} else {
-			callback(err, rows);
-		}
-	})
-};
-
 database.prototype.getPCM1819AttendanceFlow = function(callback) {
 	var sql = "select a.number, count(distinct ah.ist_id) \
 				from Attendance a \
@@ -600,6 +582,20 @@ database.prototype.getPCM1819AttendanceFlow = function(callback) {
 			callback(err);
 		} else {
 			callback(err, rows);
+		}
+	})
+};
+
+database.prototype.getAttendanceFlow = function(courseID, callback) {
+	var sql = "Call GetAllAttendances(?);";
+	var arg = [courseID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getAttendanceFlow", err);
+			callback(err);
+		} else {
+			callback(err, rows[0]);
 		}
 	})
 };
@@ -636,6 +632,8 @@ database.prototype.setLate = function(attendanceID, ist_id, isLate, callback) {
 		}
 	})
 };
+
+
 
 database.prototype.getNextClassNumber = function(courseID, ist_id, callback) {
 	var sql = "Call getNextClassNumber(?,?);";

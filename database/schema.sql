@@ -1,5 +1,6 @@
 use ist182083;
 
+drop procedure if exists GetAllAttendances;
 drop procedure if exists setLate;
 drop procedure if exists GetAttendances;
 drop procedure if exists ShowAttendances;
@@ -418,6 +419,27 @@ DELIMITER //
 CREATE PROCEDURE SetCourseToInUse(my_ist_id varchar(255), my_courseID varchar(255))
 BEGIN
 	UPDATE ProfessorTeachesCourse SET in_use = 1 where courseID = my_courseID and ist_id = my_ist_id;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE GetAllAttendances(my_courseID varchar(255))
+BEGIN
+	select distinct u.ist_id, u.name, count(distinct ah.attendanceID) as c 
+	from User u
+		join AttendanceHistory ah 
+			on ah.ist_id = u.ist_id
+				join Attendance a
+					on a.attendanceID = ah.attendanceID
+		where a.courseID = my_courseID
+			and ah.attendanceID not in
+				(select attendanceID from AttendancesRemoved)
+			and ah.ist_id not in
+				(select ist_id 
+					from ProfessorTeachesCourse
+						where courseID = my_courseID)
+		group by ah.ist_id;
 END
 //
 DELIMITER ;
