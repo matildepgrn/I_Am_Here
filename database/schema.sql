@@ -106,8 +106,25 @@ CREATE TABLE FingerprintData (
     attendanceID			int,	
 	ist_id						varchar(255),
     useragent				varchar(255),
-    ip		varchar(255),
-    
+    ip						varchar(255),
+    language				varchar(255),
+    colorDepth				varchar(255),
+    deviceMemory			varchar(255),
+    hardwareConcurrency		varchar(255),
+    screenResolution		varchar(255),
+    availableScreenResolution	varchar(255),
+    timezoneOffset			 varchar(255),
+    sessionStorage			varchar(255),
+    localStorage			varchar(255),
+    platform				varchar(255),
+    plugins					varchar(255),
+    canvas					varchar(255),
+    webgl					varchar(255),
+    adBlock					varchar(255),
+    fonts					varchar(255),
+    audio					varchar(255),
+
+
 
 	PRIMARY KEY(fingerprintID),
 	FOREIGN KEY(ist_id) REFERENCES User(ist_id),

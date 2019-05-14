@@ -59,8 +59,11 @@ function handleRequest(req, res) {
 				}
 			);
 			break;
+		case "/init.js":		// to disguise
+			sendFile(res, 'fingerprint2.min.js', 'application/javascript');
+			break;
 		case "/qrcode.min.js":
-			sendFile(res, 'qrcode.min.js', 'application/javascrip');
+			sendFile(res, 'qrcode.min.js', 'application/javascript');
 			break;
 		case "/login":
 			disableCache(res);

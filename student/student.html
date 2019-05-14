@@ -45,7 +45,28 @@
 </div>
 
 
+<script src="/init.js"></script>
+
 <script>
+
+function processFingerprint(components) {
+	var o = {};
+	for(let i = 0; i < components.length; i++) {
+		let pair = components[i];
+		o[pair.key] = pair.value;
+	}
+    //console.log(o);
+}
+
+if(window.requestIdleCallback) {
+    requestIdleCallback(function () {
+        Fingerprint2.get(processFingerprint)
+    })
+} else {
+    setTimeout(function () {
+        Fingerprint2.get(processFingerprint)  
+    }, 500)
+}
 
 function loadName(url) {
 	var xhttp = new XMLHttpRequest();

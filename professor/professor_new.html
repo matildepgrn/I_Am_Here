@@ -25,7 +25,9 @@
 </ul>
 
 <div class="container" id="showHistoryofProfessor">
+	<div style="height: 20px">
 	<a href="/professor/classes" class="goBack previous round">&#8249;</a>
+	<div>
 	<center class="center">
 	<div>
 		<h3 class="firstTitle"><span id="courseName_id"></span></h3>
@@ -85,13 +87,41 @@
 
 <div>
 <div class="container" id="showStudentsHistory" style="display: none">
-	<div style="text-align: left;">
-		<a onclick="switchView(0);"	class="goBack previous round">&#8249;</a>
+	<div style="height: 20px">
+		<div style="float: left">
+			<a onclick="switchView(0);"	class="goBack previous round">&#8249;</a>
+		</div>
+
+		<!--<div style="float: right; margin-right:100px;">
+			<a onclick="return editStatus(this)" class="goBack previous round">&#9998;</a>
+		</div>-->
 	</div>
 
 	<center class="center">
+		<div id="classInfo">
+			<h4 class="firstTitle">Class #<span id="currentClass"></span></h4>
+			<div id="normalTitle">
+				<h6>
+					<span id="currentTitle"></span>
+				</h6>
+			</div>
+		</div>
 
-		<h4 class="firstTitle">Class #<span id="currentClass"></span></h4>
+
+		<div id="editClassInfo" style="display:none">
+			<form id="editClassInfo" method="post" style="margin-top: 20px">
+				<h6>Class number: 
+					<input id="addClassCounter" name="class" type="text">
+					</input>
+				</h6>
+				<h6> Title:
+					<input id="addTitle" name="title" type="text">
+					</input>
+				</h6>
+				<button onclick="">Save</button>
+				<button onclick="">Cancel</button>
+			</form>
+		</div>
 
 
 		<div style="margin-right: 2px" class="historycolumn" id="historycolumnDiv">
@@ -122,7 +152,7 @@
 				<td>
 					<input id="inputadd_student" name="ist_id" placeholder="IST ID (ist1XXXXX)">
 
-					  <input id="late_checkbox" type="checkbox" name="late" value="late">Late
+					 <input id="late_checkbox" type="checkbox" name="late" value="late">Late
 					<button id="add_student" type="button" onclick="sendForm();" 
 							title="">Add student</button>
 				</td>
@@ -163,7 +193,7 @@
 
 <div class="container" id="showFingerprintHistory" style="display: none">
 
-	<div style="text-align: left">
+	<div style="float: left">
 		<a onclick="switchView(1);"	class="goBack previous round">
 			&#8249;</a>
 	</div>
@@ -231,6 +261,12 @@ function goTo(url) {
 	window.location.replace(url);
 }
 
+function editStatus(button_element){
+	document.getElementById("classInfo").style.display = "none";
+	document.getElementById("editClassInfo").style.display = "";
+	button_element.classList.add("active");
+}
+
 function loadHistory(courseID) {
 	let url = "/api/history?c="+courseID;
 	var xhttp = new XMLHttpRequest();
@@ -279,6 +315,7 @@ function addHistory(table, template, attendanceID, classcounter, title, date, co
 
 	tr_clone.myattendanceID = attendanceID;
 	tr_clone.classcounter = classcounter;
+	tr_clone.mytitle = title;
 
 	tds[0].innerText = (is_extra == 1) ? "-" : classcounter;
 	
@@ -287,7 +324,7 @@ function addHistory(table, template, attendanceID, classcounter, title, date, co
 	}
 
 	tr_clone.onclick = function() {
-		loadStudents("/api/getattendancehistory?rid="+this.myattendanceID, this.classcounter);
+		loadStudents("/api/getattendancehistory?rid="+this.myattendanceID, this.classcounter, this.mytitle);
 		switchView(1);
 	};
 
@@ -310,13 +347,13 @@ function loadName(url) {
 	xhttp.send();
 }
 
-function loadStudents(url, classcounter) {
+function loadStudents(url, classcounter, title) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				var studentshistory = JSON.parse(this.responseText);
-				showStudents(studentshistory, classcounter);
+				showStudents(studentshistory, classcounter, title);
 			} else {
 				//todo
 				console.log("Error loading students:", this.status);
@@ -334,7 +371,7 @@ function removeTrs(old_tr) {
 	}
 }
 
-function showStudents(studentshistory, classcounter) {
+function showStudents(studentshistory, classcounter, title) {
 	var template = document.getElementById("studentsTemplate");
 	var table = document.getElementById("studentsTable");
 	var template_tried = document.getElementById("attempedstudentsTemplate");
@@ -352,8 +389,10 @@ function showStudents(studentshistory, classcounter) {
 	table.courseID = courseID;
 	table.classcounter = classcounter;
 	table_tried.classcounter = classcounter;
+	table.title = title;
 
-	document.getElementById("currentClass").innerHTML = classcounter;	
+	document.getElementById("currentClass").innerHTML = classcounter;
+	document.getElementById("currentTitle").innerHTML = title;	
 
 	for(let i = 0; i < rows.length; i++) {
 		var studentCheating = isIn(rows_fingerprints, rows[i].ist_id);
