@@ -30,6 +30,10 @@
 	</div>
 	
 	<h5>History Table</h5>
+
+	<h6 id="noAttendancesText" style="display:none">
+		You do not have an attendance for this course. Start one now!
+	</h6>
 		
 	<button id="b_attendance" type="button"
 		onclick="goTo('/professor/attendance?c='+courseID)"
@@ -39,7 +43,6 @@
 	<button onclick="goTo()" title="History TSV" id="tsvlink_b">
 		&#11008;
 	</button>
-
 	<table id="historyTable">
 			<tr>
 				<th rowspan="2">Class #</th>
@@ -254,11 +257,17 @@ function showHistory(history_wrapper) {
 
 	document.getElementById("courseName_id").innerHTML = history_wrapper.courseName;
 
-	for(let i = 0; i < history.length; i++) {
-		let hist_i = history[i];
-		addHistory(table, template, hist_i.attendanceID, hist_i.number, hist_i.title, hist_i.date, hist_i.code_type, hist_i.code_length, hist_i.total_time_s, hist_i.consecutive_codes, hist_i.count, hist_i.is_extra);
-
-	} 
+	if(history.length > 0) {
+		document.getElementById("noAttendancesText").style.display = "none";
+		for(let i = 0; i < history.length; i++) {
+			let hist_i = history[i];
+			addHistory(table, template, hist_i.attendanceID, hist_i.number, hist_i.title, hist_i.date, hist_i.code_type, hist_i.code_length, hist_i.total_time_s, hist_i.consecutive_codes, hist_i.count, hist_i.is_extra);
+		} 
+	} else {
+		document.getElementById("historyTable").style.display = "none";
+		document.getElementById("noAttendancesText").style.display = "";
+	}
+	
 };
 
 function addHistory(table, template, attendanceID, classcounter, title, date, code_type, code_length, total_time_s, consecutive_codes, count, is_extra) {
