@@ -24,7 +24,7 @@
 
 </ul>
 
-<div class="container" >
+<div class="container" id="studentslist">
 	<a href="/professor/classes" class="goBack previous round">&#8249;</a>
 	<center class="center">
 
@@ -52,6 +52,19 @@
 		</table>
 	
 	
+	</center>
+</div>
+
+
+<!--In case of no attendances/students-->
+<div class="container" id="noAttendances" style="display: none">
+	<center class="center">
+		<h5>You do not have attendances for this course. Start one now!</h5>
+
+		<button id="b_attendance" type="button"
+			onclick="goTo('/professor/attendance?c='+courseID)"
+			title="Generate a new sequence">Start new attendance
+		</button>
 	</center>
 </div>
 
@@ -110,14 +123,21 @@ function showTable(responseText, request) {
 			var table = document.getElementById("allStudentsTable");
 			removeTrs(table.getElementsByTagName("tr"));
 
-			// to get the course name
-			document.getElementById("courseName_id").innerHTML = responseText[0].courseName;
+			if(responseText.length > 0) {
+				// to get the course name
+				document.getElementById("courseName_id").innerHTML = responseText[0].courseName;
+				document.getElementById("noAttendances").style.display = "none";
+				document.getElementById("studentslist").style.display = "";
+				for(let i = 0; i < responseText.length; i++){
+					var rows_i = responseText[i];
+					addToTable(table, template, rows_i.ist_id, rows_i.name, rows_i.c);
+				}				
+			} else {
+				document.getElementById("noAttendances").style.display = "";
+				document.getElementById("studentslist").style.display = "none";				
 
-			for(let i = 0; i < responseText.length; i++){
-				var rows_i = responseText[i];
-				addToTable(table, template, rows_i.ist_id, rows_i.name, rows_i.c);
 			}
-			break;
+		break;
 	}
 };
 
