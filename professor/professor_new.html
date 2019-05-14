@@ -25,9 +25,7 @@
 </ul>
 
 <div class="container" id="showHistoryofProfessor">
-	<div style="height: 20px">
 	<a href="/professor/classes" class="goBack previous round">&#8249;</a>
-	<div>
 	<center class="center">
 	<div>
 		<h3 class="firstTitle"><span id="courseName_id"></span></h3>
@@ -87,41 +85,13 @@
 
 <div>
 <div class="container" id="showStudentsHistory" style="display: none">
-	<div style="height: 20px">
-		<div style="float: left">
-			<a onclick="switchView(0);"	class="goBack previous round">&#8249;</a>
-		</div>
-
-		<!--<div style="float: right; margin-right:100px;">
-			<a onclick="return editStatus(this)" class="goBack previous round">&#9998;</a>
-		</div>-->
+	<div style="text-align: left;">
+		<a onclick="switchView(0);"	class="goBack previous round">&#8249;</a>
 	</div>
 
 	<center class="center">
-		<div id="classInfo">
-			<h4 class="firstTitle">Class #<span id="currentClass"></span></h4>
-			<div id="normalTitle">
-				<h6>
-					<span id="currentTitle"></span>
-				</h6>
-			</div>
-		</div>
 
-
-		<div id="editClassInfo" style="display:none">
-			<form id="editClassInfo" method="post" style="margin-top: 20px">
-				<h6>Class number: 
-					<input id="addClassCounter" name="class" type="text">
-					</input>
-				</h6>
-				<h6> Title:
-					<input id="addTitle" name="title" type="text">
-					</input>
-				</h6>
-				<button onclick="">Save</button>
-				<button onclick="">Cancel</button>
-			</form>
-		</div>
+		<h4 class="firstTitle">Class #<span id="currentClass"></span></h4>
 
 
 		<div style="margin-right: 2px" class="historycolumn" id="historycolumnDiv">
@@ -152,7 +122,7 @@
 				<td>
 					<input id="inputadd_student" name="ist_id" placeholder="IST ID (ist1XXXXX)">
 
-					 <input id="late_checkbox" type="checkbox" name="late" value="late">Late
+					  <input id="late_checkbox" type="checkbox" name="late" value="late">Late
 					<button id="add_student" type="button" onclick="sendForm();" 
 							title="">Add student</button>
 				</td>
@@ -193,7 +163,7 @@
 
 <div class="container" id="showFingerprintHistory" style="display: none">
 
-	<div style="float: left">
+	<div style="text-align: left">
 		<a onclick="switchView(1);"	class="goBack previous round">
 			&#8249;</a>
 	</div>
@@ -242,9 +212,7 @@
 </div>
 
 <script>
-
 document.getElementById("tsvlink_b").disabled = true;
-
 const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
 let historyTable_error = document.getElementById("historyTable_error");
@@ -256,17 +224,9 @@ if(courseID) {
 	document.getElementById("historyTable").style.display = "none";
 	document.getElementById("b_attendance").style.display = "none";
 }
-
 function goTo(url) {
 	window.location.replace(url);
 }
-
-function editStatus(button_element){
-	document.getElementById("classInfo").style.display = "none";
-	document.getElementById("editClassInfo").style.display = "";
-	button_element.classList.add("active");
-}
-
 function loadHistory(courseID) {
 	let url = "/api/history?c="+courseID;
 	var xhttp = new XMLHttpRequest();
@@ -281,20 +241,16 @@ function loadHistory(courseID) {
 			}
 		}
 	};
-
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
-
 function showHistory(history_wrapper) {
 	var template = document.getElementById("historyTemplate");
 	var table = document.getElementById("historyTable");
 	var history = history_wrapper.history.rows;
 	table.ist_id = history_wrapper.history.ist_id;
 	removeTrs(table.getElementsByTagName("tr"));
-
 	document.getElementById("courseName_id").innerHTML = history_wrapper.courseName;
-
 	if(history.length > 0) {
 		document.getElementById("noAttendancesText").style.display = "none";
 		for(let i = 0; i < history.length; i++) {
@@ -307,30 +263,22 @@ function showHistory(history_wrapper) {
 	}
 	
 };
-
 function addHistory(table, template, attendanceID, classcounter, title, date, code_type, code_length, total_time_s, consecutive_codes, count, is_extra) {
-
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
-
 	tr_clone.myattendanceID = attendanceID;
 	tr_clone.classcounter = classcounter;
-	tr_clone.mytitle = title;
-
 	tds[0].innerText = (is_extra == 1) ? "-" : classcounter;
 	
 	for(let x = 1; x < tds.length - 1; x++) {	//a partir de "date"
 		tds[x].innerText = arguments[x+3];
 	}
-
 	tr_clone.onclick = function() {
-		loadStudents("/api/getattendancehistory?rid="+this.myattendanceID, this.classcounter, this.mytitle);
+		loadStudents("/api/getattendancehistory?rid="+this.myattendanceID, this.classcounter);
 		switchView(1);
 	};
-
 	table.appendChild(tr_clone);
 }
-
 function loadName(url) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -342,44 +290,37 @@ function loadName(url) {
 			}
 		}
 	};
-
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
-
-function loadStudents(url, classcounter, title) {
+function loadStudents(url, classcounter) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				var studentshistory = JSON.parse(this.responseText);
-				showStudents(studentshistory, classcounter, title);
+				showStudents(studentshistory, classcounter);
 			} else {
 				//todo
 				console.log("Error loading students:", this.status);
 			}
 		}
 	};
-
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
-
 function removeTrs(old_tr) {
 	for(let l = old_tr.length-1; l > 0; l--) {
 		old_tr[l].parentElement.removeChild(old_tr[l]);
 	}
 }
-
-function showStudents(studentshistory, classcounter, title) {
+function showStudents(studentshistory, classcounter) {
 	var template = document.getElementById("studentsTemplate");
 	var table = document.getElementById("studentsTable");
 	var template_tried = document.getElementById("attempedstudentsTemplate");
 	var table_tried = document.getElementById("attempedstudentsTable");
-
 	removeTrs(table.getElementsByTagName("tr"));
 	removeTrs(table_tried.getElementsByTagName("tr"));
-
 	var rows = studentshistory.rows;
 	var rows_fingerprints = studentshistory.rows_fingerprints;
 	var rows_studentsThatTried = studentshistory.rows_studentsThatTried;
@@ -389,11 +330,7 @@ function showStudents(studentshistory, classcounter, title) {
 	table.courseID = courseID;
 	table.classcounter = classcounter;
 	table_tried.classcounter = classcounter;
-	table.title = title;
-
-	document.getElementById("currentClass").innerHTML = classcounter;
-	document.getElementById("currentTitle").innerHTML = title;	
-
+	document.getElementById("currentClass").innerHTML = classcounter;	
 	for(let i = 0; i < rows.length; i++) {
 		var studentCheating = isIn(rows_fingerprints, rows[i].ist_id);
 		var studentLate = isIn(rows_late, rows[i].ist_id);
@@ -403,9 +340,7 @@ function showStudents(studentshistory, classcounter, title) {
 	for(let j = 0; j < rows_studentsThatTried.length; j++) {
 		addStudent(table_tried, template_tried, rows_studentsThatTried[j].ist_id, rows_studentsThatTried[j].name, false, false, false, true);
 	}
-
 };
-
 function isIn(rows, ist_id) {
 	for(let x = 0; x < rows.length; x++) {
 		if(rows[x].ist_id == ist_id) {
@@ -414,17 +349,14 @@ function isIn(rows, ist_id) {
 	}
 	return false;
 }
-
 function addStudent(table, template, ist_id, name, late, manually, studentCheating, isTableTried) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
-
 	tr_clone.ist_id = ist_id;
 	tr_clone.std_name = name;
 	if(studentCheating){
 		tr_clone.classList.add("less_suspicious");
 	}
-
 	if(isTableTried == true) {
 		for(let x = 0; x < tds.length - 1; x++) {
 			tds[x].innerText = arguments[x+2];
@@ -441,9 +373,7 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 			tds[2].innerHTML = "&#10004;";	//check
 		}
 	
-
 	tds[2].my_isLate = late;
-
 	tds[0].onclick = tds[1].onclick = function() {
 		let table = document.getElementById("studentsTable");
 		let tr = this.parentElement;
@@ -452,7 +382,6 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 		loadStudentsAttendanceHistory("/api/students/attendanceHistory?n=" + tr.ist_id);
 		switchView(2);
 	};
-
 	tds[2].onclick = function() {
 		let table = document.getElementById("studentsTable");
 		let tr = this.parentElement;
@@ -461,16 +390,11 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 		json.a = table.attendanceID;
 		json.i = tr.ist_id;
 		json.late = new_isLate;
-
 		loadisLate("/api/setLate", json, this);
 	};
-
-
 	}
-
 	table.appendChild(tr_clone);
 }
-
 function manuallyRemoveStudent(button_element) {
 	if(confirm("Are you sure you want to remove this students from this attendance?")) {
 	button_element.parentElement.parentElement.classList.add('removedStyle');
@@ -480,18 +404,14 @@ function manuallyRemoveStudent(button_element) {
 	removeStudent('/api/manuallyRemoveStudent?i='+ist_id+'&a='+attendanceID, button_element, attendanceID, classcounter);
 	}
 }
-
 function manuallyRemoveAttendance(button_element, event) {
-
 	if(confirm("Are you sure you want to delete this attendance?")) {
 		var attendanceID = button_element.parentElement.parentElement.myattendanceID;
 		var prof_id = button_element.parentElement.parentElement.parentElement.ist_id;
 		removeAttendance('api/manuallyRemoveAttendance?a='+attendanceID+'&i='+prof_id, button_element, attendanceID);
 	}
-
 	event.preventDefault();
 }
-
 function removeAttendance(url, button_element, attendanceID) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -506,11 +426,9 @@ function removeAttendance(url, button_element, attendanceID) {
 			}
 		}
 	};
-
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
-
 function removeStudent(url, button_element, attendanceID, classcounter) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -525,11 +443,9 @@ function removeStudent(url, button_element, attendanceID, classcounter) {
 			}
 		}
 	};
-
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
-
 function loadFingerprint(url) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -542,11 +458,9 @@ function loadFingerprint(url) {
 			}
 		}
 	};
-
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
-
 function loadStudentsAttendanceHistory(url) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -560,28 +474,21 @@ function loadStudentsAttendanceHistory(url) {
 			}
 		}
 	};
-
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
-
 function showFingerprint(fingerprint) {
 	var template = document.getElementById("fingerprintTemplate");
 	var table = document.getElementById("fingerprintTable");
-
 	removeTrs(table.getElementsByTagName("tr"));
-
 	for(let i = 0; i < fingerprint.length; i++) {
 		addFingerprint(table, template, fingerprint[i].useragent, fingerprint[i].ip);
 	} 
 };
-
 function showStudentsAttendanceHistory(attendance_history) {
 	var template = document.getElementById("attendanceHistoryTemplate");
 	var table = document.getElementById("attendanceHistoryTable");
-
 	removeTrs(table.getElementsByTagName("tr"));
-
 	for(let i = 0; i < attendance_history.length; i++) {
 		let isLate;
 		if(attendance_history[i].late == 1) {
@@ -594,25 +501,19 @@ function showStudentsAttendanceHistory(attendance_history) {
 		}
 	} 
 };
-
 function addFingerprint(table, template, useragent, ip) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
-
 	for(let x = 0; x < tds.length; x++) {
 		tds[x].innerText = arguments[x+2];
 	}
-
 	tr_clone.onclick = function() {
 	};
-
 	table.appendChild(tr_clone);
 }
-
 function addStudentsAttendanceHistory(table, template, number, late) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
-
 	if(late == 1) {			// coluna: on time
 		tds[1].classList.add("toRed");
 		tds[1].innerHTML = "X";	//cruz
@@ -620,32 +521,25 @@ function addStudentsAttendanceHistory(table, template, number, late) {
 		tds[1].classList.add("toGreen");
 		tds[1].innerHTML = "&#10004;";	//check
 	}
-
 	for(let x = 0; x < tds.length - 1; x++) {
 		tds[x].innerText = arguments[x+2];
 	}
-
 	tr_clone.onclick = function() {
 	};
-
 	table.appendChild(tr_clone);
 }
-
 function sendForm(){
 	var formEl = document.getElementById("formStudent");
 	var data = new FormData(formEl);
 	var o = {};
-
 	var table = document.getElementById("studentsTable");
 	o.attendanceID = table.attendanceID;
-
 	for(var e of data) {
 		o[e[0]] = e[1];
 	}
 	
 	console.log(o);
 	var json_string = JSON.stringify(o);
-
 	var xhttp = new XMLHttpRequest();
 	var url = "/api/addmanually";
 	if(confirm("Are you sure you want to add this students?")) {
@@ -656,20 +550,15 @@ function sendForm(){
 				var table = document.getElementById("studentsTable");
 				var classcounter = table.classcounter;
 				addStudent(table, template, o.ist_id, "(loading)");
-
 				var inputadd_student = document.getElementById("inputadd_student");
 				inputadd_student.value = "";
 				loadStudents('/api/getattendancehistory?rid='+table.attendanceID, classcounter);
 			}
 		};
-
 	xhttp.open("POST", url, true);
 	xhttp.send(json_string);
-
 	}
-
 }
-
 function loadisLate(url, json, td) {
 	var xhttp = new XMLHttpRequest();
 	if(confirm("Are you sure you want change the student's status?")) {
@@ -692,18 +581,14 @@ function loadisLate(url, json, td) {
 			}
 		};
 	}
-
 	var json_string = JSON.stringify(json);
-
 	xhttp.open("POST", url, true);
 	xhttp.send(json_string);
 }
-
 function copyISTIDToAddStudent(button) {
 	var inputadd_student = document.getElementById("inputadd_student");
 	inputadd_student.value = button.parentElement.parentElement.ist_id;
 }
-
 function switchView(arg){
 	switch(arg) {
 		case 0:
@@ -726,7 +611,5 @@ function switchView(arg){
 			break;
 	}
 }
-
 loadName("/api/name");
-
 </script>
