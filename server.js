@@ -161,7 +161,7 @@ function handleRequest(req, res) {
 									if(error) {
 										sendText(res, "Could not getAttendanceInformation.", 500);
 									} else {
-										sendJSON(res, rows);
+										sendJSON(res, rows[0]);
 									}
 								}
 							);

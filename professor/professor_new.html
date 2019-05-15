@@ -91,7 +91,7 @@
 		</div>
 
 		<div style="float: right; margin-top:-25px; margin-right:100px;">
-			<a id="editButton" onclick="return editTitleNumber(this)" class="goBack previous round">&#9998;</a>
+			<a id="editButton" onclick="editTitleNumber(this)" class="goBack previous round">&#9998;</a>
 		</div>
 	</div>
 
@@ -119,11 +119,12 @@
 					</input>
 				</h6>
 				<span title="Invited lecture or extraordinary class">
-					<input type="checkbox" name="is_extra" value="is_extra"> Extra Class
+					<input type="checkbox" id="addIsExtra" name="is_extra" value="is_extra"> Extra Class
 				</span>
 
-				<button onclick="">Save</button>
-				<button onclick="">Cancel</button>
+				<button type="button" onclick="">Save</button>
+				<button type="button" onclick="cancelAction(this)">Cancel</button>
+				
 			</form>
 		</div>
 
@@ -263,12 +264,18 @@ function goTo(url) {
 	window.location.replace(url);
 }
 
+function cancelAction(button_element) {
+	document.getElementById("editButton").classList.remove("active");
+	document.getElementById("classInfo").style.display = "";
+	document.getElementById("editClassInfo").style.display = "none";
+}
+
 function editTitleNumber(button_element) {
 	document.getElementById("classInfo").style.display = "none";
 	document.getElementById("editClassInfo").style.display = "";
 	document.getElementById("editButton").classList.add("active");
 
-	var attedanceID = button_element.attendanceID;
+	var attendanceID = button_element.attendanceID;
 
 	loadAttendanceInformation("/api/attendanceinfo?a="+attendanceID);
 }
@@ -278,7 +285,10 @@ function loadAttendanceInformation(url) {
 		xhttp.onreadystatechange = function() {
 			if(this.readyState == 4) {
 				if(this.status == 200) {
-					//todo
+					var attendanceInfo = JSON.parse(this.responseText);
+					document.getElementById("addTitle").value = attendanceInfo.title;
+					document.getElementById("addIsExtra").checked = attendanceInfo.is_extra != null;
+					document.getElementById("addClassCounter").value = attendanceInfo.number;
 				} else {
 					console.log("Error loadAttendanceInformation:", this.status);
 				}
