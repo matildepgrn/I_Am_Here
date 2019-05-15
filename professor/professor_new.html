@@ -93,6 +93,8 @@
 
 		<h4 class="firstTitle">Class #<span id="currentClass"></span></h4>
 
+		<h6 class=""><span id="currentTitle"></span></h6>
+
 
 		<div style="margin-right: 2px" class="historycolumn" id="historycolumnDiv">
 		<!--<p>Students on time:</p>-->
@@ -263,18 +265,19 @@ function showHistory(history_wrapper) {
 	}
 	
 };
-function addHistory(table, template, attendanceID, classcounter, title, date, code_type, code_length, total_time_s, consecutive_codes, count, is_extra) {
+function addHistory(table, template, attendanceID, classcounter, mytitle, date, code_type, code_length, total_time_s, consecutive_codes, count, is_extra) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 	tr_clone.myattendanceID = attendanceID;
 	tr_clone.classcounter = classcounter;
+	tr_clone.mytitle = mytitle;
 	tds[0].innerText = (is_extra == 1) ? "-" : classcounter;
 	
 	for(let x = 1; x < tds.length - 1; x++) {	//a partir de "date"
 		tds[x].innerText = arguments[x+3];
 	}
 	tr_clone.onclick = function() {
-		loadStudents("/api/getattendancehistory?rid="+this.myattendanceID, this.classcounter);
+		loadStudents("/api/getattendancehistory?rid="+this.myattendanceID, this.classcounter, mytitle);
 		switchView(1);
 	};
 	table.appendChild(tr_clone);
@@ -293,13 +296,13 @@ function loadName(url) {
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
-function loadStudents(url, classcounter) {
+function loadStudents(url, classcounter, title) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				var studentshistory = JSON.parse(this.responseText);
-				showStudents(studentshistory, classcounter);
+				showStudents(studentshistory, classcounter, title);
 			} else {
 				//todo
 				console.log("Error loading students:", this.status);
@@ -314,7 +317,7 @@ function removeTrs(old_tr) {
 		old_tr[l].parentElement.removeChild(old_tr[l]);
 	}
 }
-function showStudents(studentshistory, classcounter) {
+function showStudents(studentshistory, classcounter, title) {
 	var template = document.getElementById("studentsTemplate");
 	var table = document.getElementById("studentsTable");
 	var template_tried = document.getElementById("attempedstudentsTemplate");
@@ -330,7 +333,11 @@ function showStudents(studentshistory, classcounter) {
 	table.courseID = courseID;
 	table.classcounter = classcounter;
 	table_tried.classcounter = classcounter;
+	table.title = title;
+
+	document.getElementById("currentTitle").innerHTML = title;
 	document.getElementById("currentClass").innerHTML = classcounter;	
+
 	for(let i = 0; i < rows.length; i++) {
 		var studentCheating = isIn(rows_fingerprints, rows[i].ist_id);
 		var studentLate = isIn(rows_late, rows[i].ist_id);
