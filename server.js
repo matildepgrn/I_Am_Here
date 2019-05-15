@@ -524,7 +524,7 @@ function sendJSON(res, json, status = 200) {
 function getPostData(req, res, cookies, parsedURL) {
 	var data = '';
 	req.on('data', chunk => {
-		if(data.length > 512) {
+		if(data.length > 1024) {
 			res.end('Input data too big.');
 			return;
 		}
@@ -538,6 +538,7 @@ function getPostData(req, res, cookies, parsedURL) {
 function handlePost(req, res, cookies, parsedURL, data) {
 	switch(parsedURL.pathname) {
 		case "/api/validatecode":
+		case "/api/init":
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id) {
 					var json = JSON.parse(data);
@@ -551,6 +552,17 @@ function handlePost(req, res, cookies, parsedURL, data) {
 										sendText(res, "Error validating code.", 500);
 									} else {
 										sendJSON(res, result);	
+									}
+								}
+							);
+							break;
+						case "/api/init":
+							service.updateFingerprintData(db, randomID, json,
+								function(error, j) {
+									if(error) {
+										sendText(res, "Error updateFingerprintData.", 500);
+									} else {
+										sendJSON(res, j);	
 									}
 								}
 							);

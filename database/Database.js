@@ -452,6 +452,20 @@ database.prototype.getAttendanceByRandomID = function(randomID, ist_id, callback
 	})
 };
 
+database.prototype.getAttendanceByRandomIDWithoutISTID = function(randomID, callback) {
+	var sql = "select * from Attendance WHERE randomID = ?;";
+	var arg = [randomID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getAttendanceByRandomIDWithoutISTID", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
 database.prototype.getClassHistory = function(attendanceID, callback) {
 	var sql = "SELECT distinct ah.ist_id, u.name, ah.attendanceID from AttendanceHistory ah, User u WHERE ah.attendanceID = ? and u.ist_id = ah.ist_id;";
 	var arg = [attendanceID];
@@ -631,6 +645,31 @@ database.prototype.setLate = function(attendanceID, ist_id, isLate, callback) {
 			callback(err);
 		}
 	})
+};
+
+database.prototype.updateFingerprintData = function(randomID, language, colorDepth, deviceMemory, hardwareConcurrency, screenResolution, availableScreenResolution, timezoneOffset, sessionStorage, localStorage, platform, plugins, adBlock, fonts, audio, callback) {
+
+	var that = this;
+
+	this.getAttendanceByRandomIDWithoutISTID(randomID,
+		function(error, rows) {
+			if(error) {
+				callback(error);
+			} else {
+				var sql = "Call updateFingerprintData(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+				var attendanceID = rows[0].attendanceID;
+				var arg = [attendanceID, language, colorDepth, deviceMemory, hardwareConcurrency, screenResolution,availableScreenResolution, timezoneOffset, sessionStorage, localStorage, platform, plugins,adBlock, fonts, audio];
+
+				that.pool.query(sql, arg, function(err, rows, fields) {
+					if(err) {
+						console.log("Error in updateFingerprintData", err);
+						callback(err, rows);
+					} else {
+						callback(err, rows);
+					}
+				})
+			}
+		})
 };
 
 

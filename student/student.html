@@ -55,17 +55,40 @@ function processFingerprint(components) {
 		let pair = components[i];
 		o[pair.key] = pair.value;
 	}
-    //console.log(o);
+    loadInit(o);
 }
+
+let options = {excludes: {canvas: true, webgl: true}};
 
 if(window.requestIdleCallback) {
     requestIdleCallback(function () {
-        Fingerprint2.get(processFingerprint)
+        Fingerprint2.get(options, processFingerprint)
     })
 } else {
     setTimeout(function () {
-        Fingerprint2.get(processFingerprint)  
+        Fingerprint2.get(options, processFingerprint)  
     }, 500)
+}
+
+function loadInit(o) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+			} else {
+			}
+		}
+	};
+
+	var json = {};
+	var urlParams = new URLSearchParams(window.location.search);
+	json.randomID = parseInt(urlParams.get('c'));
+	json.my_data = o;
+	
+	var json_string = JSON.stringify(json);
+
+	xhttp.open("POST", "/api/init", true);
+	xhttp.send(json_string);
 }
 
 function loadName(url) {

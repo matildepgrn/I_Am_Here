@@ -616,5 +616,31 @@ Service.prototype.getNextClassNumber = function(db, courseID, ist_id, callback) 
 	);
 }
 
+Service.prototype.updateFingerprintData = function(db, randomID, j, callback) {
+	var array = ["language", "colorDepth", "deviceMemory", "hardwareConcurrency", "screenResolution", "availableScreenResolution", "timezoneOffset", "sessionStorage", "localStorage", "platform", "plugins", "canvas", "webgl","adBlock", "fonts", "audio"];
+	var result = {};
+	if(j) {
+		let j_data = j.my_data;
+		for(let i of array) {
+			switch(typeof j_data[i]) {
+				case "string":
+				case "number":
+					result[i] = j_data[i];
+					break;
+				//case "object": //implicit
+				default:
+					result[i] = JSON.stringify(j_data[i]);
+					break;
+			}
+		}
+		db.updateFingerprintData(randomID, result.language, result.colorDepth, result.deviceMemory, result.hardwareConcurrency, result.screenResolution, result.availableScreenResolution, result.timezoneOffset, result.sessionStorage, result.localStorage, result.platform, result.plugins, result.adBlock, result.fonts, result.audio,
+			function(error, rows) {
+				callback(error, rows);
+		}
+	);
+
+	}
+}
+
 
 module.exports = Service;

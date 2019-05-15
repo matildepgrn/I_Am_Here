@@ -1,5 +1,6 @@
 use ist182083;
 
+drop procedure if exists updateFingerprintData;
 drop procedure if exists GetAllAttendances;
 drop procedure if exists setLate;
 drop procedure if exists GetAttendances;
@@ -459,6 +460,29 @@ BEGIN
 					from ProfessorTeachesCourse
 						where courseID = my_courseID)
 		group by ah.ist_id;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE updateFingerprintData(my_attendanceID int, my_language varchar(255), my_colorDepth varchar(255), my_deviceMemory varchar(255), my_hardwareConcurrency varchar(255), my_screenResolution varchar(255),my_availableScreenResolution varchar(255), my_timezoneOffset varchar(255), my_sessionStorage varchar(255), my_localStorage varchar(255), my_platform varchar(255), my_plugins varchar(255),my_adBlock varchar(255), my_fonts varchar(255), my_audio varchar(255))
+BEGIN
+UPDATE FingerprintData SET
+		language = my_language,
+		colorDepth = my_colorDepth,
+		deviceMemory = my_deviceMemory,
+		hardwareConcurrency = my_hardwareConcurrency,
+		screenResolution = my_screenResolution,
+		availableScreenResolution = my_availableScreenResolution,
+		timezoneOffset = my_timezoneOffset,
+		sessionStorage = my_sessionStorage,
+		localStorage = my_localStorage,
+		platform = my_platform,
+		plugins = my_plugins,
+		adBlock = my_adBlock,
+		fonts = my_fonts,
+		audio = my_audio
+    WHERE attendanceID = my_attendanceID;
 END
 //
 DELIMITER ;
