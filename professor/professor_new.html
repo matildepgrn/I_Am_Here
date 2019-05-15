@@ -91,15 +91,42 @@
 		</div>
 
 		<div style="float: right; margin-top:-25px; margin-right:100px;">
-			<a onclick="return editStatus(this)" class="goBack previous round">&#9998;</a>
+			<a id="editButton" onclick="return editTitleNumber(this)" class="goBack previous round">&#9998;</a>
 		</div>
 	</div>
 
 	<center class="center">
 
-		<h4 class="firstTitle">Class #<span id="currentClass"></span></h4>
+		<!-- Not editing mode -->
+		<div id="classInfo">
+			<h4 class="firstTitle">Class #<span id="currentClass"></span></h4>
 
-		<h6 class=""><span id="currentTitle"></span></h6>
+			<h6 class=""><span id="currentTitle"></span></h6>
+		</div>
+
+		<!-- Editing mode -->
+		<div id="editClassInfo" style="display:none">
+			<h4>
+				Edit this class:
+			</h4>
+			<form id="editClassInfo" method="post">
+				<h6>Class number: 
+					<input id="addClassCounter" name="class" type="text">
+					</input>
+				</h6>
+				<h6> Title:
+					<input id="addTitle" name="title" type="text">
+					</input>
+				</h6>
+				<span title="Invited lecture or extraordinary class">
+					<input type="checkbox" name="is_extra" value="is_extra"> Extra Class
+				</span>
+
+				<button onclick="">Save</button>
+				<button onclick="">Cancel</button>
+			</form>
+		</div>
+
 
 
 		<div style="margin-right: 2px" class="historycolumn" id="historycolumnDiv">
@@ -235,6 +262,32 @@ if(courseID) {
 function goTo(url) {
 	window.location.replace(url);
 }
+
+function editTitleNumber(button_element) {
+	document.getElementById("classInfo").style.display = "none";
+	document.getElementById("editClassInfo").style.display = "";
+	document.getElementById("editButton").classList.add("active");
+
+	var attedanceID = button_element.attendanceID;
+
+	loadAttendanceInformation("/api/attendanceinfo?a="+attendanceID);
+}
+
+function loadAttendanceInformation(url) {
+	var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4) {
+				if(this.status == 200) {
+					//todo
+				} else {
+					console.log("Error loadAttendanceInformation:", this.status);
+				}
+			}
+		};
+		xhttp.open("GET", url, true);
+		xhttp.send();
+}
+
 function loadHistory(courseID) {
 	let url = "/api/history?c="+courseID;
 	var xhttp = new XMLHttpRequest();
@@ -328,6 +381,7 @@ function showStudents(studentshistory, classcounter, title) {
 	var table = document.getElementById("studentsTable");
 	var template_tried = document.getElementById("attempedstudentsTemplate");
 	var table_tried = document.getElementById("attempedstudentsTable");
+	var button_edit = document.getElementById("editButton");
 	removeTrs(table.getElementsByTagName("tr"));
 	removeTrs(table_tried.getElementsByTagName("tr"));
 	var rows = studentshistory.rows;
@@ -340,6 +394,7 @@ function showStudents(studentshistory, classcounter, title) {
 	table.classcounter = classcounter;
 	table_tried.classcounter = classcounter;
 	table.title = title;
+	button_edit.attendanceID = studentshistory.attendanceID;
 
 	document.getElementById("currentTitle").innerHTML = title;
 	document.getElementById("currentClass").innerHTML = classcounter;	

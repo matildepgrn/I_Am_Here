@@ -672,8 +672,6 @@ database.prototype.updateFingerprintData = function(randomID, language, colorDep
 		})
 };
 
-
-
 database.prototype.getNextClassNumber = function(courseID, ist_id, callback) {
 	var sql = "Call getNextClassNumber(?,?);";
 	var arg = [courseID, ist_id];
@@ -684,6 +682,20 @@ database.prototype.getNextClassNumber = function(courseID, ist_id, callback) {
 			callback(err);
 		} else {
 			callback(err, rows[0][0]);
+		}
+	})
+};
+
+database.prototype.getAttendanceInformation = function(attendanceID, callback) {
+	var sql = "select is_extra, number, title from Attendance where attendanceID = ?;";
+	var arg = [attendanceID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getAttendanceInformation:", err);
+			callback(err);
+		} else {
+			callback(err, rows);
 		}
 	})
 };

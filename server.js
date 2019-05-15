@@ -126,6 +126,7 @@ function handleRequest(req, res) {
 		case "/api/manuallyRemoveAttendance":
 		case "/api/students/attendanceHistory":
 		case "/api/PCM1819/attendanceflow":
+		case "/api/attendanceinfo":
 			disableCache(res);
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
@@ -147,6 +148,18 @@ function handleRequest(req, res) {
 								function(error, rows) {
 									if(error) {
 										sendText(res, "Could not getAttendanceFlow.", 500);
+									} else {
+										sendJSON(res, rows);
+									}
+								}
+							);
+							break;
+						case "/api/attendanceinfo":
+							var attendanceID = parsedURL.query.a;
+							service.getAttendanceInformation(db, attendanceID,
+								function(error, rows) {
+									if(error) {
+										sendText(res, "Could not getAttendanceInformation.", 500);
 									} else {
 										sendJSON(res, rows);
 									}

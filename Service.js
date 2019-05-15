@@ -642,5 +642,12 @@ Service.prototype.updateFingerprintData = function(db, randomID, j, callback) {
 	}
 }
 
+Service.prototype.getAttendanceInformation = function(db, attendanceID, callback) {
+	db.getAttendanceInformation(attendanceID,function(error, rows) {
+			callback(error, rows);
+		}
+	);
+}
+
 
 module.exports = Service;

@@ -17,8 +17,8 @@ ul {
 }
 
 .active {
-	color:white;
-	background: #008CBA;
+	color: white !important;
+	background-color: #008CBA !important;
 }
 
 .goBack {
