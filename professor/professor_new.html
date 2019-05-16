@@ -4,39 +4,42 @@
 </head>
 
 <link rel="stylesheet" type="text/css" href="/style.css">
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
 
+<!-- Top banner -->
 <ul>
 	<a href="/professor/courses" style="">
-		<li style="float:left" href="/professor/courses">
-			<span class="logoname" >I Am Here!</span>	
-		</li>
-	</a>
+		<li style="float:left" href="/professor/courses"><span class="logoname" >I Am Here!</span></li></a>
 	<li style="float:left" class="current"><a onclick="goTo('/professor/new?c='+courseID)">Attendance</a></li>
 	<li style="float:left" class="" onclick="goTo('/professor/studentslist?c='+courseID)"><a>Students</a></li>
 	<li style="float:right"><a href="/logout">Log Out</a></li>
 	<li style="float:right"><span class="name" id="IST_NAME">Name</span></li>
 
 </ul>
+<!-- Top banner -->
 
+<!-- Course's table -->
 <div class="container" id="showHistoryofProfessor">
+	<!-- back button -->
 	<a href="/professor/classes" class="goBack previous round">&#8249;</a>
+	
+	<!-- Class number and title -->
 	<center class="center">
 	<div>
 		<h3 class="firstTitle"><span id="courseName_id"></span></h3>
 	</div>
 	
 	<h5>History Table</h5>
-
+	
 	<h6 id="noAttendancesText" style="display:none">
 		You do not have an attendance for this course. Start one now!
 	</h6>
 		
+	<!-- Class number and title -->
 	<button id="b_attendance" type="button"
 		onclick="goTo('/professor/attendance?c='+courseID)"
 		title="Generate a new sequence">Start new attendance
@@ -45,46 +48,49 @@
 	<button onclick="goTo()" title="History TSV" id="tsvlink_b">
 		&#11008;
 	</button>
+
+	<!-- Course's table -->
 	<table id="historyTable">
-			<tr>
-				<th rowspan="2">Class #</th>
-				<th rowspan="2">Title</th>
-				<th rowspan="2">Date</th>
-				<th colspan="2">Code</th>
-				<th rowspan="2">Time</th>
-				<th rowspan="2" title="Consecutive Codes"># Codes</th>
-				<th rowspan="2"># Students</th>
-				<th rowspan="2"></th>
+		<tr>
+			<th rowspan="2">Class #</th>
+			<th rowspan="2">Title</th>
+			<th rowspan="2">Date</th>
+			<th colspan="2">Code</th>
+			<th rowspan="2">Time</th>
+			<th rowspan="2" title="Consecutive Codes"># Codes</th>
+			<th rowspan="2"># Students</th>
+			<th rowspan="2"></th>
+		</tr>
+		<tr>
+			<th>Type</th>
+			<th>Length</th>
+		</tr>
+		
+		<template id="historyTemplate">
+			<tr class="clickable">
+				<td class="classCounter"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td title="Remove attendance"><button onclick="return manuallyRemoveAttendance(this, event)">-</button></td>
 			</tr>
-			<tr>
-				<th>Type</th>
-				<th>Length</th>
-			</tr>
-			
-			<template id="historyTemplate">
-				<tr class="clickable">
-					<td class="classCounter"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td title="Remove attendance"><button onclick="return manuallyRemoveAttendance(this, event)">-</button></td>
-				</tr>
-			</template>
+		</template>
+	</table>
 
-
-		</table>
-
-		<p id="historyTable_error"></p>
-
+	<p id="historyTable_error"></p>
 	</center>
 </div>
+<!-- Course's table end -->
 
+
+<!-- Students's table -->
 <div>
 <div class="container" id="showStudentsHistory" style="display: none">
+	<!-- back and edit button -->
 	<div>
 		<div style="float: left; margin-top:-25px">
 			<a onclick="switchView(0);cancelAction();loadHistory(courseID)"	class="goBack previous round">&#8249;</a>
@@ -96,7 +102,6 @@
 	</div>
 
 	<center class="center">
-
 		<!-- Not editing mode -->
 		<div id="classInfo">
 			<h4 class="firstTitle">Class #<span id="currentClass"></span></h4>
@@ -129,9 +134,8 @@
 		</div>
 
 
-
+		<!-- Student's table -->
 		<div style="margin-right: 2px" class="historycolumn" id="historycolumnDiv">
-		<!--<p>Students on time:</p>-->
 		<p>Attendance History Table:</p>
 		<table id="studentsTable">
 			<tr>
@@ -166,7 +170,7 @@
 		</form>
 		</div>
 
-
+		<!-- Student's that failed table -->
 		<div style="margin-left: 20px" class="historycolumn" id="attempedstudentsDiv">
 		<p>Students that failed to take the attendance:</p>
 		<table id="attempedstudentsTable">
@@ -188,17 +192,20 @@
 	</center>
 
 </div>
-	<div id="goUp_spacer">
-		
-	</div>
+
+	<!-- GO UP! button -->
+	<div id="goUp_spacer"></div>
 	<div id="goUp_div" title="Go up">
 		<a id="goUp" href="#top">&#9650;</a>
 	</div>
 
 </div>
+<!-- Students's table end -->
 
+<!-- Students's fingerprint table -->
 <div class="container" id="showFingerprintHistory" style="display: none">
 
+	<!-- Go back button -->
 	<div style="text-align: left">
 		<a onclick="switchView(1);"	class="goBack previous round">
 			&#8249;</a>
@@ -209,6 +216,7 @@
 			<span style="font-weight: bold" id="currentStudent"></span>'s fingerprint
 		</h4>
 
+		<!-- Students's fingerprint table -->
 		<table id="fingerprintTable">
 			<tr>
 				<th>User Agent</th>
@@ -221,10 +229,7 @@
 					<td></td>
 				</tr>
 			</template>
-
-
 		</table>
-
 
 		<h5 style="margin-top:30px">Attended the following classes:</h5>
 
@@ -240,18 +245,20 @@
 					<td></td>
 				</tr>
 			</template>
-
-
 		</table>
 	</center>
 
 </div>
+<!-- Students's fingerprint table end -->
+
 
 <script>
+
 document.getElementById("tsvlink_b").disabled = true;
 const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
 let historyTable_error = document.getElementById("historyTable_error");
+
 if(courseID) {
 	historyTable_error.innerHTML = "";
 	loadHistory(courseID);
@@ -260,6 +267,7 @@ if(courseID) {
 	document.getElementById("historyTable").style.display = "none";
 	document.getElementById("b_attendance").style.display = "none";
 }
+
 function goTo(url) {
 	window.location.replace(url);
 }
@@ -353,6 +361,7 @@ function loadHistory(mycourseID) {
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
+
 function showHistory(history_wrapper) {
 	var template = document.getElementById("historyTemplate");
 	var table = document.getElementById("historyTable");
@@ -372,6 +381,7 @@ function showHistory(history_wrapper) {
 	}
 	
 };
+
 function addHistory(table, template, attendanceID, classcounter, mytitle, date, code_type, code_length, total_time_s, consecutive_codes, count, is_extra) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
@@ -389,6 +399,7 @@ function addHistory(table, template, attendanceID, classcounter, mytitle, date, 
 	};
 	table.appendChild(tr_clone);
 }
+
 function loadName(url) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -403,6 +414,7 @@ function loadName(url) {
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
+
 function loadStudents(url, classcounter, title) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -419,11 +431,13 @@ function loadStudents(url, classcounter, title) {
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
+
 function removeTrs(old_tr) {
 	for(let l = old_tr.length-1; l > 0; l--) {
 		old_tr[l].parentElement.removeChild(old_tr[l]);
 	}
 }
+
 function showStudents(studentshistory, classcounter, title) {
 	var template = document.getElementById("studentsTemplate");
 	var table = document.getElementById("studentsTable");
@@ -457,6 +471,7 @@ function showStudents(studentshistory, classcounter, title) {
 		addStudent(table_tried, template_tried, rows_studentsThatTried[j].ist_id, rows_studentsThatTried[j].name, false, false, false, true);
 	}
 };
+
 function isIn(rows, ist_id) {
 	for(let x = 0; x < rows.length; x++) {
 		if(rows[x].ist_id == ist_id) {
@@ -465,6 +480,7 @@ function isIn(rows, ist_id) {
 	}
 	return false;
 }
+
 function addStudent(table, template, ist_id, name, late, manually, studentCheating, isTableTried) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
@@ -511,6 +527,7 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 	}
 	table.appendChild(tr_clone);
 }
+
 function manuallyRemoveStudent(button_element) {
 	if(confirm("Are you sure you want to remove this students from this attendance?")) {
 	button_element.parentElement.parentElement.classList.add('removedStyle');
@@ -520,6 +537,7 @@ function manuallyRemoveStudent(button_element) {
 	removeStudent('/api/manuallyRemoveStudent?i='+ist_id+'&a='+attendanceID, button_element, attendanceID, classcounter);
 	}
 }
+
 function manuallyRemoveAttendance(button_element, event) {
 	if(confirm("Are you sure you want to delete this attendance?")) {
 		var attendanceID = button_element.parentElement.parentElement.myattendanceID;
@@ -565,6 +583,7 @@ function removeStudent(url, button_element, attendanceID, classcounter) {
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
+
 function loadFingerprint(url) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -580,6 +599,7 @@ function loadFingerprint(url) {
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
+
 function loadStudentsAttendanceHistory(url) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -596,6 +616,7 @@ function loadStudentsAttendanceHistory(url) {
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
+
 function showFingerprint(fingerprint) {
 	var template = document.getElementById("fingerprintTemplate");
 	var table = document.getElementById("fingerprintTable");
@@ -604,6 +625,7 @@ function showFingerprint(fingerprint) {
 		addFingerprint(table, template, fingerprint[i].useragent, fingerprint[i].ip);
 	} 
 };
+
 function showStudentsAttendanceHistory(attendance_history) {
 	var template = document.getElementById("attendanceHistoryTemplate");
 	var table = document.getElementById("attendanceHistoryTable");
@@ -620,6 +642,7 @@ function showStudentsAttendanceHistory(attendance_history) {
 		}
 	} 
 };
+
 function addFingerprint(table, template, useragent, ip) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
@@ -630,6 +653,7 @@ function addFingerprint(table, template, useragent, ip) {
 	};
 	table.appendChild(tr_clone);
 }
+
 function addStudentsAttendanceHistory(table, template, number, late) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
