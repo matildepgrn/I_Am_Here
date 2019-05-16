@@ -33,6 +33,8 @@ function handleRequest(req, res) {
 	}
 
 	switch(parsedURL.pathname) {
+		case "/api/H6YsZVWpIkXKeORd291yYLvEFfowzTcP3O5tRp9m/":
+			break;
 		case "/api/H6YsZVWpIkXKeORd291yYLvEFfowzTcP3O5tRp9m/pcm1819_attendance.tsv":
 			service.getAttendances(db,
 				function(error, result) {

@@ -44,10 +44,6 @@
 		onclick="goTo('/professor/attendance?c='+courseID)"
 		title="Generate a new sequence">Start new attendance
 	</button>
-	
-	<button onclick="goTo()" title="History TSV" id="tsvlink_b">
-		&#11008;
-	</button>
 
 	<!-- Course's table -->
 	<table id="historyTable">
@@ -98,6 +94,7 @@
 
 		<div style="float: right; margin-top:-25px; margin-right:100px;">
 			<a id="editButton" onclick="editTitleNumber(this)" class="goBack previous round">&#9998;</a>
+			<a id="tsv" onclick="" class="goBack previous round">&#11008;</a>
 		</div>
 	</div>
 
@@ -254,7 +251,6 @@
 
 <script>
 
-document.getElementById("tsvlink_b").disabled = true;
 const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
 let historyTable_error = document.getElementById("historyTable_error");

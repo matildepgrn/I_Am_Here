@@ -485,8 +485,8 @@ Service.prototype.getInactiveCourses = function(db, ist_id, callback) {
 	); 
 }
 
-Service.prototype.getAllAttendances = function(db, courseID, ist_id, callback) {
-	db.getAllAttendances(function(error, rows) {
+Service.prototype.getAttendancesByCourseAndProfessor = function(db, courseID, ist_id, callback) {
+	db.getAttendancesByCourseAndProfessor(function(error, rows) {
 			let result = appendToFile_general(rows);
 			callback(error, result);
 		}

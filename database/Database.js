@@ -547,7 +547,7 @@ database.prototype.getAttendances = function(callback) {
 	})
 };
 
-database.prototype.getAllAttendances = function(courseID, ist_id, callback) {
+database.prototype.getAttendancesByCourseAndProfessor = function(courseID, ist_id, callback) {
 	var sql = "CALL GetAttendances(?,?);";
 	var arg = [courseID, ist_id];
 
