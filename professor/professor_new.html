@@ -87,7 +87,7 @@
 <div class="container" id="showStudentsHistory" style="display: none">
 	<div>
 		<div style="float: left; margin-top:-25px">
-			<a onclick="switchView(0);"	class="goBack previous round">&#8249;</a>
+			<a onclick="switchView(0);cancelAction();loadHistory(courseID)"	class="goBack previous round">&#8249;</a>
 		</div>
 
 		<div style="float: right; margin-top:-25px; margin-right:100px;">
@@ -109,20 +109,20 @@
 			<h4>
 				Edit this class:
 			</h4>
-			<form id="editClassInfo" method="post">
+			<form id="editClassInfoForm" method="post">
 				<h6>Class number: 
-					<input id="addClassCounter" name="class" type="text">
+					<input id="addClassCounter" name="number" type="number">
 					</input>
 				</h6>
 				<h6> Title:
-					<input id="addTitle" name="title" type="text">
+					<input id="addTitle" name="mytitle" type="text">
 					</input>
 				</h6>
 				<span title="Invited lecture or extraordinary class">
 					<input type="checkbox" id="addIsExtra" name="is_extra" value="is_extra"> Extra Class
 				</span>
 
-				<button type="button" onclick="">Save</button>
+				<button type="button" onclick="sendClassInformation()">Save</button>
 				<button type="button" onclick="cancelAction(this)">Cancel</button>
 				
 			</form>
@@ -280,6 +280,38 @@ function editTitleNumber(button_element) {
 	loadAttendanceInformation("/api/attendanceinfo?a="+attendanceID);
 }
 
+function sendClassInformation(){
+	var formE1 = document.getElementById("editClassInfoForm");
+	var data = new FormData(formE1);
+	var o = {};
+	for(var e of data) {
+		o[e[0]] = e[1];
+	}
+	var table = document.getElementById("studentsTable");
+	
+	var json_string = JSON.stringify(o);
+
+	var xhttp = new XMLHttpRequest();
+	var url = "/api/updateClassInformation?a="+table.attendanceID;
+	if(confirm("Are you sure you want to update this information?")) {
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				document.getElementById("editButton").classList.remove("active");
+				document.getElementById("classInfo").style.display = "";
+				document.getElementById("editClassInfo").style.display = "none";
+
+				var table = document.getElementById("studentsTable");
+				var classcounter = table.classcounter;
+				loadStudents('/api/getattendancehistory?rid='+table.attendanceID, classcounter);
+				loadAttendanceInformation("/api/attendanceinfo?a="+table.attendanceID);
+			}
+		};
+
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);
+	}
+}
+
 function loadAttendanceInformation(url) {
 	var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
@@ -287,8 +319,14 @@ function loadAttendanceInformation(url) {
 				if(this.status == 200) {
 					var attendanceInfo = JSON.parse(this.responseText);
 					document.getElementById("addTitle").value = attendanceInfo.title;
-					document.getElementById("addIsExtra").checked = attendanceInfo.is_extra != null;
+					if(attendanceInfo.is_extra == 1) {
+						document.getElementById("addIsExtra").checked = 1;
+					} else {
+						document.getElementById("addIsExtra").checked = 0;
+					}
 					document.getElementById("addClassCounter").value = attendanceInfo.number;
+					document.getElementById("currentTitle").innerHTML = attendanceInfo.title;
+					document.getElementById("currentClass").innerHTML = attendanceInfo.number;
 				} else {
 					console.log("Error loadAttendanceInformation:", this.status);
 				}
@@ -298,8 +336,8 @@ function loadAttendanceInformation(url) {
 		xhttp.send();
 }
 
-function loadHistory(courseID) {
-	let url = "/api/history?c="+courseID;
+function loadHistory(mycourseID) {
+	let url = "/api/history?c="+mycourseID;
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
@@ -406,8 +444,8 @@ function showStudents(studentshistory, classcounter, title) {
 	table.title = title;
 	button_edit.attendanceID = studentshistory.attendanceID;
 
-	document.getElementById("currentTitle").innerHTML = title;
-	document.getElementById("currentClass").innerHTML = classcounter;	
+	loadAttendanceInformation("/api/attendanceinfo?a="+table.attendanceID)
+	
 
 	for(let i = 0; i < rows.length; i++) {
 		var studentCheating = isIn(rows_fingerprints, rows[i].ist_id);
@@ -486,17 +524,19 @@ function manuallyRemoveAttendance(button_element, event) {
 	if(confirm("Are you sure you want to delete this attendance?")) {
 		var attendanceID = button_element.parentElement.parentElement.myattendanceID;
 		var prof_id = button_element.parentElement.parentElement.parentElement.ist_id;
-		removeAttendance('api/manuallyRemoveAttendance?a='+attendanceID+'&i='+prof_id, button_element, attendanceID);
+		removeAttendance('/api/manuallyRemoveAttendance?a='+attendanceID+'&i='+prof_id, button_element, attendanceID);
 	}
 	event.preventDefault();
 }
+
 function removeAttendance(url, button_element, attendanceID) {
+
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				button_element.disabled=true;
-				loadHistory();
+				loadHistory(courseID);
 				switchView(0);
 			} else {
 				console.log("Error removing attendance:", this.status);
@@ -504,9 +544,10 @@ function removeAttendance(url, button_element, attendanceID) {
 			}
 		}
 	};
-	xhttp.open("GET", url, true);
-	xhttp.send();
+	xhttp.open("POST", url, true);
+	xhttp.send(JSON.stringify({}));
 }
+
 function removeStudent(url, button_element, attendanceID, classcounter) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -606,6 +647,7 @@ function addStudentsAttendanceHistory(table, template, number, late) {
 	};
 	table.appendChild(tr_clone);
 }
+
 function sendForm(){
 	var formEl = document.getElementById("formStudent");
 	var data = new FormData(formEl);
@@ -637,6 +679,7 @@ function sendForm(){
 	xhttp.send(json_string);
 	}
 }
+
 function loadisLate(url, json, td) {
 	var xhttp = new XMLHttpRequest();
 	if(confirm("Are you sure you want change the student's status?")) {
@@ -663,16 +706,20 @@ function loadisLate(url, json, td) {
 	xhttp.open("POST", url, true);
 	xhttp.send(json_string);
 }
+
 function copyISTIDToAddStudent(button) {
 	var inputadd_student = document.getElementById("inputadd_student");
 	inputadd_student.value = button.parentElement.parentElement.ist_id;
 }
+
 function switchView(arg){
 	switch(arg) {
 		case 0:
 			document.getElementById("showHistoryofProfessor").style.display = "";
 			document.getElementById("showStudentsHistory").style.display = "none";
 			document.getElementById("showFingerprintHistory").style.display = "none";
+			document.getElementById("showFingerprintHistory").style.display = "none";
+
 			break;
 		case 1:
 			document.getElementById("showHistoryofProfessor").style.display = "none";
@@ -689,5 +736,7 @@ function switchView(arg){
 			break;
 	}
 }
+
 loadName("/api/name");
+
 </script>

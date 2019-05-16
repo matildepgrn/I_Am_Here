@@ -649,5 +649,12 @@ Service.prototype.getAttendanceInformation = function(db, attendanceID, callback
 	);
 }
 
+Service.prototype.updateClassInformation = function(db, attendanceID, j, callback) {
+	db.updateClassInformation(attendanceID, j, function(error, rows) {
+			callback(error, rows);
+		}
+	);
+}
+
 
 module.exports = Service;

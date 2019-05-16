@@ -123,7 +123,6 @@ function handleRequest(req, res) {
 		case "/api/fingerprint":
 		case "/api/pcm1819attendance":
 		case "/api/manuallyRemoveStudent":
-		case "/api/manuallyRemoveAttendance":
 		case "/api/students/attendanceHistory":
 		case "/api/PCM1819/attendanceflow":
 		case "/api/attendanceinfo":
@@ -242,19 +241,6 @@ function handleRequest(req, res) {
 										sendText(res, "Could not manuallyRemoveStudent", 500);
 									} else{
 										sendText(res, "Student removed.");	
-									}
-								}
-							);
-							break;
-						case "/api/manuallyRemoveAttendance":
-							var attendanceID_int = parseInt(parsedURL.query.a);
-							var prof_id = parsedURL.query.i;
-							service.manuallyRemoveAttendance(db, attendanceID_int, prof_id,
-								function(error){
-									if(error) {
-										sendText(res, "Could not manuallyRemoveAttendance", 500);
-									} else{
-										sendText(res, "Attendance removed.");	
 									}
 								}
 							);
@@ -596,6 +582,8 @@ function handlePost(req, res, cookies, parsedURL, data) {
 		case "/api/addmanually":
 		case "/api/setLate":
 		case "/api/addcourse":
+		case "/api/updateClassInformation":
+		case "/api/manuallyRemoveAttendance":
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
 					if(false == is_professor){
@@ -605,6 +593,31 @@ function handlePost(req, res, cookies, parsedURL, data) {
 					var json = JSON.parse(data);
 					var randomID = json.randomID;
 					switch(parsedURL.pathname) {
+						case "/api/manuallyRemoveAttendance":
+							var attendanceID_int = parseInt(parsedURL.query.a);
+							var prof_id = parsedURL.query.i;
+							service.manuallyRemoveAttendance(db, attendanceID_int, prof_id,
+								function(error){
+									if(error) {
+										sendText(res, "Could not manuallyRemoveAttendance", 500);
+									} else{
+										sendText(res, "Attendance removed.");	
+									}
+								}
+							);
+							break;
+						case "/api/updateClassInformation":
+							var attendanceID = parsedURL.query.a;
+							service.updateClassInformation(db, attendanceID, json,
+								function(error, rows) {
+									if(error) {
+										sendText(res, "Could not getAttendanceFlow.", 500);
+									} else {
+										sendText(res, "Ok.");
+									}
+								}
+							);
+							break;
 						case "/api/courseInUse":
 							var courseID = json.courseID;
 							service.setCourseToInUse(db, ist_id, courseID,

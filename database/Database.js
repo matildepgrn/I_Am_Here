@@ -700,6 +700,26 @@ database.prototype.getAttendanceInformation = function(attendanceID, callback) {
 	})
 };
 
+database.prototype.updateClassInformation = function(attendanceID, j, callback) {
+	var sql = "update Attendance SET is_extra = ?, number = ?, title = ? where attendanceID = ?;";
+	var my_is_extra;
+	if(j.is_extra == "is_extra") {
+		my_is_extra = 1;
+	} else {
+		my_is_extra = 0;
+	}
+	var arg = [my_is_extra, j.number, j.mytitle, attendanceID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in updateClassInformation:", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
 
 
 module.exports = database;
