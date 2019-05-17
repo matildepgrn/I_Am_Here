@@ -26,6 +26,13 @@
 <div class="container" id="showHistoryofProfessor">
 	<!-- back button -->
 	<a href="/professor/classes" class="goBack previous round">&#8249;</a>
+
+	<!-- TSV file with all classes -->
+	<div style="float: right; margin-right:100px;">
+		<a id="tsv_export" href="" class="goBack previous round" title="Export">
+			<span class="download">&#11015;</span>
+		</a>
+	</div>
 	
 	<!-- Class number and title -->
 	<center class="center">
@@ -43,11 +50,6 @@
 	<button id="b_attendance" type="button"
 		onclick="goTo('/professor/attendance?c='+courseID)"
 		title="Generate a new sequence">Start new attendance
-	</button>
-	
-	<!-- TSV file with all classes -->
-	<button id="tsvlink_b" onclick="loadTSV(courseID)">
-		&#11008;
 	</button>
 
 	<!-- Course's table -->
@@ -99,7 +101,9 @@
 
 		<div style="float: right; margin-top:-25px; margin-right:100px;">
 			<a id="editButton" onclick="editTitleNumber(this)" class="goBack previous round">&#9998;</a>
-			<a id="tsv" onclick="" class="goBack previous round">&#11008;</a>
+			<a id="tsv_export_class" href="" class="goBack previous round" title="Export">
+				<span class="download">&#11015;</span>
+			</a>
 		</div>
 	</div>
 
@@ -263,6 +267,7 @@ let historyTable_error = document.getElementById("historyTable_error");
 if(courseID) {
 	historyTable_error.innerHTML = "";
 	loadHistory(courseID);
+	document.getElementById("tsv_export").href = "/api/attendancefile?c="+courseID;
 } else {
 	historyTable_error.innerHTML = "CourseID not defined.";
 	document.getElementById("historyTable").style.display = "none";
@@ -319,11 +324,6 @@ function sendClassInformation(){
 	xhttp.open("POST", url, true);
 	xhttp.send(json_string);
 	}
-}
-
-function loadTSV(mycourseID) {
-	let url = "/api/attendancefile?c="+mycourseID;
-	window.open(url);
 }
 
 function loadAttendanceInformation(url) {

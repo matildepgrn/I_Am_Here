@@ -152,7 +152,7 @@ function handleRequest(req, res) {
 											sendText(res, "Could not getAttendancesByCourseAndProfessor.", 500);
 										} else {
 											sendText(res, result, 200,
-												'text/plain; charset=utf-8', 
+												'text/tab-separated-values; charset=utf-8', 
 												'attachment; filename="'+ist_id+courseID+'.tsv"');
 										}
 									}
