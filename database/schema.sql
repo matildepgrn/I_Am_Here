@@ -1,5 +1,6 @@
 use ist182083;
 
+drop procedure if exists GetAttendanceInformation;
 drop procedure if exists updateFingerprintData;
 drop procedure if exists GetAllAttendances;
 drop procedure if exists setLate;
@@ -483,6 +484,22 @@ UPDATE FingerprintData SET
 		fonts = my_fonts,
 		audio = my_audio
     WHERE attendanceID = my_attendanceID;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE GetAttendanceInformation(my_courseID varchar(255), my_ist_id varchar(255), my_attendanceID int)
+BEGIN
+select a.ist_id, u.ist_id as std_number, u.name, ah.late, ah.manually, a.number, a.is_extra
+	from Attendance a
+		join AttendanceHistory ah
+			on ah.attendanceID = a.attendanceID
+		join User u
+			on ah.ist_id = u.ist_id
+	where a.ist_id = my_ist_id
+		and a.courseID = my_courseID
+		and a.attendanceID = my_attendanceID;
 END
 //
 DELIMITER ;

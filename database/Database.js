@@ -562,6 +562,21 @@ database.prototype.getAttendancesByCourseAndProfessor = function(courseID, ist_i
 	})
 };
 
+database.prototype.getAttendancesByCourseProfessorClass = function(courseID, ist_id, attendanceID, callback) {
+	var sql = "CALL GetAttendanceInformation(?,?,?);";
+	var arg = [courseID, ist_id, attendanceID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error getting all attendances data", err);
+			callback(err);
+		}
+		else{
+			callback(err, rows[0]);
+		}
+	})
+};
+
 database.prototype.getStudentAttendanceHistory = function(ist_id, callback) {
 	var sql = "select distinct a.number, ah.late \
 				from Attendance a \

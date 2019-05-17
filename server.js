@@ -129,6 +129,7 @@ function handleRequest(req, res) {
 		case "/api/PCM1819/attendanceflow":
 		case "/api/attendanceinfo":
 		case "/api/attendancefile":
+		case "/api/classattendancefile":
 			disableCache(res);
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
@@ -154,6 +155,21 @@ function handleRequest(req, res) {
 											sendText(res, result, 200,
 												'text/tab-separated-values; charset=utf-8', 
 												'attachment; filename="'+ist_id+courseID+'.tsv"');
+										}
+									}
+								);
+							break;
+						case "/api/classattendancefile":
+							var courseID = parsedURL.query.c;
+							var attendanceID = parsedURL.query.a;
+							service.getAttendancesByCourseProfessorClass(db, courseID, ist_id, attendanceID,
+									function(error, result) {
+										if(error) {
+											sendText(res, "Could not getAttendancesByCourseProfessorClass.", 500);
+										} else {
+											sendText(res, result, 200,
+												'text/tab-separated-values; charset=utf-8', 
+												'attachment; filename="'+ist_id+courseID+attendanceID+'.tsv"');
 										}
 									}
 								);

@@ -493,6 +493,14 @@ Service.prototype.getAttendancesByCourseAndProfessor = function(db, courseID, is
 	);
 }
 
+Service.prototype.getAttendancesByCourseProfessorClass = function(db, courseID, ist_id, attendanceID, callback) {
+	db.getAttendancesByCourseProfessorClass(courseID, ist_id, attendanceID, function(error, rows) {
+			let result = appendToFile_general(rows);
+			callback(error, result);
+		}
+	);
+}
+
 Service.prototype.setLate = function(db, attendanceID, ist_id, isLate, callback) {
 	db.setLate(attendanceID, ist_id, isLate,
 		function(error) {

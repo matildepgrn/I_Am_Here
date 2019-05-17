@@ -291,7 +291,7 @@ function editTitleNumber(button_element) {
 
 	var attendanceID = button_element.attendanceID;
 
-	loadAttendanceInformation("/api/attendanceinfo?a="+attendanceID);
+	loadAttendanceInformation("/api/attendanceinfo?a="+attendanceID, attendanceID);
 }
 
 function sendClassInformation(){
@@ -317,7 +317,7 @@ function sendClassInformation(){
 				var table = document.getElementById("studentsTable");
 				var classcounter = table.classcounter;
 				loadStudents('/api/getattendancehistory?rid='+table.attendanceID, classcounter);
-				loadAttendanceInformation("/api/attendanceinfo?a="+table.attendanceID);
+				loadAttendanceInformation("/api/attendanceinfo?a="+table.attendanceID,table.attendanceID);
 			}
 		};
 
@@ -326,7 +326,7 @@ function sendClassInformation(){
 	}
 }
 
-function loadAttendanceInformation(url) {
+function loadAttendanceInformation(url, attendanceID) {
 	var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if(this.readyState == 4) {
@@ -339,6 +339,7 @@ function loadAttendanceInformation(url) {
 						document.getElementById("addIsExtra").checked = 0;
 					}
 					document.getElementById("addClassCounter").value = attendanceInfo.number;
+					document.getElementById("tsv_export_class").href = "/api/classattendancefile?c="+courseID+"&a="+attendanceID;
 					document.getElementById("currentTitle").innerHTML = attendanceInfo.title;
 					document.getElementById("currentClass").innerHTML = attendanceInfo.number;
 				} else {
@@ -464,7 +465,7 @@ function showStudents(studentshistory, classcounter, title) {
 	table.title = title;
 	button_edit.attendanceID = studentshistory.attendanceID;
 
-	loadAttendanceInformation("/api/attendanceinfo?a="+table.attendanceID)
+	loadAttendanceInformation("/api/attendanceinfo?a="+table.attendanceID, table.attendanceID)
 	
 
 	for(let i = 0; i < rows.length; i++) {
