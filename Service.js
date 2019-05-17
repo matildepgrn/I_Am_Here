@@ -486,7 +486,7 @@ Service.prototype.getInactiveCourses = function(db, ist_id, callback) {
 }
 
 Service.prototype.getAttendancesByCourseAndProfessor = function(db, courseID, ist_id, callback) {
-	db.getAttendancesByCourseAndProfessor(function(error, rows) {
+	db.getAttendancesByCourseAndProfessor(courseID, ist_id, function(error, rows) {
 			let result = appendToFile_general(rows);
 			callback(error, result);
 		}

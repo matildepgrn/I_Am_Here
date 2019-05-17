@@ -128,6 +128,7 @@ function handleRequest(req, res) {
 		case "/api/students/attendanceHistory":
 		case "/api/PCM1819/attendanceflow":
 		case "/api/attendanceinfo":
+		case "/api/attendancefile":
 			disableCache(res);
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
@@ -142,6 +143,20 @@ function handleRequest(req, res) {
 									sendJSON(res, rows);
 								}
 							);
+							break;
+						case "/api/attendancefile":
+							var courseID = parsedURL.query.c;
+							service.getAttendancesByCourseAndProfessor(db, courseID, ist_id,
+									function(error, result) {
+										if(error) {
+											sendText(res, "Could not getAttendancesByCourseAndProfessor.", 500);
+										} else {
+											sendText(res, result, 200,
+												'text/plain; charset=utf-8', 
+												'attachment; filename="'+ist_id+courseID+'.tsv"');
+										}
+									}
+								);
 							break;
 						case "/api/attendanceflow":
 							var courseID = parsedURL.query.c;
@@ -491,19 +506,23 @@ function makeProfessorLogin(res, cookies, parsedURL, callback) {
 	);
 }
 
-function sendText(res, text, status = 200, mime = 'text/plain') {
-	res.writeHead(status, {'Content-Type': mime});
+function sendText(res, text, status = 200, mime = 'text/plain', disposition = "inline") {
+	res.writeHead(status, {
+		'Content-Type': mime,
+		'Content-Disposition': disposition
+	});
 	res.write(text);
 	res.end();
 }
 
-function sendFile(res, filename, type = 'text/html', moreText = "") {
+function sendFile(res, filename, type = 'text/html', moreText = "", disposition = "inline") {
 	var filePath = path.join(__dirname, filename);
     var stat = fs.statSync(filePath);
 
     res.writeHead(200, {
         'Content-Type': type,
-        'Content-Length': stat.size + Buffer.byteLength(moreText, 'utf8') //moreText.length
+        'Content-Length': stat.size + Buffer.byteLength(moreText, 'utf8'), //moreText.length
+        'Content-Disposition': disposition
     });
 
     var readStream = fs.createReadStream(filePath);

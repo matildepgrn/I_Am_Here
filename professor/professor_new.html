@@ -44,6 +44,11 @@
 		onclick="goTo('/professor/attendance?c='+courseID)"
 		title="Generate a new sequence">Start new attendance
 	</button>
+	
+	<!-- TSV file with all classes -->
+	<button id="tsvlink_b" onclick="loadTSV(courseID)">
+		&#11008;
+	</button>
 
 	<!-- Course's table -->
 	<table id="historyTable">
@@ -314,6 +319,11 @@ function sendClassInformation(){
 	xhttp.open("POST", url, true);
 	xhttp.send(json_string);
 	}
+}
+
+function loadTSV(mycourseID) {
+	let url = "/api/attendancefile?c="+mycourseID;
+	window.open(url);
 }
 
 function loadAttendanceInformation(url) {
