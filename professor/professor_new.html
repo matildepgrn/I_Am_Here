@@ -479,8 +479,15 @@ function showStudents(studentshistory, classcounter, title) {
 		var studentManually = isIn(rows_manually, rows[i].ist_id);
 		addStudent(table, template, rows[i].ist_id, rows[i].name, studentLate, studentManually, studentCheating, false);
 	}
-	for(let j = 0; j < rows_studentsThatTried.length; j++) {
+	if(rows_studentsThatTried.length > 0) {
+		table.parentElement.classList.add("historycolumn");
+		document.getElementById("attempedstudentsDiv").style.display = "";
+		for(let j = 0; j < rows_studentsThatTried.length; j++) {
 		addStudent(table_tried, template_tried, rows_studentsThatTried[j].ist_id, rows_studentsThatTried[j].name, false, false, false, true);
+		}
+	} else {
+		document.getElementById("attempedstudentsDiv").style.display = "none";
+		table.parentElement.classList.remove("historycolumn");
 	}
 };
 
