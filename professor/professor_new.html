@@ -52,10 +52,10 @@
 		title="Generate a new sequence">Start new attendance
 	</button>
 	<!-- Add existing attendance -->
-	<button id="b_addattendance" type="button"
+	<!--<button id="b_addattendance" type="button"
 		onclick="goTo('/professor/previousattendance?c='+courseID)"
 		title="Add existing attendance">Insert manually
-	</button>
+	</button>-->
 
 	<!-- Course's table -->
 	<table id="historyTable">
@@ -101,12 +101,12 @@
 	<!-- back and edit button -->
 	<div>
 		<div style="float: left; margin-top:-25px">
-			<a onclick="switchView(0);cancelAction();loadHistory(courseID)"	class="goBack previous round">&#8249;</a>
+			<a onclick="switchView(0);cancelAction();loadHistory(courseID)"	class="button-left-empty goBack previous round">&#8249;</a>
 		</div>
 
 		<div style="float: right; margin-top:-25px; margin-right:100px;">
-			<a id="editButton" onclick="editTitleNumber(this)" class="goBack previous round">&#9998;</a>
-			<a id="tsv_export_class" href="" class="goBack previous round" title="Export">
+			<a id="editButton" onclick="editTitleNumber(this)" class="button-top previous round">&#9998;</a>
+			<a id="tsv_export_class" href="" class="button-top previous round" title="Export">
 				<span class="download">&#11015;</span>
 			</a>
 		</div>
