@@ -46,10 +46,15 @@
 		You do not have an attendance for this course. Start one now!
 	</h6>
 		
-	<!-- Class number and title -->
+	<!-- Start new attendance -->
 	<button id="b_attendance" type="button"
 		onclick="goTo('/professor/attendance?c='+courseID)"
 		title="Generate a new sequence">Start new attendance
+	</button>
+	<!-- Add existing attendance -->
+	<button id="b_addattendance" type="button"
+		onclick="goTo('/professor/previousattendance?c='+courseID)"
+		title="Add existing attendance">Insert manually
 	</button>
 
 	<!-- Course's table -->

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<head>
+  <title>I Am Here!</title>
+</head>
+
+<link rel="stylesheet" type="text/css" href="/style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+
+<ul>
+	<li style="float:left"><span class="logoname">I Am Here!</span></li>
+
+	<li style="float:right"><a href="/logout">Log Out</a></li>
+	<li style="float:right"><span class="name" id="IST_NAME"></span></li>
+</ul>
+
+<div class="center" id="maincontainer">
+	<a href="/professor/new" id="goBackToHistoryTable" class="previous round"
+		style="margin-left:-135px;margin-top:-16px">&#8249;</a>
+<div class="container" id="attendance_personalization">
+		
+		<h3 style="text-align: center">
+			Personalize the attendance checking:
+		</h3>
+
+		<table id="attendancePersonalization">
+		<form id="formId" method="post">
+
+			<tr title="Class number">
+				<td>Number:</td>
+				<td>
+					<input id="class_number" type="number" name="number" placeholder="27">
+				</td>
+			</tr>
+
+			<tr title="Title">
+				<td>Title:</td>
+				<td>
+					<input type="text" name="title" placeholder="e.g. Invited Lecture">
+					<span title="Invited lecture or extraordinary class">
+						<input type="checkbox" name="is_extra" value="is_extra"> Extra Class</span>
+				</td>
+			</tr>
+		</form>
+		</table>
+
+		<div style="text-align: center">
+			<button class="button" id="attendance-button"
+				onclick="sendForm()" title="Create attendance">
+					Create attendance
+			</button>
+		</div>
+</div>
+
+</div> <!-- final do container -->
+
+
+<script src="/qrcode.min.js"></script>
+
+<script>
+
+const urlParams = new URLSearchParams(window.location.search);
+let courseID = urlParams.get("c");
+
+if(courseID && courseID != 'undefined') {
+	var goBackToHistoryTable = document.getElementById("goBackToHistoryTable");
+	goBackToHistoryTable.href += "?c=" + courseID;
+}
+
+function goTo(url) {
+	url += window.location.search;
+	window.location.replace(url);
+}
+
+function switchView(arg){
+	switch(arg) {
+		case 0:
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		default:
+			console.log("unknown arg", arg);
+			break;
+	}
+	state = arg;
+}
+
+function sendForm(){
+	var formEl = document.getElementById("formId");
+	var data = new FormData(formEl);
+	var o = {};
+
+	if(courseID && courseID != 'undefined') {
+		o.courseID = courseID;
+	}
+
+	for(var e of data) {
+		o[e[0]] = e[1];
+	}
+	
+	var json_string = JSON.stringify(o);
+
+	var xhttp = new XMLHttpRequest();
+	var url = "";
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4 && this.status == 200) {
+			var json = JSON.parse(this.responseText);
+			switchView(1);
+		}
+	};
+
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);
+}
+
+function loadName(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				document.getElementById("IST_NAME").innerHTML = this.responseText;
+			} else {
+				document.getElementById("IST_NAME").innerHTML = "<i>error getting username: " + this.status + "</i>";
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+loadName("/api/name");
+
+</script>

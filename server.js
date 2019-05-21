@@ -357,6 +357,7 @@ function handleRequest(req, res) {
 		case "/professor":
 		case "/professor/new":
 		case "/professor/attendance":
+		case "/professor/previousattendance":
 		case "/professor/studentslist":
 		case "/professor/courses":
 		case "/professor/classes":
@@ -379,6 +380,9 @@ function handleRequest(req, res) {
 							break;
 						case "/professor/attendance":
 							sendFile(res, 'professor/professor_attendance.html');
+							break;
+						case "/professor/previousattendance":
+							sendFile(res, 'professor/professor_previous_attendance.html');
 							break;
 						case "/professor/courses":
 							sendFile(res, 'professor/professor_classes.html');
