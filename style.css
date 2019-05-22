@@ -1,3 +1,8 @@
+body {
+	font-family: sans-serif;
+	text-align: center;
+}
+
 ul {
 	list-style-type: none;
 	margin: 0;
@@ -12,6 +17,32 @@ ul {
 	background: #d9d9d9;
 }
 
+.table-margin {
+	margin:16px 70px;
+}
+
+.menu-item {
+	height: 74px;
+	vertical-align: middle;
+	line-height: 74px;
+}
+
+.item-left {
+	float: left;
+}
+
+.item-right {
+	float: right;
+}
+
+.item-last {
+	margin-right: 70px;
+}
+
+.menu-title {
+	padding: 0px 32px;
+}
+
 .download {
 	border-bottom: 2px solid black;
 }
@@ -20,13 +51,16 @@ ul {
 	margin-top: 20px;
 }
 
+.inlineblock {
+	display: inline-block;
+}
+
 .active {
 	color: white !important;
 	background-color: #008CBA !important;
 }
 
 .goBack {
-	margin-left:100px;
 	margin-top:5px;
 }
 
@@ -102,13 +136,6 @@ th {
 	background: #008CBA; /*#a4c1da;*/
 	color: #f3f3f3;
 	padding: 4px 4px;
-}
-
-
-
-#b_attendance {
-	margin-top: 10px;
-	margin-bottom: 10px;
 }
 
 #b_newcourse {
@@ -216,7 +243,7 @@ tr {
 a.previous {
   text-decoration: none;
   display: inline-block;
-  padding: 16px 32px;
+  padding: 0px 32px;
 }
 
 a.previous:hover {
@@ -257,7 +284,12 @@ td {
 	margin: auto;
 }
 
+.menu-container {
+	margin-top: 5px;
+}
+
 .container { 
+	text-align: initial;
 	min-height: 300px;
 	position: relative; 
 }
@@ -465,10 +497,6 @@ li a:hover {
 	margin: auto;
 	margin-top: 20px;
 	margin-bottom: 20px;
-}
-
-#attendancePersonalization {
-	margin: auto;
 }
 
 .loadingIcon {
