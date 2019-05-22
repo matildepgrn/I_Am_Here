@@ -101,6 +101,10 @@ table {
 	text-align: left;
 }
 
+table tr {
+	text-align: center;
+}
+
 .clickable:hover {
 	background-color: #bfbfbf !important;
 	opacity: 1;
