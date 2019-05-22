@@ -51,7 +51,7 @@
 	</div>
 	
 	<!-- Class number and title -->
-	<center class="center">
+	<div>
 
 	<h6 id="noAttendancesText" style="display:none">
 		You do not have an attendance for this course. Start one now!
@@ -98,7 +98,7 @@
 	</table>
 
 	<p id="historyTable_error"></p>
-	</center>
+	</div>
 </div>
 <!-- Course's table end -->
 
@@ -137,24 +137,37 @@
 
 	</div>
 
-	<center class="center">
+	<div>
 
 		<!-- Editing mode -->
 		<div id="editClassInfo" style="display:none">
 			<form id="editClassInfoForm" method="post">
-				<span>Class number: 
-					<input id="addClassCounter" name="number" type="number">
-					</input>
-				</span>
+				<table class="invisible-table">
+					<tr>
+						<td>
+							Class number:
+						</td> 
+						<td>
+							<input id="addClassCounter" name="number" type="number"></input>
+						</td>
+					</tr>
 
-				<span> Title:
-					<input id="addTitle" name="mytitle" type="text">
-					</input>
-				</span>
+					<tr>
+						<td>
+							Title:
+						</td> 
+						<td>
+							<input id="addTitle" name="mytitle" type="text"></input>
+						</td>
+					</tr>
 
-				<span title="Invited lecture or extraordinary class">
-					<input type="checkbox" id="addIsExtra" name="is_extra" value="is_extra"> Extra Class
-				</span>
+					<tr title="Invited lecture or extraordinary class">
+						<td colspan="2">
+							<input type="checkbox" id="addIsExtra" name="is_extra" value="is_extra"> Extra Class
+						</td>
+					</tr>
+					
+				</table>
 
 				<button type="button" onclick="sendClassInformation()">Save</button>
 				<button type="button" onclick="cancelAction(this)">Cancel</button>
@@ -218,7 +231,7 @@
 		</table>
 		</div>
 
-	</center>
+	</div>
 
 </div>
 
@@ -245,7 +258,7 @@
 		</div>
 	</div>
 
-	<center class="center">
+	<div>
 		<!-- Students's fingerprint table -->
 		<table id="fingerprintTable">
 			<tr>
@@ -276,7 +289,7 @@
 				</tr>
 			</template>
 		</table>
-	</center>
+	</div>
 
 </div>
 <!-- Students's fingerprint table end -->
@@ -309,7 +322,6 @@ function cancelAction(button_element) {
 }
 
 function editTitleNumber(button_element) {
-	document.getElementById("classInfo").style.display = "none";
 	document.getElementById("editClassInfo").style.display = "";
 	document.getElementById("editButton").classList.add("active");
 

@@ -18,7 +18,7 @@ ul {
 }
 
 .table-margin {
-	margin:16px 70px;
+	margin:3px 70px;
 }
 
 .menu-item {
@@ -286,10 +286,10 @@ td {
 
 .menu-container {
 	margin-top: 5px;
+	height: 74px;
 }
 
-.container { 
-	text-align: initial;
+.container {
 	min-height: 300px;
 	position: relative; 
 }
@@ -531,8 +531,25 @@ li a:hover {
 	
 }
 
+#editClassInfo {
+	margin: 32px 8px;
+}
+
+input {
+	padding: 4px;
+}
+
 .margin_bottom {
 	margin-bottom: 90px;
+}
+
+.invisible-table,
+.invisible-table td,
+.invisible-table tr {
+	margin: auto;
+	background-color: initial !important;
+	border: 0px;
+	box-shadow: initial;
 }
 
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
