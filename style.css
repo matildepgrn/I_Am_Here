@@ -97,6 +97,10 @@ ul {
 	font-weight: bold;	
 }
 
+table {
+	text-align: left;
+}
+
 .clickable:hover {
 	background-color: #bfbfbf !important;
 	opacity: 1;

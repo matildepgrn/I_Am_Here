@@ -63,16 +63,22 @@
 
 
 <!--In case of no attendances/students-->
-<div class="container" id="noAttendances" style="display: none">
-	<a href="/professor/classes" class="goBack previous round">&#8249;</a>
-	<center class="center">
-		<h5>You do not have attendances for this course. Start one now!</h5>
+<div class="container inlineblock" id="noAttendances" style="display: none">
+	<div class="menu-container">
+		<div class="menu-item item-left">
+			<a href="/professor/classes" class="previous round">&#8249;</a>
+		</div>
 
-		<button id="b_attendance" type="button"
-			onclick="goTo('/professor/attendance?c='+courseID)"
-			title="Generate a new sequence">Start new attendance
-		</button>
-	</center>
+		<div class="menu-item item-left menu-title">
+			You do not have attendances for this course. Start one now!
+		</div>
+
+	</div>
+	
+	<button id="b_attendance" type="button"
+		onclick="goTo('/professor/attendance?c='+courseID)"
+		title="Generate a new sequence">Start new attendance
+	</button>
 </div>
 
 <div class="margin_bottom"></div>
