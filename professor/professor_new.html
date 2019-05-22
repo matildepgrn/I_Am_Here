@@ -111,8 +111,15 @@
 			<a onclick="switchView(0);cancelAction();loadHistory(courseID)"	class="previous round">&#8249;</a>
 		</div>
 
-		<div class="menu-item item-left menu-title">
-			Class #<span id="currentClass"></span>
+		<!-- Not editing mode -->
+		<div id="classInfo">
+		<div class="menu-item item-left menu-title" id="currentClassDiv">
+			Class <span style="font-weight: bold">#<span id="currentClass"></span></span>
+		</div>
+
+		<div class="menu-item item-left menu-title" id="currentTitleDiv">
+			<span id="currentTitle"></span>
+		</div>
 		</div>
 
 		<!-- TSV file with all classes -->
@@ -131,27 +138,20 @@
 	</div>
 
 	<center class="center">
-		<!-- Not editing mode -->
-		<div id="classInfo">
-			<h4 class="firstTitle"></h4>
-
-			<h6 class=""><span id="currentTitle"></span></h6>
-		</div>
 
 		<!-- Editing mode -->
 		<div id="editClassInfo" style="display:none">
-			<h4>
-				Edit this class:
-			</h4>
 			<form id="editClassInfoForm" method="post">
-				<h6>Class number: 
+				<span>Class number: 
 					<input id="addClassCounter" name="number" type="number">
 					</input>
-				</h6>
-				<h6> Title:
+				</span>
+
+				<span> Title:
 					<input id="addTitle" name="mytitle" type="text">
 					</input>
-				</h6>
+				</span>
+
 				<span title="Invited lecture or extraordinary class">
 					<input type="checkbox" id="addIsExtra" name="is_extra" value="is_extra"> Extra Class
 				</span>
@@ -165,7 +165,7 @@
 
 		<!-- Student's table -->
 		<div style="margin-right: 2px" class="historycolumn" id="historycolumnDiv">
-		<p>Attendance History Table:</p>
+
 		<table id="studentsTable" class="table-margin">
 			<tr>
 				<th>IST ID</th>
@@ -364,8 +364,16 @@ function loadAttendanceInformation(url, attendanceID) {
 					}
 					document.getElementById("addClassCounter").value = attendanceInfo.number;
 					document.getElementById("tsv_export_class").href = "/api/classattendancefile?c="+courseID+"&a="+attendanceID;
-					document.getElementById("currentTitle").innerHTML = attendanceInfo.title;
 					document.getElementById("currentClass").innerHTML = attendanceInfo.number;
+					document.getElementById("currentTitle").innerHTML = attendanceInfo.title;
+
+					if(attendanceInfo.number > 0) {			
+						document.getElementById("currentClassDiv").style.display = "";
+
+					} else {			// in case is extra class (and no number)
+						document.getElementById("currentTitleDiv").style.display = "";
+						document.getElementById("currentClassDiv").style.display = "none";
+					}
 				} else {
 					console.log("Error loadAttendanceInformation:", this.status);
 				}
