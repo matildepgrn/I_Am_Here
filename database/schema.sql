@@ -375,7 +375,7 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE ShowAttendances()
 BEGIN
-select distinct (a.ist_id), ah.attendanceID, pcm.std_number, pcm.name, ah.late, ah.manually, a.number, a.is_extra
+select distinct (a.ist_id), ah.attendanceID, pcm.std_number, pcm.name, ah.late, ah.manually, a.number, a.is_extra, a.title
 	from Attendance a
 		join AttendanceHistory ah
 			on ah.attendanceID = a.attendanceID

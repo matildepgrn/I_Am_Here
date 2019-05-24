@@ -607,7 +607,7 @@ function appendToFile(rows) {
 		}
 
 		if(rows[i].is_extra == 1) {
-			line += "IL" + "\n";
+			line += rows[i].title + "\n";
 		} else {
 			line += rows[i].number + "\n";
 		}
