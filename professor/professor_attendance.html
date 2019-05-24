@@ -120,7 +120,7 @@
 		</div>
 	</div>
 	
-	<div class="text-center" id="attendance_qrcode" style="margin-top:-60px">
+	<div class="text-center table-margin" id="attendance_qrcode" style="margin-top:-20px">
 	</div>
 
 	<p class="text-center" id="attendance_link" style="font-size: 40px">
@@ -340,6 +340,7 @@ function switchView(arg){
 			document.getElementById("maincontainer").classList.remove("left");
 			document.getElementById("maincontainer").classList.add("center");
 			document.getElementById("goBackToHistoryTable").style.display = "";
+			document.getElementById("buttons_startstop").classList.remove("margin-bottom");
 			break;
 		case 1:
 			if(state == 2) {
@@ -355,9 +356,11 @@ function switchView(arg){
 			document.getElementById("attendance_info").style.display = "none";
 			document.getElementById("maincontainer").classList.remove("left");
 			document.getElementById("maincontainer").classList.add("center");
+			document.getElementById("buttons_startstop").classList.add("margin-bottom");
 
 			break;
 		case 2:
+			document.getElementById("buttons_startstop").classList.remove("margin-bottom");
 			document.getElementById("goBackToHistoryTable").style.display = "none";
 			document.getElementById("back_qrcode").style.display = "none";
 			document.getElementById("attendance_personalization").style.display = "none";

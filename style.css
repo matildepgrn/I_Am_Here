@@ -21,6 +21,10 @@ ul {
 	margin:3px 70px;
 }
 
+.margin-bottom {
+	margin-bottom: 90px;
+}
+
 .menu-item {
 	height: 74px;
 	vertical-align: middle;
