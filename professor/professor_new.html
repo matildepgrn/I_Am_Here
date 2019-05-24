@@ -254,7 +254,7 @@
 			<a onclick="switchView(1);" href="#"" class="previous round">&#8249;</a>
 		</div>
 
-		<div class="menu-item item-left menu-title">
+		<div class="menu-item item-left menu-title" id="fingerprintTitle">
 			<span style="font-weight: bold" id="currentStudent"></span>'s fingerprint
 		</div>
 	</div>
@@ -680,9 +680,17 @@ function showFingerprint(fingerprint) {
 	var template = document.getElementById("fingerprintTemplate");
 	var table = document.getElementById("fingerprintTable");
 	removeTrs(table.getElementsByTagName("tr"));
-	for(let i = 0; i < fingerprint.length; i++) {
-		addFingerprint(table, template, fingerprint[i].useragent, fingerprint[i].ip);
-	} 
+	if(fingerprint.length > 0) {
+		table.style.display = "";
+		document.getElementById("fingerprintTitle").style.display = "";
+		for(let i = 0; i < fingerprint.length; i++) {
+			addFingerprint(table, template, fingerprint[i].useragent, fingerprint[i].ip);
+		}
+	} else {
+		table.style.display = "none";
+		document.getElementById("fingerprintTitle").style.display = "none";
+	}
+		
 };
 
 function showStudentsAttendanceHistory(attendance_history) {
