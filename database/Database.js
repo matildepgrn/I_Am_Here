@@ -735,6 +735,26 @@ database.prototype.updateClassInformation = function(attendanceID, j, callback) 
 	})
 };
 
+database.prototype.getStudentsHistoryByClass = function(ist_id, courseID, callback) {
+	var sql = "SELECT a.number, f.ip, f.useragent FROM FingerprintData f\
+					join Attendance a\
+							on f.attendanceID = a.attendanceID\
+				            WHERE a.courseID = ? and\
+				            f.ist_id = ? and\
+				            f.ist_id != 'ist182083'\
+				            order by a.attendanceID;";
+	var arg = [courseID, ist_id];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getStudentsHistoryByClass:", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
 
 
 module.exports = database;

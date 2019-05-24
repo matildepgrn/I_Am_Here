@@ -676,5 +676,13 @@ Service.prototype.updateClassInformation = function(db, attendanceID, j, callbac
 	);
 }
 
+Service.prototype.getStudentsHistoryByClass = function(db, ist_id, courseID, callback) {
+	db.getStudentsHistoryByClass(ist_id, courseID,
+		function(error, rows) {
+			callback(error, rows);
+		}
+	); 
+}
+
 
 module.exports = Service;

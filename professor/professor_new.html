@@ -261,31 +261,16 @@
 	</div>
 
 	<div>
-		<!-- Students's fingerprint table -->
-		<table id="fingerprintTable">
+		<table id="studentsAllTable">
 			<tr>
-				<th>User Agent</th>
+				<th>Class #</th>
 				<th>IP</th>
+				<th>User Agent</th>
 			</tr>
 			
-			<template id="fingerprintTemplate">
+			<template id="studentsAllTemplate">
 				<tr>
 					<td></td>
-					<td></td>
-				</tr>
-			</template>
-		</table>
-
-		<h5 style="margin-top:30px">Attended the following classes:</h5>
-
-		<table id="attendanceHistoryTable" style="margin-bottom: 90px" class="table-margin">
-			<tr>
-				<th>Class</th>
-				<th>On time</th>
-			</tr>
-			
-			<template id="attendanceHistoryTemplate">
-				<tr>
 					<td></td>
 					<td></td>
 				</tr>
@@ -570,8 +555,7 @@ function addStudent(table, template, ist_id, name, late, manually, studentCheati
 		let table = document.getElementById("studentsTable");
 		let tr = this.parentElement;
 		document.getElementById("currentStudent").innerHTML = tr.std_name;
-		loadFingerprint("/api/fingerprint?f="+table.attendanceID+"&i="+tr.ist_id);
-		loadStudentsAttendanceHistory("/api/students/attendanceHistory?n=" + tr.ist_id);
+		loadStudentsHistory("/api/studentshistory?i="+tr.ist_id+"&c="+courseID);
 		switchView(2);
 	};
 	tds[2].onclick = function() {
@@ -644,102 +628,6 @@ function removeStudent(url, button_element, attendanceID, classcounter) {
 	xhttp.send();
 }
 
-function loadFingerprint(url) {
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4) {
-			if(this.status == 200) {
-				var fingerprint = JSON.parse(this.responseText);
-				showFingerprint(fingerprint);
-			} else {
-				console.log("Error loading fingerprint:", this.status);
-			}
-		}
-	};
-	xhttp.open("GET", url, true);
-	xhttp.send();
-}
-
-function loadStudentsAttendanceHistory(url) {
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4) {
-			if(this.status == 200) {
-				var attendance_history = JSON.parse(this.responseText);
-				showStudentsAttendanceHistory(attendance_history);
-			} else {
-				//todo
-				console.log("Error loading fingerprint:", this.status);
-			}
-		}
-	};
-	xhttp.open("GET", url, true);
-	xhttp.send();
-}
-
-function showFingerprint(fingerprint) {
-	var template = document.getElementById("fingerprintTemplate");
-	var table = document.getElementById("fingerprintTable");
-	removeTrs(table.getElementsByTagName("tr"));
-	if(fingerprint.length > 0) {
-		table.style.display = "";
-		document.getElementById("fingerprintTitle").style.display = "";
-		for(let i = 0; i < fingerprint.length; i++) {
-			addFingerprint(table, template, fingerprint[i].useragent, fingerprint[i].ip);
-		}
-	} else {
-		table.style.display = "none";
-		document.getElementById("fingerprintTitle").style.display = "none";
-	}
-		
-};
-
-function showStudentsAttendanceHistory(attendance_history) {
-	var template = document.getElementById("attendanceHistoryTemplate");
-	var table = document.getElementById("attendanceHistoryTable");
-	removeTrs(table.getElementsByTagName("tr"));
-	for(let i = 0; i < attendance_history.length; i++) {
-		let isLate;
-		if(attendance_history[i].late == 1) {
-			isLate = true;
-		} else {
-			isLate = false;
-		}
-		if(attendance_history[i].number != null) {
-			addStudentsAttendanceHistory(table, template, attendance_history[i].number, attendance_history[i].late);
-		}
-	} 
-};
-
-function addFingerprint(table, template, useragent, ip) {
-	var tr_clone = template.content.querySelector("tr").cloneNode(true);
-	var tds = tr_clone.children;
-	for(let x = 0; x < tds.length; x++) {
-		tds[x].innerText = arguments[x+2];
-	}
-	tr_clone.onclick = function() {
-	};
-	table.appendChild(tr_clone);
-}
-
-function addStudentsAttendanceHistory(table, template, number, late) {
-	var tr_clone = template.content.querySelector("tr").cloneNode(true);
-	var tds = tr_clone.children;
-	if(late == 1) {			// coluna: on time
-		tds[1].classList.add("toRed");
-		tds[1].innerHTML = "X";	//cruz
-	} else {
-		tds[1].classList.add("toGreen");
-		tds[1].innerHTML = "&#10004;";	//check
-	}
-	for(let x = 0; x < tds.length - 1; x++) {
-		tds[x].innerText = arguments[x+2];
-	}
-	tr_clone.onclick = function() {
-	};
-	table.appendChild(tr_clone);
-}
-
 function sendForm(){
 	var formEl = document.getElementById("formStudent");
 	var data = new FormData(formEl);
@@ -797,6 +685,51 @@ function loadisLate(url, json, td) {
 	var json_string = JSON.stringify(json);
 	xhttp.open("POST", url, true);
 	xhttp.send(json_string);
+}
+
+function loadStudentsHistory(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				var stds_history = JSON.parse(this.responseText);
+				showAllStudentsHistory(stds_history);
+			} else {
+				console.log("Error loadStudentsHistory:", this.status);
+			}
+		}
+	};
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+function showAllStudentsHistory(stds_wrapper) {
+	var template = document.getElementById("studentsAllTemplate");
+	var table = document.getElementById("studentsAllTable");
+	var stds = stds_wrapper;
+	removeTrs(table.getElementsByTagName("tr"));
+
+	console.log(stds);
+	if(stds.length > 0) {
+		for(let i = 0; i < stds.length; i++) {
+			let hist_i = stds[i];
+			addAllStudentsHistory(table, template, hist_i.number, hist_i.ip, hist_i.useragent);
+		} 
+	} else {
+		//TODO
+	}
+	
+};
+
+function addAllStudentsHistory(table, template, number, ip, useragent) {
+	var tr_clone = template.content.querySelector("tr").cloneNode(true);
+	var tds = tr_clone.children;
+	
+	for(let x = 0; x < tds.length; x++) {	//a partir de "date"
+		tds[x].innerText = arguments[x+2];
+	}
+	
+	table.appendChild(tr_clone);
 }
 
 function copyISTIDToAddStudent(button) {
