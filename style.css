@@ -31,6 +31,10 @@ ul {
 	line-height: 74px;
 }
 
+.link-margin {
+
+}
+
 .item-left {
 	float: left;
 }
@@ -294,7 +298,6 @@ td {
 #attendance_qrcode {
 	width: 500px;
 	height: 500px;
-	margin: auto;
 }
 
 .menu-container {
