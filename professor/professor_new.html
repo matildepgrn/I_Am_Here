@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+<script src="https://www.w3schools.com/lib/w3.js"></script>
 
 <!-- Top banner -->
 <ul>
@@ -68,13 +69,13 @@
 	<!-- Course's table -->
 	<table id="historyTable" class="table-margin">
 		<tr>
-			<th rowspan="2">Class #</th>
-			<th rowspan="2">Title</th>
-			<th rowspan="2">Date</th>
-			<th colspan="2">Code</th>
-			<th rowspan="2">Time</th>
-			<th rowspan="2" title="Consecutive Codes"># Codes</th>
-			<th rowspan="2"># Students</th>
+			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(1)')">Class #</th>
+			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(2)')">Title</th>
+			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(3)')">Date</th>
+			<th colspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(4)')">Code</th>
+			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(6)')">Time</th>
+			<th rowspan="2" title="Consecutive Codes" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(7)')"># Codes</th>
+			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(8)')"># Students</th>
 			<th rowspan="2"></th>
 		</tr>
 		<tr>

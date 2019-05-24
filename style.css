@@ -550,6 +550,14 @@ input {
 	margin-bottom: 90px;
 }
 
+.th-sortable:hover {
+	cursor: pointer;	
+}
+.th-sortable::after {
+	content: '\2B0D';
+	padding-left: 7px;
+}
+
 .invisible-table,
 .invisible-table td,
 .invisible-table tr {
