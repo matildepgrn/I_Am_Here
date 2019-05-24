@@ -91,6 +91,7 @@ ul {
 	height: 25px;
 	background: black;
 	transition: width 1s linear;
+	transition-property: width, background-color;
 }
 
 #courseName_id {
@@ -502,8 +503,6 @@ li a:hover {
 
 #newCoursePersonalization,
 #inactiveCoursePersonalization {
-	margin: auto;
-	margin-top: 20px;
 	margin-bottom: 20px;
 }
 

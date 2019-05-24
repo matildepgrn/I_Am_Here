@@ -255,6 +255,7 @@ function timeRemaining(time, maxTime) {
 	}
 
 	barra_remaining.style.width = (100*(time/maxTime)) + "%";
+	barra_remaining.style.backgroundColor = "rgb(" + (255 - 255*(time/maxTime)) + ",0,0)";
 }
 
 function stopTimer() {
