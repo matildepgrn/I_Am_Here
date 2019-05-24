@@ -335,7 +335,19 @@ function handleRequest(req, res) {
 										if(isChecked) {
 											sendText(res, 'Attendance already checked for this session.');
 										} else {
-											sendFile(res, 'student/student.html');
+											service.getAttendanceByRandomID(db, ist_id, randomID_int,
+												function(error, rows) {
+													if(error) {
+														console.log("Error in getAttendanceByRandomID.");
+													} else {
+														let extraText = "";		// keyboard number
+														if(rows[0].code_type == "N") {
+															extraText = "<script>setNumberK();</script>";
+														}
+														sendFile(res, 'student/student.html', 'text/html', extraText);
+													}
+												}
+											)
 										}
 									} else {
 										sendText(res, "Invalid attendance link!");

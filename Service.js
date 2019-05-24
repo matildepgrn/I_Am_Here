@@ -191,6 +191,18 @@ Service.prototype.isProfessor = function(db, ist_id, callback) {
 	); 
 }
 
+Service.prototype.getAttendanceByRandomID = function(db, ist_id, randomID, callback) {
+	db.getAttendanceByRandomID(randomID, ist_id,
+		function(error, code_type) {
+			if(error) {
+				callback(error);
+			} else {
+				callback(error, code_type);	
+			}
+		}
+	); 
+}
+
 Service.prototype.getStatus = function(db, ist_id, randomID, callback) {
 	this.getCode(db, ist_id, randomID,
 		function(error, code) {
