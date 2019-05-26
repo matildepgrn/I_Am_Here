@@ -244,7 +244,7 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
-			console.log("Error inserting server code.");
+			console.log("Error inserting server code.", attendanceID);
 			callback(err);
 		}
 		else{
@@ -445,6 +445,36 @@ database.prototype.getAttendanceByRandomID = function(randomID, ist_id, callback
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if(err) {
 			console.log("Error in getAttendanceByRandomID:", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
+database.prototype.deserializedAttendancesFromLastDay = function(callback) {
+	var sql = "SELECT * from Attendance where open = 1 and date >= DATE(NOW()) - INTERVAL 1 DAY;";
+	var arg = [];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in deserializedAttendancesFromLastDay:", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
+database.prototype.getAttendanceSequence = function(callback) {
+	var sql = "select attendanceID, sequence \
+					from (select attendanceID, sequence from CodeAttendance order by attendanceID, sequence desc) x \
+					group by attendanceID;";
+	var arg = [];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getAttendanceSequence:", err);
 			callback(err);
 		} else {
 			callback(err, rows);

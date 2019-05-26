@@ -476,6 +476,17 @@ server.on('listening', function() {
 	console.log("Server listening on", server.address());
 });
 
+service.deserializedAttendancesFromLastDay(db,
+				function(error, attendances){
+					if(error) {
+						console.log("Error in deserializedAttendancesFromLastDay", 500);
+					} else {
+						for(a of attendances) {
+							console.log("Loaded attendanceID: ", a);
+						}
+					}
+				});
+
 server.listen(config.PORT); //the server object listens on config.PORT
 
 function disableCache(res) {

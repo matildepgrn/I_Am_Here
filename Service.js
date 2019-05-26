@@ -82,6 +82,37 @@ Service.prototype.insertFingerprintData = function(db, ist_id, useragent, ip, at
 	); 
 }
 
+Service.prototype.deserializedAttendancesFromLastDay = function(db, callback) {
+	db.deserializedAttendancesFromLastDay(
+		function(error, rows) {
+			db.getAttendanceSequence(
+				function(error1, rows1) {
+					var attendances = [];
+					for(let i = 0; i < rows.length; i++) {
+						let at = rows[i];
+						attendances.push(at.attendanceID);
+						var code = new Code(db, at.randomID, at.attendanceID);
+						for(let k of rows1) {
+							if(k.attendanceID == at.attendanceID) {
+								code.code_counter = k.sequence;
+								break;
+							}
+						}
+						code.customizeTest(at.code_length, at.code_type, at.total_time_s, at.consecutive_codes);
+						codeByRandomID.set(at.randomID, code);
+
+						if(at.open == 1) {
+							code.startProcess();
+						}
+					}
+					callback(error, attendances);
+				}
+
+			);
+		}
+	); 
+}
+
 Service.prototype.manuallyInsertStudent = function(db, ist_id, attendanceID, callback) {
 	db.manuallyInsertStudent(ist_id, attendanceID,
 		function(error) {
