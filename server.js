@@ -364,7 +364,7 @@ function handleRequest(req, res) {
 											)
 										}
 									} else {
-										sendText(res, "Invalid attendance link!");
+										sendText(res, "<!DOCTYPE html><title>I Am Here!</title><pre>Invalid attendance link!</pre><meta http-equiv=\"refresh\" content=\"3\">", 200, 'text/html');
 									}
 								}
 							);
