@@ -678,7 +678,7 @@ Service.prototype.getNextClassNumber = function(db, courseID, ist_id, callback) 
 Service.prototype.updateFingerprintData = function(db, randomID, j, callback) {
 	var array = ["language", "colorDepth", "deviceMemory", "hardwareConcurrency", "screenResolution", "availableScreenResolution", "timezoneOffset", "sessionStorage", "localStorage", "platform", "plugins", "canvas", "webgl","adBlock", "fonts", "audio"];
 	var result = {};
-	if(j) {
+	if(j && j.my_data) {
 		let j_data = j.my_data;
 		for(let i of array) {
 			switch(typeof j_data[i]) {
