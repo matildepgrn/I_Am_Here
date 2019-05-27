@@ -28,6 +28,10 @@ Code.prototype.getAttendanceID = function() {
 	return this.attendanceID;
 }
 
+Code.prototype.getCodeType = function() {
+	return this.CODE_TYPE;
+}
+
 Code.prototype.getConsecutiveCodes = function() {
 	return this.repetitions;
 }

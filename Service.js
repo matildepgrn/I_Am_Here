@@ -29,6 +29,14 @@ Service.prototype.verifyRandomID = function(db, randomID, ist_id, useragent, ip,
 	);
 }
 
+Service.prototype.getAttendanceTypeByRandomID = function(randomID) {
+	var code = codeByRandomID.get(randomID);
+	if(!code) {
+		return "";	
+	}
+	return code.getCodeType();
+}
+
 Service.prototype.validateCode = function(db, res, randomID, client_code, ist_id, callback) {
 	var code = codeByRandomID.get(randomID);
 	if(code){
@@ -224,11 +232,11 @@ Service.prototype.isProfessor = function(db, ist_id, callback) {
 
 Service.prototype.getAttendanceByRandomID = function(db, ist_id, randomID, callback) {
 	db.getAttendanceByRandomID(randomID, ist_id,
-		function(error, code_type) {
+		function(error, rows) {
 			if(error) {
 				callback(error);
 			} else {
-				callback(error, code_type);	
+				callback(error, rows);	
 			}
 		}
 	); 
@@ -692,6 +700,7 @@ Service.prototype.updateFingerprintData = function(db, randomID, j, callback) {
 
 	}
 }
+
 
 Service.prototype.getAttendanceInformation = function(db, attendanceID, callback) {
 	db.getAttendanceInformation(attendanceID,function(error, rows) {

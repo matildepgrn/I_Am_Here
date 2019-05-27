@@ -349,19 +349,13 @@ function handleRequest(req, res) {
 										if(isChecked) {
 											sendText(res, 'Attendance already checked for this session.');
 										} else {
-											service.getAttendanceByRandomID(db, ist_id, randomID_int,
-												function(error, rows) {
-													if(error) {
-														console.log("Error in getAttendanceByRandomID.");
-													} else {
-														let extraText = "";		// keyboard number
-														if(rows[0].code_type == "N") {
-															extraText = "<script>setNumberK();</script>";
-														}
-														sendFile(res, 'student/student.html', 'text/html', extraText);
-													}
-												}
-											)
+											let code_type = service.getAttendanceTypeByRandomID(randomID_int);
+											let extraText = "";		// keyboard number
+											if(code_type == "N") {
+												extraText = "<script>setNumberK();</script>";
+											}
+											sendFile(res, 'student/student.html', 'text/html', extraText);
+													
 										}
 									} else {
 										sendText(res, "<!DOCTYPE html><title>I Am Here!</title><pre>Invalid attendance link!</pre><meta http-equiv=\"refresh\" content=\"3\">", 200, 'text/html');
@@ -504,6 +498,7 @@ function redirectURL(res, url) {
 
 function goToLogin(res, cookies, parsedURL) {
 	cookies.set('last_url', parsedURL.path);
+	console.log('Saving last_url as', parsedURL.path);
 	redirectURL(res, config.EXTERNAL_LOGIN_URL);	
 }
 
