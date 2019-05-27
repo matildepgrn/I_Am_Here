@@ -120,6 +120,11 @@ table th {
 	cursor: pointer;
 }
 
+a:hover,
+button:hover {
+	cursor: pointer;
+}
+
 #late_checkbox {
 	margin: 4px;
 }
