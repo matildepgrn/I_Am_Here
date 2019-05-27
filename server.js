@@ -613,7 +613,12 @@ function handlePost(req, res, cookies, parsedURL, data) {
 		case "/api/init":
 			isLoggedIn(res, cookies, parsedURL,
 				function(ist_id) {
-					var json = JSON.parse(data);
+					try {
+						var json = JSON.parse(data);
+					} catch(e) {
+						console.log("Invalid or empty POST data.");
+						var json = {};
+					}
 					var randomID = json.randomID;
 					switch(req.url) {
 						case "/api/validatecode":
