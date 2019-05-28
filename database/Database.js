@@ -129,6 +129,24 @@ database.prototype.getUserName = function(ist_id, callback) {
 	})
 };
 
+database.prototype.getProfessorsByCourse = function(courseID, callback) {
+	var sql = "select p.ist_id, u.name from ProfessorTeachesCourse p\
+					join User u\
+				    on u.ist_id = p.ist_id\
+				    where courseID = ?;";
+	var arg = [courseID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error getting the professors by course ID.");
+			callback(err);
+		}
+		else{
+			callback(err, rows);
+		}
+	})
+};
+
 database.prototype.getFingerprintDataTable = function(attendanceID, callback) {
 	var sql = "SELECT ist_id, ip FROM FingerprintData WHERE attendanceID = ?";
 	var arg = [attendanceID];

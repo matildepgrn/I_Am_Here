@@ -65,6 +65,15 @@
 		onclick="goTo('/professor/previousattendance?c='+courseID)"
 		title="Add existing attendance">Insert manually
 	</button>-->
+	<div id="teacherOn" class="">
+		Professor:
+		<select id="professor_select" onchange="changeProfessor(this)">
+	  		<template id="teacherOnTemplate">
+	  			<option></option>
+	  		</template>
+		</select>
+	</div>
+
 
 	<!-- Course's table -->
 	<table id="historyTable" class="table-margin">
@@ -395,8 +404,13 @@ function loadAttendanceInformation(url, attendanceID) {
 		xhttp.send();
 }
 
-function loadHistory(mycourseID) {
-	let url = "/api/history?c="+mycourseID;
+function changeProfessor() {
+	var select = document.getElementById("professor_select");
+	loadHistory(courseID, select.value);
+}
+
+function loadHistory(mycourseID, ist_id) {
+	let url = "/api/history?c=" + mycourseID + (ist_id ? ("&i=" + ist_id) : "");
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
@@ -413,6 +427,41 @@ function loadHistory(mycourseID) {
 	xhttp.send();
 }
 
+function loadProfessorsByCourse(courseID) {
+	let url = "/api/professorsbycourse?c="+courseID;
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4) {
+				if(this.status == 200) {
+					var json = JSON.parse(this.responseText);
+					showProfessors(json);
+				} else {
+					console.log("Error loading professor by course:", this.status);
+				}
+			}
+		};
+		xhttp.open("GET", url, true);
+		xhttp.send();
+} 
+
+function showProfessors(json) {
+	var profs = json.rows;
+	var template = document.getElementById("teacherOnTemplate");
+	var select = document.getElementById("professor_select");
+
+	for(let i = 0; i < profs.length; i++) {
+		var option = template.content.querySelector("option").cloneNode(true);
+		option.value = profs[i].ist_id;
+		option.innerText = profs[i].name + " (" + profs[i].ist_id + ")";
+		select.appendChild(option);
+
+		if(profs[i].ist_id == json.ist_id) {
+			select.selectedIndex = i;
+		}
+	}
+};
+
+
 function showHistory(history_wrapper) {
 	var template = document.getElementById("historyTemplate");
 	var table = document.getElementById("historyTable");
@@ -422,6 +471,7 @@ function showHistory(history_wrapper) {
 	document.getElementById("courseName_id").innerHTML = history_wrapper.courseName;
 	if(history.length > 0) {
 		document.getElementById("noAttendancesText").style.display = "none";
+		document.getElementById("historyTable").style.display = "";
 		for(let i = 0; i < history.length; i++) {
 			let hist_i = history[i];
 			addHistory(table, template, hist_i.attendanceID, hist_i.number, hist_i.title, hist_i.date, hist_i.code_type, hist_i.code_length, hist_i.total_time_s, hist_i.consecutive_codes, hist_i.count, hist_i.is_extra);
@@ -457,6 +507,7 @@ function loadName(url) {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				document.getElementById("IST_NAME").innerHTML = this.responseText;
+				//document.getElementById("professor_select").innerHTML = this.responseText;
 			} else {
 				document.getElementById("IST_NAME").innerHTML = "<i>error getting username: " + this.status + "</i>";
 			}
@@ -780,5 +831,6 @@ function switchView(arg){
 }
 
 loadName("/api/name");
+loadProfessorsByCourse(courseID);
 
 </script>

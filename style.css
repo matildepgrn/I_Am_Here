@@ -17,6 +17,12 @@ ul {
 	background: #d9d9d9;
 }
 
+#teacherOn {
+	text-align: left;
+	margin-left: 70px;
+	margin-bottom: 10px;
+}
+
 .table-margin {
 	margin:3px 70px;
 }
@@ -52,7 +58,6 @@ ul {
 }
 
 .menu-title {
-	padding: 0px 10px;
 	font-size: 20px;
 }
 

@@ -153,6 +153,19 @@ Service.prototype.manuallyRemoveAttendance = function(db, attendanceID, ist_id, 
 	); 
 }
 
+Service.prototype.getProfessorsByCourse = function(db, courseID, ist_id, callback) {
+	db.getProfessorsByCourse(courseID,
+		function(error, rows) {
+			var result = {ist_id: ist_id, rows: rows};
+			if(error) {
+				callback(error);
+			} else {
+				callback(error, result);
+			}
+		}
+	); 
+}
+
 Service.prototype.getFingerprintData = function(db, ist_id, attendanceID, callback) {
 	db.getFingerprintData(ist_id, attendanceID,
 		function(error, rows) {
