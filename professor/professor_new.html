@@ -505,6 +505,7 @@ function showStudents(studentshistory, classcounter, title) {
 	table.attendanceID = studentshistory.attendanceID;
 	table.courseID = courseID;
 	table.classcounter = classcounter;
+	table_tried.attendanceID = studentshistory.attendanceID;
 	table_tried.classcounter = classcounter;
 	table.title = title;
 	button_edit.attendanceID = studentshistory.attendanceID;
@@ -651,7 +652,6 @@ function sendForm(){
 		o[e[0]] = e[1];
 	}
 	
-	console.log(o);
 	var json_string = JSON.stringify(o);
 	var xhttp = new XMLHttpRequest();
 	var url = "/api/addmanually";
@@ -750,6 +750,8 @@ function addAllStudentsHistory(table, template, number, ip, useragent) {
 function copyISTIDToAddStudent(button) {
 	var inputadd_student = document.getElementById("inputadd_student");
 	inputadd_student.value = button.parentElement.parentElement.ist_id;
+
+	sendForm();
 }
 
 function switchView(arg){
