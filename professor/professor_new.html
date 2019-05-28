@@ -118,7 +118,7 @@
 			Class <span style="font-weight: bold">#<span id="currentClass"></span></span>
 		</div>
 
-		<div class="menu-item item-left menu-title" id="currentTitleDiv">
+		<div class="menu-item item-left item-left-second menu-title" id="currentTitleDiv">
 			<span id="currentTitle"></span>
 		</div>
 		</div>
@@ -727,6 +727,10 @@ function addAllStudentsHistory(table, template, number, ip, useragent) {
 	
 	for(let x = 0; x < tds.length; x++) {	//a partir de "date"
 		tds[x].innerText = arguments[x+2];
+	}
+
+	if(!number) {
+		tds[0].innerText = "-";
 	}
 	
 	table.appendChild(tr_clone);

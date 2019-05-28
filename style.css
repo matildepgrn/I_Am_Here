@@ -47,8 +47,13 @@ ul {
 	margin-right: 70px;
 }
 
-.menu-title {
+.item-left-second {
 	padding: 0px 32px;
+}
+
+.menu-title {
+	padding: 0px 10px;
+	font-size: 20px;
 }
 
 .download {
@@ -346,6 +351,10 @@ td {
 
 button:disabled {
 	opacity: 0.5;
+}
+
+#studentsAllTable td:nth-child(1) {
+	text-align: right;
 }
 
 table tr:nth-child(even) {

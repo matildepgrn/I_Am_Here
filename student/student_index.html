@@ -21,8 +21,11 @@
 <div class="container">
 	<center class="center">
 		<h3>
-			Scan the QR code or type the link.
+			Scan the QR code, type the link or insert the attendance's code here:
 		</h3>
+
+		<input type="number" name="attendanceID" hint="attendance code" id="code_input"></input>
+		<button id="enter_button" type="button" onclick="goToAttendance()" disabled>Enter</button>
 	</center>
 </div>
 
@@ -47,33 +50,16 @@ function loadName(url) {
 
 loadName("/api/name");
 
-function loadDoc() {
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4 && this.status == 200) {
-			var json = JSON.parse(this.responseText);
-			document.getElementById("div_c").innerHTML = handleResponse(json);
-			document.getElementById("input_student").value = "";
-			document.getElementById("enter_button").disabled = true;
-			console.log("response:", this.responseText);
-		}
-	};
-	var json = {};
-	json.input_code = document.getElementById("input_student").value.toUpperCase();
-	var urlParams = new URLSearchParams(window.location.search);
-	json.randomID = parseInt(urlParams.get('c'));
-	
-	var json_string = JSON.stringify(json);
-	console.log("input_code:", json.input_code);
-	xhttp.open("POST", "/api/validatecode", true);
-	xhttp.send(json_string);
+function goToAttendance() {
+	let code = document.getElementById("code_input").value;
+	window.location.replace("/a?c="+code);
 }
 
-var input = document.getElementById("input_student");
+var input = document.getElementById("code_input");
 var botao = document.getElementById("enter_button");
 input.addEventListener("keyup", function keyDown(event){
 	console.log(event);
-	if(event.keyCode === 13 && this.value.length > 0) {
+	if(event.keyCode == 13 && this.value.length > 0) {
 		event.preventDefault();
 		loadDoc();
 	}
@@ -81,4 +67,5 @@ input.addEventListener("keyup", function keyDown(event){
 		botao.disabled = this.value.length <= 0;
 	}
 });
+
 </script>
