@@ -131,7 +131,7 @@
 		</div>
 
 		<div class="menu-item item-right">
-			<a id="editButton" onclick="editTitleNumber(this)" class="previous round">
+			<a id="editButton" onclick="toggleEdit(this)" class="previous round">
 				<span>&#9998;</span>
 			</a>
 		</div>
@@ -284,6 +284,7 @@
 
 <script>
 
+let isEditingClass = false;
 const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
 let historyTable_error = document.getElementById("historyTable_error");
@@ -306,6 +307,8 @@ function cancelAction(button_element) {
 	document.getElementById("editButton").classList.remove("active");
 	document.getElementById("classInfo").style.display = "";
 	document.getElementById("editClassInfo").style.display = "none";
+
+	isEditingClass = false;
 }
 
 function editTitleNumber(button_element) {
@@ -314,7 +317,17 @@ function editTitleNumber(button_element) {
 
 	var attendanceID = button_element.attendanceID;
 
+	isEditingClass = true;
+
 	loadAttendanceInformation("/api/attendanceinfo?a="+attendanceID, attendanceID);
+}
+
+function toggleEdit(button_element) {
+	if(isEditingClass) {
+		return cancelAction(button_element);
+	} else {
+		return editTitleNumber(button_element);
+	}
 }
 
 function sendClassInformation(){
@@ -662,26 +675,24 @@ function sendForm(){
 
 function loadisLate(url, json, td) {
 	var xhttp = new XMLHttpRequest();
-	if(confirm("Are you sure you want change the student's status?")) {
-		xhttp.onreadystatechange = function() {
-			if(this.readyState == 4) {
-				if(this.status == 200) {
-					if(td.innerText == "X") {
-						td.classList.remove("toRed");
-						td.classList.add("toGreen");
-						td.innerHTML = "&#10004;";
-					} else {
-						td.classList.remove("toGreen");
-						td.classList.add("toRed");
-						td.innerHTML = "X";
-					}
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				if(td.innerText == "X") {
+					td.classList.remove("toRed");
+					td.classList.add("toGreen");
+					td.innerHTML = "&#10004;";
 				} else {
-					console.log("Error loading isLate", this.status);
-					alert("Could not change student's status");
+					td.classList.remove("toGreen");
+					td.classList.add("toRed");
+					td.innerHTML = "X";
 				}
+			} else {
+				console.log("Error loading isLate", this.status);
+				alert("Could not change student's status");
 			}
-		};
-	}
+		}
+	};
 	var json_string = JSON.stringify(json);
 	xhttp.open("POST", url, true);
 	xhttp.send(json_string);
