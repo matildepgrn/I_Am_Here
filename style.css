@@ -41,6 +41,11 @@ ul {
 	line-height: 74px;
 }
 
+.menu-button {
+	font-family: monospace;
+	width: 80px;
+}
+
 .link-margin {
 
 }

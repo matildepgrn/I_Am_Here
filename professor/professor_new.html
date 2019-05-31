@@ -27,7 +27,7 @@
 <div class="container inlineblock" id="showHistoryofProfessor">
 	<!-- back button -->
 	<div class="menu-container">
-		<div class="menu-item item-left">
+		<div class="menu-item item-left menu-button">
 			<a href="/professor/classes" class="previous round">&#8249;</a>
 		</div>
 
@@ -35,20 +35,27 @@
 		</div>
 
 		<!-- TSV file with all classes -->
-		<div class="menu-item item-right item-last">
+		<div class="menu-item item-right menu-button">
+			<a class="previous round" href="#"
+				onclick=""
+				title="Generate a new sequence">
+				<span>&#9776;</span>
+			</a>
+		</div>
+
+		<div class="menu-item item-right menu-button">
 			<a id="tsv_export" href="" class="previous round" title="Export">
 				<span class="download">&#11015;</span>
 			</a>
 		</div>
 
-		<div class="menu-item item-right">
+		<div class="menu-item item-right menu-button">
 			<a id="b_attendance" class="previous round" href="#"
 				onclick="goTo('/professor/attendance?c='+courseID)"
 				title="Generate a new sequence">
 				<span>+</span>
 			</a>
 		</div>
-
 	</div>
 	
 	<!-- Class number and title -->
@@ -57,7 +64,7 @@
 	<h6 id="noAttendancesText" style="display:none">
 		You do not have an attendance for this course. Start one now!
 	</h6>
-	
+
 	<div id="teacherOn" class="">
 		Professor:
 		<select id="professor_select" onchange="changeProfessor(this)">
@@ -110,7 +117,7 @@
 <div>
 <div class="container inlineblock" id="showStudentsHistory" style="display: none">
 	<div class="menu-container">
-		<div class="menu-item item-left">
+		<div class="menu-item item-left menu-button">
 			<a onclick="switchView(0);cancelAction();loadHistory(courseID)"	class="previous round">&#8249;</a>
 		</div>
 
@@ -126,13 +133,13 @@
 		</div>
 
 		<!-- TSV file with all classes -->
-		<div class="menu-item item-right item-last">
+		<div class="menu-item item-right item-last menu-button">
 			<a id="tsv_export_class" href="" class="previous round" title="Export">
 				<span class="download">&#11015;</span>
 			</a>
 		</div>
 
-		<div class="menu-item item-right">
+		<div class="menu-item item-right menu-button">
 			<a id="editButton" onclick="toggleEdit(this)" class="previous round">
 				<span>&#9998;</span>
 			</a>
@@ -247,7 +254,7 @@
 
 	<!-- Go back button -->
 	<div class="menu-container">
-		<div class="menu-item item-left">
+		<div class="menu-item item-left menu-button">
 			<a onclick="switchView(1);" href="#"" class="previous round">&#8249;</a>
 		</div>
 
