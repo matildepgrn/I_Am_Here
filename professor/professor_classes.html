@@ -21,16 +21,27 @@
 	<li style="float:right"><span class="name" id="IST_NAME"></span></li>
 </ul>
 
-<div class="container" id="container1">
-	<center class="center">
-		<h3>
-			Your courses:
-		</h3>
-		<h6>
-			(select a course to start the attendance)
-		</h6>
+<div class="container inlineblock" id="container1">
+	<div>
+		<div class="menu-item menu-title">Your courses:</div>
 
-		<table id="courseListTable">
+	</div>
+		
+		<div id="courseOn">
+			Academic Term:
+			<select id="course_select" onchange="changeAcademicTerm()">
+		  		<template id="courseOnTemplate">
+		  			<option></option>
+		  		</template>
+			</select>
+		</div>
+
+		<table id="courseListTable" class="table-margin">
+			<tr>
+				<th>Name</th>
+				<th>ID</th>
+			</tr>
+
 			<template id="courseListTemplate">
 				<tr class="courserow clickable">
 					<td class="coursename"></td>
@@ -43,7 +54,7 @@
 		onclick="goTo('/professor/addcourse')"
 		title="Create invited lecture">More courses
 		</button>
-	</center>
+	</div>
 </div>
 
 <center>
@@ -77,12 +88,17 @@ function showCourses(courses) {
 	var template = document.getElementById("courseListTemplate");
 	var table = document.getElementById("courseListTable");
 
+	removeTrs(table.getElementsByTagName("tr"));
+
 	for(let i = 0; i < courses.length; i++) {
 		addCourse(table, template, courses[i].courseName, courses[i].courseID);
 	}
 }
 
-function loadCourses(url) {
+function loadCourses(url, academicTerm) {
+	if(academicTerm) {
+		url += "?ac=" + academicTerm;
+	}
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
@@ -116,7 +132,50 @@ function loadName(url) {
 	xhttp.send();
 }
 
+function loadAcademicTerms(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				var json = JSON.parse(this.responseText);
+				showAcademicTerms(json);
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+function removeTrs(old_tr) {
+	for(let l = old_tr.length-1; l > 0; l--) {
+		old_tr[l].parentElement.removeChild(old_tr[l]);
+	}
+}
+
+function showAcademicTerms(json) {
+	var academicTerms = json;
+	var template = document.getElementById("courseOnTemplate");
+	var select = document.getElementById("course_select");
+
+	for(let i = 0; i < academicTerms.length; i++) {
+		console.log(academicTerms[i]);
+		var option = template.content.querySelector("option").cloneNode(true);
+		option.innerText = option.value = academicTerms[i].academicTerm;
+		select.appendChild(option);
+	}
+	select.selectedIndex = academicTerms.length-1;
+	loadCourses("/api/courses", academicTerms[academicTerms.length-1].academicTerm);
+};
+
+function changeAcademicTerm() {
+	var select = document.getElementById("course_select");
+	loadCourses("/api/courses", select.value);
+}
+
+
+
 loadName("/api/name");
-loadCourses("/api/courses");
+loadAcademicTerms("/api/academicTerms");
 
 </script>

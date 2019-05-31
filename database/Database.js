@@ -528,14 +528,33 @@ database.prototype.getClassHistory = function(attendanceID, callback) {
 	})
 };
 
-database.prototype.selectCourseInfo = function(ist_id, callback) {
+database.prototype.getAllAcademicTerms = function(ist_id, callback) {
+	var sql = "select distinct c.academicTerm from ProfessorTeachesCourse as p \
+				join Course c  \
+					on c.courseID = p.courseID \
+				where p.ist_id = ?;";
+	var arg = [ist_id];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if(err) {
+			console.log("Error in getAllAcademicTerms:", err);
+			callback(err);
+		} else {
+			callback(err, rows);
+		}
+	})
+};
+
+
+
+database.prototype.selectCourseInfo = function(ist_id, academicTerm, callback) {
 	var sql = "select c.courseName, c.courseID, c.academicTerm from ProfessorTeachesCourse as p \
 					join Course c  \
 						on c.courseID = p.courseID \
 					where p.ist_id = ? \
-						and c.academicTerm = '2ºSemestre 2018/2019'  \
+						and c.academicTerm = ? \
                         and p.in_use = 1;";
-	var arg = [ist_id];
+	var arg = [ist_id, academicTerm];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if(err) {

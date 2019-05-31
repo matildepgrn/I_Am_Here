@@ -121,6 +121,7 @@ function handleRequest(req, res) {
 		case "/api/getnextclassnumber":
 		case "/api/courses":
 		case "/api/history":
+		case "/api/academicTerms":
 		case "/api/attendanceflow":
 		case "/api/fingerprint":
 		case "/api/pcm1819attendance":
@@ -146,6 +147,13 @@ function handleRequest(req, res) {
 									sendJSON(res, rows);
 								}
 							);
+							break;
+						case "/api/academicTerms":
+							service.getAllAcademicTerms(db, ist_id,
+									function(error, rows) {
+										sendJSON(res, rows);
+									}
+								);
 							break;
 						case "/api/attendancefile":
 							var courseID = parsedURL.query.c;
@@ -254,7 +262,8 @@ function handleRequest(req, res) {
 							}
 							break;
 						case "/api/courses":
-							service.selectCourseInfo(db, ist_id,
+							var academicTerm = parsedURL.query.ac;
+							service.selectCourseInfo(db, ist_id, academicTerm,
 								function(error, rows) {
 									if(error) {
 										sendText(res, "Could not select course info.", 500);

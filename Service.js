@@ -90,6 +90,14 @@ Service.prototype.insertFingerprintData = function(db, ist_id, useragent, ip, at
 	); 
 }
 
+Service.prototype.getAllAcademicTerms = function(db, ist_id, callback) {
+	db.getAllAcademicTerms(ist_id,
+		function(error, result) {
+			callback(error, result);
+		}
+	); 
+}
+
 Service.prototype.deserializedAttendancesFromLastDay = function(db, callback) {
 	db.deserializedAttendancesFromLastDay(
 		function(error, rows) {
@@ -358,13 +366,14 @@ Service.prototype.studentAttendanceChecked = function(db, ist_id, randomID, call
 	});
 };
 
-Service.prototype.selectCourseInfo = function(db, ist_id, callback) {
-	db.selectCourseInfo(ist_id, function(err, rows) {
-		if(err) {
-			callback(err);
-		} else {
-			callback(err, rows);
-		}
+Service.prototype.selectCourseInfo = function(db, ist_id, academicTerm, callback) {
+	db.selectCourseInfo(ist_id, academicTerm,
+		function(err, rows) {
+			if(err) {
+				callback(err);
+			} else {
+				callback(err, rows);
+			}
 	});
 };
 

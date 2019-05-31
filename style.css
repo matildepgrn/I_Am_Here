@@ -18,8 +18,12 @@ ul {
 }
 
 #teacherOn {
+	margin-left: 74px;
 	text-align: left;
-	margin-left: 70px;
+	margin-bottom: 10px;
+}
+
+#courseOn {
 	margin-bottom: 10px;
 }
 
@@ -531,6 +535,10 @@ li a:hover {
 #newCoursePersonalization,
 #inactiveCoursePersonalization {
 	margin-bottom: 20px;
+}
+
+.item-left-alone {
+	margin-left: 74px;
 }
 
 .loadingIcon {
