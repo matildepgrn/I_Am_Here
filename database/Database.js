@@ -95,6 +95,17 @@ database.prototype.updateAccessToken = function(access_token, refresh_token, new
 	});
 }
 
+database.prototype.updateStudentNameAndNumber = function(short_name, std_number, ist_id, callback) {
+	var sql = "UPDATE User SET short_name = ?, std_number = ? WHERE ist_id = ?;";
+	var args = [short_name, std_number, ist_id];
+	this.pool.query(sql, args, function (err, result) {
+		if (err){
+			console.log("Error in updateStudentNameAndNumber (database).");
+		}
+		callback(err);
+	});
+}
+
 database.prototype.getUserByToken = function(iamhere_token, callback) {
 	var sql = "SELECT ist_id FROM User WHERE iamhere_token = ?;";
 	var arg = [iamhere_token];

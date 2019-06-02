@@ -82,6 +82,29 @@ Service.prototype.verifyAttendance = function(db, ist_id, attendanceID, consecut
 	); 
 }
 
+Service.prototype.updateStudentNameAndNumber = function(db, text, callback) {
+	let split_text = text.split('\n');
+	let line = 0;
+	aux_updateStudentNameAndNumber(db, line, split_text, callback);
+}
+
+function aux_updateStudentNameAndNumber(db, line, split_text, callback) {
+	if(line < split_text.length) {
+		let split_line = split_text[line].split(',');
+		db.updateStudentNameAndNumber(split_line[2], split_line[1], split_line[0],
+			function(error) {
+				line++;
+				if(line < split_text.length) {
+					aux_updateStudentNameAndNumber(db, line, split_text, callback);
+				} else {
+					callback(error);
+				}
+			}
+		); 
+	}
+}
+
+
 Service.prototype.insertFingerprintData = function(db, ist_id, useragent, ip, attendanceID, callback) {
 	db.insertFingerprintData(ist_id, useragent, ip, attendanceID,
 		function(error) {

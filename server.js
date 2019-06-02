@@ -589,8 +589,9 @@ function sendText(res, text, status = 200, mime = 'text/plain', disposition = "i
 		'Content-Type': mime,
 		'Content-Disposition': disposition
 	});
-	res.write(text);
-	res.end();
+	res.write(text, function(err){
+		res.end();
+	});
 }
 
 function sendFile(res, filename, type = 'text/html', moreText = "", disposition = "inline") {
@@ -682,6 +683,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 		case "/api/createAttendanceSession":
 		case "/api/status":
 		case "/api/getcode":
+		case "/api/importstudents":
 		case "/api/getcode/stop":
 		case "/api/addmanually":
 		case "/api/setLate":
@@ -706,6 +708,17 @@ function handlePost(req, res, cookies, parsedURL, data) {
 										sendText(res, "Could not manuallyRemoveAttendance", 500);
 									} else{
 										sendText(res, "Attendance removed.");	
+									}
+								}
+							);
+							break;
+						case "/api/importstudents":
+							service.updateStudentNameAndNumber(db, json.file_input,
+								function(error){
+									if(error) {
+										sendText(res, "Could not updateStudentNameAndNumber", 500);
+									} else{
+										sendText(res, "Student(s) imported.");	
 									}
 								}
 							);
