@@ -126,6 +126,10 @@ Service.prototype.deserializedAttendancesFromLastDay = function(db, callback) {
 		function(error, rows) {
 			db.getAttendanceSequence(
 				function(error1, rows1) {
+					if(error || error1) {
+						callback(error);
+						return;
+					} 
 					var attendances = [];
 					for(let i = 0; i < rows.length; i++) {
 						let at = rows[i];

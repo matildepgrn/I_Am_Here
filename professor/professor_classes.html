@@ -22,33 +22,83 @@
 </ul>
 
 <div class="container inlineblock" id="container1">
-	<div>
-		<div class="menu-item menu-title">Your courses:</div>
 
-	</div>
-		
-		<div id="courseOn">
-			Academic Term:
-			<select id="course_select" onchange="changeAcademicTerm()">
-		  		<template id="courseOnTemplate">
-		  			<option></option>
-		  		</template>
-			</select>
+	<div class="menu-container" id="normal_menu">
+		<div class="menu-item item-left menu-button"></div>
+
+		<div class="menu-item item-left menu-title">
+			Your courses:
 		</div>
 
-		<table id="courseListTable" class="table-margin">
-			<tr>
-				<th>Name</th>
-				<th>ID</th>
-			</tr>
+		<div class="menu-item item-right menu-button">
+			<a class="previous round" href="#"
+				onclick="toggleEdit()"
+				title="Import students">
+				<span>&#8230;</span>
+			</a>
+		</div>
+	</div>
 
-			<template id="courseListTemplate">
-				<tr class="courserow clickable">
-					<td class="coursename"></td>
-					<td class="courseid"></td>
+	<div id="editDiv" style="display:none">
+		<div class="menu-container">
+			<div class="menu-item item-left menu-button"></div>
+
+			<div class="menu-item item-left menu-title">
+				Import students:
+			</div>
+
+			<div class="menu-item item-right menu-button">
+				<a id="importstudentsbutton" class="previous round" href="#"
+					onclick="toggleEdit()"
+					title="Import students">
+					<span>&#8230;</span>
+				</a>
+			</div>
+		</div>
+
+
+		<form id="importStudents" method="post">
+			<p>Format: <span style="font-family: monospace;">student_ist_id,student_number,student_name</span></p>
+			<p>Line format: <span style="font-family: monospace;">ist182083,68083,Matilde Nascimento</span></p>
+			<table class="invisible-table" style="margin-bottom: 4px">
+				<tr>
+					<td>
+
+					</td>
+					<td>
+						<textarea name="file_input" id="myFile_students" class="textarea_input"></textarea>
+					</td>
 				</tr>
-			</template>
-		</table>
+			</table>
+
+			<button type="button" onclick="sendFileAsForm()">Import</button>
+			<button type="button" onclick="cancelImport()">Cancel</button>
+			
+		</form>
+	</div>
+
+	<div id="courseOn">
+		Academic Term:
+		<select id="course_select" onchange="changeAcademicTerm()">
+	  		<template id="courseOnTemplate">
+	  			<option></option>
+	  		</template>
+		</select>
+	</div>
+
+	<table id="courseListTable" class="table-margin">
+		<tr>
+			<th>Name</th>
+			<th>ID</th>
+		</tr>
+
+		<template id="courseListTemplate">
+			<tr class="courserow clickable">
+				<td class="coursename"></td>
+				<td class="courseid"></td>
+			</tr>
+		</template>
+	</table>
 
 		<button id="b_addcourse" type="button" class="marginTop"
 		onclick="goTo('/professor/addcourse')"
@@ -66,6 +116,58 @@ function goTo(url) {
 }
 
 // COURSES
+
+isImportingStudents = false;
+
+function toggleEdition() {
+	document.getElementById("editDiv").style.display = "";
+	document.getElementById("normal_menu").style.display = "none";
+	document.getElementById("courseOn").style.display = "none";
+	document.getElementById("courseListTable").style.display = "none";
+	document.getElementById("b_addcourse").style.display = "none";
+	document.getElementById("importstudentsbutton").classList.add("active");
+
+	isImportingStudents = true;
+}
+
+function cancelImport() {
+	document.getElementById("editDiv").style.display = "none";
+	document.getElementById("normal_menu").style.display = "";
+	document.getElementById("courseOn").style.display = "";
+	document.getElementById("courseListTable").style.display = "";
+	document.getElementById("b_addcourse").style.display = "";
+	document.getElementById("importstudentsbutton").classList.remove("active");
+
+	isImportingStudents = false;
+}
+
+function toggleEdit() {
+	if(isImportingStudents) {
+		return cancelImport();
+	} else {
+		return toggleEdition();
+	}
+}
+
+function sendFileAsForm(){
+	var formEl = document.getElementById("importStudents");
+	var data = new FormData(formEl);
+	var o = {};
+	for(var e of data) {
+		o[e[0]] = e[1];
+	}
+	
+	var json_string = JSON.stringify(o);
+	var xhttp = new XMLHttpRequest();
+	var url = "/api/importstudents";
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				toggleEdit();
+			}
+	}
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);
+}
 
 function addCourse(table, template, coursename, courseID) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);

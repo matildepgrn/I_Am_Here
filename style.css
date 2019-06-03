@@ -27,6 +27,11 @@ ul {
 	margin-bottom: 10px;
 }
 
+.textarea_input {
+	min-width: 520px;
+	min-height: 360px;
+}
+
 .table-margin {
 	margin:3px 70px;
 }
@@ -85,7 +90,7 @@ ul {
 .active {
 	color: white !important;
 	background-color: #008CBA !important;
-}
+}	
 
 .goBack {
 	margin-top:5px;

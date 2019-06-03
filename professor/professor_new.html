@@ -74,28 +74,6 @@
 		</select>
 	</div>
 
-	<div>
-		<form id="importStudents" method="post">
-			<h3>Import students:</h3>
-			<p>Format: <span style="font-family: monospace;">student_ist_id,student_number,student_name</span></p>
-			<p>Line format: <span style="font-family: monospace;">ist182083,68083,Matilde Nascimento</span></p>
-			<table class="invisible-table" style="margin-bottom: 4px">
-				<tr>
-					<td>
-
-					</td>
-					<td>
-						<textarea name="file_input" id="myFile_students"></textarea>
-					</td>
-				</tr>
-			</table>
-
-			<button type="button" onclick="sendFileAsForm()">Import</button>
-			<button type="button" onclick="">Cancel</button>
-			
-		</form>
-	</div>
-
 
 	<!-- Course's table -->
 	<table id="historyTable" class="table-margin">
@@ -357,26 +335,6 @@ function toggleEdit(button_element) {
 	} else {
 		return editTitleNumber(button_element);
 	}
-}
-
-function sendFileAsForm(){
-	var formEl = document.getElementById("importStudents");
-	var data = new FormData(formEl);
-	var o = {};
-	for(var e of data) {
-		o[e[0]] = e[1];
-	}
-	
-	var json_string = JSON.stringify(o);
-	var xhttp = new XMLHttpRequest();
-	var url = "/api/importstudents";
-		xhttp.onreadystatechange = function() {
-			if(this.readyState == 4 && this.status == 200) {
-				//todo
-			}
-	}
-	xhttp.open("POST", url, true);
-	xhttp.send(json_string);
 }
 
 function sendClassInformation(){
