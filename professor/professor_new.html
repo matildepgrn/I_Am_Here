@@ -36,7 +36,7 @@
 
 		<div class="menu-item item-right menu-button">
 			<a class="previous round" href="#"
-				onclick=""
+				onclick="toggleImport()" id="import_button"
 				title="Import attendance">
 				<span class="importbutton">&#8595;</span>
 			</a>
@@ -72,6 +72,66 @@
 	  		</template>
 		</select>
 	</div>
+
+	<div id="importAttendanceDiv" style="display:none">
+		<p>Format:
+			<span style="font-family: monospace;">student_number, type of attendance (late or not)</span>
+		</p>
+		<p>Line format:
+			<span style="font-family: monospace;">82083,attended lecture</span>
+		</p>
+		<p>Line format (late):
+			<span style="font-family: monospace;">82083,attended lecture (late)</span>
+		</p>
+
+			<form id="importAttendanceID" method="post">
+				<table class="invisible-table" style="margin-bottom: 4px">
+					<tr>
+						<td>
+							Professor:
+						</td> 
+						<td>
+							<input id="professor_number" name="number" type="number" placeholder="istXXXXXX"></input>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Class number:
+						</td> 
+						<td>
+							<input id="" name="number" type="number"></input>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							Title:
+						</td> 
+						<td>
+							<input id="" name="mytitle" type="text" placeholder="(optional)"></input>
+						</td>
+					</tr>
+
+					<tr title="Invited lecture or extraordinary class">
+						<td></td>
+						<td>
+							<input type="checkbox" id="addIsExtra" name="is_extra" value="is_extra"> Extra Class
+						</td>
+					</tr>
+
+					<tr>
+						<td colspan="2">
+							<textarea oninput="verifyTextArea()" name="file_input" id="myFile_attendances" class="textarea_input"></textarea>
+						</td>
+					</tr>
+					
+				</table>
+
+				<button type="button" id="sendImportAttendance" onclick="" disable>Import</button>
+				<button type="button" onclick="cancelImport()">Cancel</button>
+				
+			</form>
+		</div>
 
 
 	<!-- Course's table -->
@@ -290,7 +350,9 @@
 
 <script>
 
+var regex_line = /\d\d\d\d\d,[^,]+/;
 let isEditingClass = false;
+let isImportingAttendance = false;
 const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
 let historyTable_error = document.getElementById("historyTable_error");
@@ -308,6 +370,46 @@ if(courseID) {
 function goTo(url) {
 	window.location.replace(url);
 }
+
+var myFile_attendances = document.getElementById("myFile_attendances");
+var sendImportAttendance = document.getElementById("sendImportAttendance");
+
+function verifyTextArea() {
+	var text = myFile_attendances.value;
+	var lines = text.split('\n');
+
+	for(let l of lines) {
+		if(!l.match(regex_line)) {
+			console.log('Invalid line:', l);
+			myFile_attendances.classList.add("invalidLine");
+			sendImportAttendance.disabled = true;
+			return;
+		}
+	}
+	sendImportAttendance.disabled = false;
+	myFile_attendances.classList.remove("invalidLine");
+}
+
+function sendFileAsForm(){
+	var formEl = document.getElementById("importAttendanceID");
+	var data = new FormData(formEl);
+	var o = {};
+	for(var e of data) {
+		o[e[0]] = e[1];
+	}
+	
+	var json_string = JSON.stringify(o);
+	var xhttp = new XMLHttpRequest();
+	var url = "/api/importattendance";
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				toggleImport();
+			}
+	}
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);
+}
+
 
 function cancelAction(button_element) {
 	document.getElementById("editButton").classList.remove("active");
@@ -335,6 +437,32 @@ function toggleEdit(button_element) {
 		return editTitleNumber(button_element);
 	}
 }
+
+function toggleImport() {
+	if(isImportingAttendance) {
+		return cancelImport();
+	} else {
+		return importAttendance();
+	}
+}
+
+function importAttendance(){
+	document.getElementById("import_button").classList.add("active");
+	document.getElementById("teacherOn").style.display = "none";
+	document.getElementById("historyTable").style.display = "none";
+	document.getElementById("importAttendanceDiv").style.display = "";
+	isImportingAttendance = true;
+}
+
+function cancelImport() {
+	document.getElementById("import_button").classList.remove("active");
+	document.getElementById("teacherOn").style.display = "";
+	document.getElementById("historyTable").style.display = "";
+	document.getElementById("importAttendanceDiv").style.display = "none";
+	isImportingAttendance = false;
+}
+
+
 
 function sendClassInformation(){
 	var formE1 = document.getElementById("editClassInfoForm");
