@@ -13,6 +13,11 @@ ul {
 	user-select: none;
 }
 
+.invalidLine {
+	border: 2px solid red;
+	background: #fdd;
+}
+
 .importbutton {
 	border: 2px solid black;
 	border-radius: 3px;
@@ -82,7 +87,7 @@ ul {
 }
 
 .download {
-	border-bottom: 2px solid black;
+	border-top: 2px solid black;
 }
 
 .marginTop {

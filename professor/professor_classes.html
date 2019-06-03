@@ -66,12 +66,12 @@
 
 					</td>
 					<td>
-						<textarea name="file_input" id="myFile_students" class="textarea_input"></textarea>
+						<textarea oninput="verifyTextArea()" name="file_input" id="myFile_students" class="textarea_input"></textarea>
 					</td>
 				</tr>
 			</table>
 
-			<button type="button" onclick="sendFileAsForm()">Import</button>
+			<button type="button" id="import_button" onclick="sendFileAsForm()" disabled>Import</button>
 			<button type="button" onclick="cancelImport()">Cancel</button>
 			
 		</form>
@@ -107,8 +107,6 @@
 	</div>
 </div>
 
-<center>
-
 <script>
 
 function goTo(url) {
@@ -118,6 +116,27 @@ function goTo(url) {
 // COURSES
 
 isImportingStudents = false;
+
+// regular expression
+var regex_line = /^ist\d\d\d\d\d\d,\d\d\d\d\d,[^,]+$/;
+var myFile_students = document.getElementById("myFile_students");
+var import_button = document.getElementById("import_button");
+
+function verifyTextArea() {
+	var text = myFile_students.value;
+	var lines = text.split('\n');
+
+	for(let l of lines) {
+		if(!l.match(regex_line)) {
+			console.log('Invalid line:', l);
+			myFile_students.classList.add("invalidLine");
+			import_button.disabled = true;
+			return;
+		}
+	}
+	import_button.disabled = false;
+	myFile_students.classList.remove("invalidLine");
+}
 
 function toggleEdition() {
 	document.getElementById("editDiv").style.display = "";
