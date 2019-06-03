@@ -13,6 +13,12 @@ ul {
 	user-select: none;
 }
 
+.importbutton {
+	border: 2px solid black;
+	border-radius: 3px;
+	padding: 0 4px;
+}
+
 .td_Special:hover {
 	background: #d9d9d9;
 }
@@ -90,6 +96,10 @@ ul {
 .active {
 	color: white !important;
 	background-color: #008CBA !important;
+}
+
+.active span {
+	border-color: white !important;
 }	
 
 .goBack {
