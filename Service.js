@@ -182,6 +182,9 @@ Service.prototype.deserializedAttendancesFromLastDay = function(db, callback) {
 					var attendances = [];
 					for(let i = 0; i < rows.length; i++) {
 						let at = rows[i];
+						if(!(at.code_length && at.code_type && at.total_time_s && at.consecutive_codes)) {
+							continue;
+						}
 						attendances.push(at.attendanceID);
 						var code = new Code(db, at.randomID, at.attendanceID);
 						for(let k of rows1) {
@@ -190,6 +193,7 @@ Service.prototype.deserializedAttendancesFromLastDay = function(db, callback) {
 								break;
 							}
 						}
+
 						code.customizeTest(at.code_length, at.code_type, at.total_time_s, at.consecutive_codes);
 						codeByRandomID.set(at.randomID, code);
 

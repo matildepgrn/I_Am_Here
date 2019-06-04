@@ -67,6 +67,10 @@ Code.prototype.randomCode = function() {
 	for (var i = 0; i < this.NUM_CHAR; i++)
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 
+	if(text == "") {
+		console.log("Warning: generated invalid random code.");
+		console.log(this.CODE_TYPE, this.NUM_CHAR);
+	}
 	return text;
 }
 
