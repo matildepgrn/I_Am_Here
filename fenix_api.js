@@ -60,8 +60,9 @@ function isProfessor(body){
 }
 
 function getCourseInfo(access_token, refresh_token, callback){
+	// pode se fazer o resquest com um academicTerm especifico
 	request
-		({url:'https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person/courses?academicTerm=2018/2019&access_token=' + encodeURIComponent(access_token), json: true}
+		({url:'https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person/courses?access_token=' + encodeURIComponent(access_token), json: true}
 			, function(error, response, body) {
 				if(response.statusCode == 200) {
 					callback(error, body);
@@ -96,4 +97,3 @@ function refreshAccessToken(refresh_token, callback){
 		);
 
 }
-//TODO verify roles[x].type (verificar se algum x tem "TEACHER")
