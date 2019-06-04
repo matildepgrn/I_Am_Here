@@ -1,5 +1,6 @@
 use ist182083;
 
+drop procedure if exists InsertShiftInfor;
 drop procedure if exists GetAttendanceInformation;
 drop procedure if exists updateFingerprintData;
 drop procedure if exists GetAllAttendances;
@@ -201,6 +202,19 @@ CREATE TABLE AttendancesRemoved (
     FOREIGN KEY(ist_id) REFERENCES Professor(ist_id)
 );
 
+CREATE TABLE Shift (
+	id										int auto_increment,
+	shift_id								varchar(255),
+	courseID							varchar(255),
+    fenix_id							varchar(255),
+	type									varchar(255),
+	week_day						varchar(255),
+	start								time,
+	end									time,
+
+	PRIMARY KEY(id)
+);
+
 DELIMITER //
 CREATE PROCEDURE RemoveStudentFromAttendance (my_ist_id varchar(255), my_attendanceID int)
 BEGIN
@@ -277,13 +291,13 @@ END
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE InsertProfessorandCourse(ist_id varchar(255), courseID varchar(255), courseName varchar(255), academicTerm varchar(255))
+CREATE PROCEDURE InsertProfessorandCourse(ist_id varchar(255), courseID varchar(255), courseName varchar(255), academicTerm varchar(255), fenix_id varchar(255))
 BEGIN
 	INSERT IGNORE INTO Professor (ist_id)
 		VALUES (ist_id);
 		
-	INSERT IGNORE INTO Course (courseID, courseName, academicTerm)
-		VALUES(courseID, courseName, academicTerm);
+	INSERT IGNORE INTO Course (courseID, courseName, academicTerm, fenix_id)
+		VALUES(courseID, courseName, academicTerm, fenix_id);
 
 	INSERT IGNORE INTO ProfessorTeachesCourse (ist_id, courseID)
 		VALUES(ist_id, courseID);
@@ -500,6 +514,15 @@ select a.ist_id, u.ist_id as std_number, u.name, ah.late, ah.manually, a.number,
 	where a.ist_id = my_ist_id
 		and a.courseID = my_courseID
 		and a.attendanceID = my_attendanceID;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE InsertShiftInfor(my_shift_id varchar(255), my_courseID varchar(255), my_fenix_id varchar(255), my_type varchar(255), my_week_day varchar(255), my_start time, my_end time)
+BEGIN
+	INSERT IGNORE INTO Shift(shift_id, courseID, fenix_id, type, week_day, start, end)
+		VALUES (my_shift_id, my_courseID, my_fenix_id, my_type, my_week_day, my_start, my_end);
 END
 //
 DELIMITER ;

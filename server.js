@@ -767,7 +767,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 							var courseName = json.courseName;
 							var courseID = json.courseID;
 							var academicTerm = json.academicTerm;
-							service.insertProfessorandCourse(db, ist_id, courseID, courseName, academicTerm,
+							service.insertProfessorandCourse(db, ist_id, courseID, courseName, academicTerm, "",
 								function(error) {
 									if(error) {
 										sendText(res, "Could not addcourse.", 500);

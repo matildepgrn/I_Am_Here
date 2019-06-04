@@ -51,9 +51,9 @@ database.prototype.isProfessor = function(ist_id, callback) {
 
 }
 
-database.prototype.insertProfessorandCourse = function(ist_id, courseID, courseName, academicTerm, callback) {
-	var sql = "CALL InsertProfessorandCourse(?,?,?,?);";
-	var args = [ist_id, courseID, courseName, academicTerm];
+database.prototype.insertProfessorandCourse = function(ist_id, courseID, courseName, academicTerm, fenix_id, callback) {
+	var sql = "CALL InsertProfessorandCourse(?,?,?,?,?);";
+	var args = [ist_id, courseID, courseName, academicTerm, fenix_id];
 
 	this.pool.query(sql, args, function (err, result) {
 		if (err){

@@ -416,7 +416,7 @@ Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
 										function(error, body) {
 											var info_teaching = body["teaching"];
 											for(let k = 0; k < info_teaching.length; k++) {
-												db.insertProfessorandCourse(info.username, info_teaching[k]["acronym"], info_teaching[k]["name"], info_teaching[k]["academicTerm"],
+												db.insertProfessorandCourse(info.username, info_teaching[k]["acronym"], info_teaching[k]["name"], info_teaching[k]["academicTerm"], info_teaching[k]["id"],
 													function(error) {
 														callback(iamhere_token);
 													}
@@ -672,8 +672,8 @@ Service.prototype.setCourseToInUse = function(db, ist_id, courseID, callback) {
 
 
 
-Service.prototype.insertProfessorandCourse = function(db, ist_id, courseID, courseName, academicTerm, callback) {
-	db.insertProfessorandCourse(ist_id, courseID, courseName, academicTerm,
+Service.prototype.insertProfessorandCourse = function(db, ist_id, courseID, courseName, academicTerm, fenix_id, callback) {
+	db.insertProfessorandCourse(ist_id, courseID, courseName, academicTerm, fenix_id,
 		function(error, result) {
 			if(error) {
 				console.log("Error in insertProfessorandCourse:", error);
