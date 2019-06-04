@@ -18,6 +18,10 @@ ul {
 	background: #fdd;
 }
 
+.mono {
+	font-family: monospace;
+}
+
 .importbutton {
 	border: 2px solid black;
 	border-radius: 3px;

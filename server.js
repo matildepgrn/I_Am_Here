@@ -690,6 +690,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 		case "/api/addcourse":
 		case "/api/updateClassInformation":
 		case "/api/manuallyRemoveAttendance":
+		case "/api/importattendance":
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
 					if(false == is_professor){
@@ -722,6 +723,21 @@ function handlePost(req, res, cookies, parsedURL, data) {
 									}
 								}
 							);
+							break;
+						case "/api/importattendance":
+							let isExtra = 0;
+							if(json.is_extra == "is_extra") {
+								isExtra = 1;
+							}
+							service.createandinsertstudents(db, json.courseID, json.professor_number, isExtra, json.mytitle, json.class_number, json.file_input,
+								function(error) {
+									if(error) {
+										sendText(res, "Error in /api/importattendance", 500);
+									} else {
+										sendText(res, "Class and student(s) imported.");
+									}
+								}
+							)
 							break;
 						case "/api/updateClassInformation":
 							var attendanceID = parsedURL.query.a;

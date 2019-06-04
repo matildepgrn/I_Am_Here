@@ -74,24 +74,24 @@
 	</div>
 
 	<div id="importAttendanceDiv" style="display:none">
-		<p>Format:
-			<span style="font-family: monospace;">student_number, type of attendance (late or not)</span>
-		</p>
-		<p>Line format:
-			<span style="font-family: monospace;">82083,attended lecture</span>
-		</p>
-		<p>Line format (late):
-			<span style="font-family: monospace;">82083,attended lecture (late)</span>
-		</p>
 
+		<p>Format: <span class="mono">student_number, type of attendance (ok or late)</span><p>
 			<form id="importAttendanceID" method="post">
 				<table class="invisible-table" style="margin-bottom: 4px">
+					<tr>
+						<td >Example (on time):</td>
+						<td class="mono">ist182083,ok</td>
+					</tr>
+					<tr>
+						<td>Example (late):</td>
+						<td class="mono">ist182083,late</td>
+					</tr>
 					<tr>
 						<td>
 							Professor:
 						</td> 
 						<td>
-							<input id="professor_number" name="number" type="number" placeholder="istXXXXXX"></input>
+							<input id="professor_number" name="professor_number" pattern="^ist\d\d\d\d\d\d$" type="text" placeholder="istXXXXXX"></input>
 						</td>
 					</tr>
 					<tr>
@@ -99,7 +99,7 @@
 							Class number:
 						</td> 
 						<td>
-							<input id="" name="number" type="number"></input>
+							<input id="" name="class_number" type="number"></input>
 						</td>
 					</tr>
 
@@ -127,7 +127,7 @@
 					
 				</table>
 
-				<button type="button" id="sendImportAttendance" onclick="" disable>Import</button>
+				<button type="button" id="sendImportAttendance" onclick="sendFileAsForm()" disable>Import</button>
 				<button type="button" onclick="cancelImport()">Cancel</button>
 				
 			</form>
@@ -350,7 +350,7 @@
 
 <script>
 
-var regex_line = /\d\d\d\d\d,[^,]+/;
+var regex_line = /^ist\d\d\d\d\d\d,(ok|late)$/;
 let isEditingClass = false;
 let isImportingAttendance = false;
 const urlParams = new URLSearchParams(window.location.search);
@@ -397,6 +397,7 @@ function sendFileAsForm(){
 	for(var e of data) {
 		o[e[0]] = e[1];
 	}
+	o.courseID = courseID;
 	
 	var json_string = JSON.stringify(o);
 	var xhttp = new XMLHttpRequest();

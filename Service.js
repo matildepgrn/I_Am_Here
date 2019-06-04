@@ -70,7 +70,7 @@ Service.prototype.validateCode = function(db, res, randomID, client_code, ist_id
 	}
 }
 
-Service.prototype.verifyAttendance = function(db, ist_id, attendanceID, consecutive_codes) {
+Service.prototype.verifyAttendance = function(db, ist_id, attendanceID, consecutive_codes, callback) {
 	db.verifyAttendance(ist_id, attendanceID, consecutive_codes,
 		function(error, consecutive_codes) {
 			if(error) {
@@ -81,6 +81,55 @@ Service.prototype.verifyAttendance = function(db, ist_id, attendanceID, consecut
 		}
 	); 
 }
+
+
+Service.prototype.createandinsertstudents = function(db, courseID, ist_id, is_extra, title, number, text, callback) {
+	db.generateRandomAttendanceCode(ist_id, 0, null, null, null, null, courseID, is_extra, title, number,
+		function(error, attendanceID) {
+			if(error) {
+				callback(error);
+			} else {
+				let split_text = text.split('\n');
+				let line = 0;
+				aux_manuallyInsertStudent(db, attendanceID, line, split_text, callback);
+			}
+		}
+	); 
+}
+
+function aux_manuallyInsertStudent(db, attendanceID, line, split_text, callback) {
+	if(line < split_text.length) {
+		let split_line = split_text[line].split(',');
+		let split_line_1 = split_line[1].trim();
+		if(split_line_1 == "late") {
+			db.manuallyInsertLateStudent(split_line[0], attendanceID,
+				function(error) {
+					line++;
+					if(line < split_text.length) {
+						aux_manuallyInsertStudent(db, attendanceID, line, split_text, callback);
+					} else {
+						callback(error);
+					}
+				});
+		} else if(split_line_1 == "ok") {
+			db.manuallyInsertStudent(split_line[0], attendanceID,
+				function(error1) {
+					line++;
+					if(line < split_text.length) {
+						aux_manuallyInsertStudent(db, attendanceID, line, split_text, callback);
+					} else {
+						callback(error1);
+					}
+				}
+			);
+		} else {
+			console.log("Error in aux_manuallyInsertStudent.");
+			callback(error);
+		}
+	}
+}
+
+
 
 Service.prototype.updateStudentNameAndNumber = function(db, text, callback) {
 	let split_text = text.split('\n');
