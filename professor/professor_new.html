@@ -127,7 +127,7 @@
 					
 				</table>
 
-				<button type="button" id="sendImportAttendance" onclick="sendFileAsForm()" disable>Import</button>
+				<button type="button" id="sendImportAttendance" onclick="sendFileAsForm();" disable>Import</button>
 				<button type="button" onclick="cancelImport()">Cancel</button>
 				
 			</form>
@@ -405,6 +405,7 @@ function sendFileAsForm(){
 		xhttp.onreadystatechange = function() {
 			if(this.readyState == 4 && this.status == 200) {
 				toggleImport();
+				loadHistory(courseID);
 			}
 	}
 	xhttp.open("POST", url, true);
