@@ -267,10 +267,10 @@ database.prototype.closeAttendance = function(randomID, callback) {
 	})
 };
 
-database.prototype.generateRandomAttendanceCode = function(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, number, callback) {
-	var sql = "CALL AttendanceMapping(?,?,?,?,?,?,?,?,?,?,?,?);";
+database.prototype.generateRandomAttendanceCode = function(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, number, shift, callback) {
+	var sql = "CALL AttendanceMapping(?,?,?,?,?,?,?,?,?,?,?,?,?);";
 	var date = moment().format('YYYY-MM-DD HH:mm:ss');
-	var arg = [ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, true, courseID, is_extra, title, number];
+	var arg = [ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, true, courseID, is_extra, title, number, shift];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){

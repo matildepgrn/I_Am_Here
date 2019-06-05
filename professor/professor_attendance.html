@@ -187,6 +187,7 @@
 
 const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
+let shift = urlParams.get("s");
 
 if(courseID && courseID != 'undefined') {
 	var goBackToHistoryTable = document.getElementById("goBackToHistoryTable");
@@ -395,6 +396,9 @@ function sendForm(){
 
 	if(courseID && courseID != 'undefined') {
 		o.courseID = courseID;
+	}
+	if(shift && shift != 'undefined') {
+		o.shift = shift;
 	}
 
 	for(var e of data) {

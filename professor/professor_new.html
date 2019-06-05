@@ -104,7 +104,7 @@
 
 		<div class="menu-item item-right menu-button">
 			<a id="b_attendance" class="previous round" href="#"
-				onclick="goTo('/professor/attendance?c='+courseID)"
+				onclick="goTo('/professor/attendance?c='+courseID+'&s='+currentShift)"
 				title="Generate a new sequence">
 				<span>+</span>
 			</a>
@@ -577,7 +577,6 @@ function addShifts(table, template, shifts_i, id, campus, type, week_day, start,
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 	tr_clone.shift_id = id;
-	currentShift = id;
 	week_day = week_day_list[week_day];
 
 	switch(type) {
@@ -604,6 +603,7 @@ function addShifts(table, template, shifts_i, id, campus, type, week_day, start,
 	tr_clone.onclick = function() {
 		loadHistory(courseID, null, this.shift_id);
 		switchView(0);
+		currentShift = this.shift_id;
 	};
 	table.appendChild(tr_clone);
 }

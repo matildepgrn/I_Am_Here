@@ -862,7 +862,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 							var json = JSON.parse(data);
 							let is_extra = json.is_extra == "is_extra" ? 1 : 0;
 							
-							service.getAttendanceRandomID(db, ist_id, json.code_type, json.code_length, json.time, json.consecutivecodes, json.courseID, is_extra, json.title, json.number,
+							service.getAttendanceRandomID(db, ist_id, json.code_type, json.code_length, json.time, json.consecutivecodes, json.courseID, is_extra, json.title, json.number, json.shift,
 								function(error, randomID, attendanceID) {
 									var json_res = {};
 									json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;
