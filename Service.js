@@ -82,6 +82,18 @@ Service.prototype.verifyAttendance = function(db, ist_id, attendanceID, consecut
 	); 
 }
 
+Service.prototype.getShiftsByCourseID = function(db, courseID, callback) {
+	db.getShiftsByCourseID(courseID,
+		function(error, rows) {
+			if(error) {
+				callback(error);
+			} else {
+				callback(error, rows);	
+			}
+		}
+	); 
+}
+
 
 Service.prototype.createandinsertstudents = function(db, courseID, ist_id, is_extra, title, number, text, callback) {
 	db.generateRandomAttendanceCode(ist_id, 0, null, null, null, null, courseID, is_extra, title, number,
@@ -519,8 +531,8 @@ Service.prototype.selectCourseInfo = function(db, ist_id, academicTerm, callback
 	});
 };
 
-Service.prototype.getAttendanceHistory = function(db, ist_id, courseID, callback) {
-	db.getAttendanceHistory(ist_id, courseID, function(err, res) {
+Service.prototype.getAttendanceHistory = function(db, ist_id, courseID, shift, callback) {
+	db.getAttendanceHistory(ist_id, courseID, shift, function(err, res) {
 		if(err) {
 			callback(err);
 		} else {

@@ -133,6 +133,7 @@ function handleRequest(req, res) {
 		case "/api/classattendancefile":
 		case "/api/studentshistory":
 		case "/api/professorsbycourse":
+		case "/api/getshifts":
 			disableCache(res);
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
@@ -165,6 +166,18 @@ function handleRequest(req, res) {
 											sendText(res, result, 200,
 												'text/tab-separated-values; charset=utf-8', 
 												'attachment; filename="'+ist_id+courseID+'.tsv"');
+										}
+									}
+								);
+							break;
+						case "/api/getshifts":
+							var courseID = parsedURL.query.c;
+							service.getShiftsByCourseID(db, courseID,
+									function(error, rows) {
+										if(error) {
+											sendText(res, "Could not getShiftsByCourseID.", 500);
+										} else {
+											sendJSON(res, rows);
 										}
 									}
 								);
@@ -276,10 +289,11 @@ function handleRequest(req, res) {
 						case "/api/history":
 							var courseID = parsedURL.query.c;
 							var new_professor = parsedURL.query.i;
+							var shift = parsedURL.query.s;
 							if(!new_professor) {
 								new_professor = ist_id;
 							}
-							service.getAttendanceHistory(db, new_professor, courseID,
+							service.getAttendanceHistory(db, new_professor, courseID, shift,
 								function(error, result) {
 									if(error) {
 										sendText(res, "Could not get attendande history.", 500);

@@ -45,11 +45,22 @@
 		<tr>
 			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(1)')">Shift ID</th>
 			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(2)')">Campus</th>
-			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(3)')">Schedule</th>
+			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(2)')">Type</th>
+			<th colspan="3">Schedule</th>
+			<th rowspan="2">Room</th>
+		</tr>
+		<tr>
+			<th class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(3)')">Day</th>
+			<th class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(4)')">Start</th>
+			<th class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(5)')">End</th>
 		</tr>
 		
 		<template id="shiftTemplate">
-			<tr class="clickable">
+			<tr class="clickable_different">
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -57,16 +68,21 @@
 		</template>
 	</table>
 
+	<div id="invisible-info-shifts" style="display:none">
+		<p>Currently, you do not have shifts. Load now!</p>
+		<button onclick="loadShifts()">Load shifts</button>
+	</div>
+
 </div>
 
 
 
 <!-- Course's table -->
-<div class="container inlineblock" id="showHistoryofProfessor">
+<div class="container inlineblock" id="showHistoryofProfessor" style="display: none">
 	<!-- back button -->
 	<div class="menu-container">
 		<div class="menu-item item-left menu-button">
-			<a onclick="switchView(-1);" class="previous round">&#8249;</a>
+			<a onclick="switchView(-1)" class="previous round">&#8249;</a>
 		</div>
 
 		<div class="menu-item item-left menu-title" id="courseName_id">
@@ -204,8 +220,6 @@
 		</template>
 	</table>
 
-	<button onclick="loadShifts()">Load shifts</button>
-
 	<p id="historyTable_error"></p>
 	</div>
 </div>
@@ -217,7 +231,7 @@
 <div class="container inlineblock" id="showStudentsHistory" style="display: none">
 	<div class="menu-container">
 		<div class="menu-item item-left menu-button">
-			<a onclick="switchView(0);cancelAction();loadHistory(courseID)"	class="previous round">&#8249;</a>
+			<a onclick="switchView(0);cancelAction();loadHistory(courseID,null,currentShift)"	class="previous round">&#8249;</a>
 		</div>
 
 		<!-- Not editing mode -->
@@ -396,10 +410,11 @@ let isImportingAttendance = false;
 const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
 let historyTable_error = document.getElementById("historyTable_error");
+let currentShift;
 
 if(courseID) {
 	historyTable_error.innerHTML = "";
-	loadHistory(courseID);
+	loadHistory(courseID,"",currentShift);
 	document.getElementById("tsv_export").href = "/api/attendancefile?c="+courseID;
 } else {
 	historyTable_error.innerHTML = "CourseID not defined.";
@@ -445,7 +460,7 @@ function sendFileAsForm(){
 		xhttp.onreadystatechange = function() {
 			if(this.readyState == 4 && this.status == 200) {
 				toggleImport();
-				loadHistory(courseID);
+				loadHistory(courseID,null,currentShift);
 			}
 	}
 	xhttp.open("POST", url, true);
@@ -504,6 +519,94 @@ function cancelImport() {
 	isImportingAttendance = false;
 }
 
+function loadShiftsByCourseID() {
+	var url = "/api/getshifts?c=" + courseID;
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				var shifts = JSON.parse(this.responseText);
+				showShifts(shifts);
+			} else {
+				console.log("Error loading shifts:", this.status);
+			}
+		}
+	};
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+function showShifts(shifts_wrapper) {
+	var template = document.getElementById("shiftTemplate");
+	var table = document.getElementById("shiftTable");
+	var shifts = shifts_wrapper;
+	removeTrs(table.getElementsByTagName("tr"), 2);
+	var ids_consecutive = 0;
+
+	if(shifts.length > 0) {
+		for(let i = 1; i < shifts.length; i++) {
+			if(shifts[i].shift_id == shifts[i-1].shift_id) {
+				let first_index = shifts[i-1].first_index;
+				if(first_index) {
+					if(shifts[first_index].repeatedCount) {
+						shifts[first_index].repeatedCount ++;
+					} else {
+						shifts[i].repeatedCount = 1;
+						shifts[first_index].repeatedCount = 1;
+					}
+				} else {
+					shifts[i].first_index = i-1;
+					shifts[i-1].repeatedCount = 2;
+				}
+			}
+		}
+		for(let i = 0; i < shifts.length; i++) {
+			let shifts_i = shifts[i];
+			addShifts(table, template, shifts_i, shifts_i.shift_id, shifts_i.campus, shifts_i.type, shifts_i.week_day, shifts_i.start, shifts_i.end, shifts_i.room);
+		} 
+	} else {
+		document.getElementById("invisible-info-shifts").style.display = "";
+		document.getElementById("shiftOn").style.display = "none";
+		document.getElementById("shiftTable").style.display = "none";
+	}
+};
+
+var week_day_list = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function addShifts(table, template, shifts_i, id, campus, type, week_day, start, end, room) {
+	var tr_clone = template.content.querySelector("tr").cloneNode(true);
+	var tds = tr_clone.children;
+	tr_clone.shift_id = id;
+	currentShift = id;
+	week_day = week_day_list[week_day];
+
+	switch(type) {
+		case "LABORATORIAL":
+			type = "Lab";
+			break;
+		case "TEORICA":
+			type = "T";
+			break;
+	}
+	start = start.substring(0,5);
+	end = end.substring(0,5);
+	
+	for(let x = 0; x < tds.length; x++) {
+		tds[x].innerText = arguments[x+3];
+	}
+
+	if(shifts_i.first_index) {
+		tds[0].parentElement.removeChild(tds[0]);
+	} else if(shifts_i.repeatedCount) {
+		tds[0].rowSpan = shifts_i.repeatedCount;
+	}
+
+	tr_clone.onclick = function() {
+		loadHistory(courseID, null, this.shift_id);
+		switchView(0);
+	};
+	table.appendChild(tr_clone);
+}
 
 
 function sendClassInformation(){
@@ -573,11 +676,11 @@ function loadAttendanceInformation(url, attendanceID) {
 
 function changeProfessor() {
 	var select = document.getElementById("professor_select");
-	loadHistory(courseID, select.value);
+	loadHistory(courseID, select.value, currentShift);
 }
 
-function loadHistory(mycourseID, ist_id) {
-	let url = "/api/history?c=" + mycourseID + (ist_id ? ("&i=" + ist_id) : "");
+function loadHistory(mycourseID, ist_id, shift) {
+	let url = "/api/history?c=" + mycourseID + (ist_id ? ("&i=" + ist_id) : "") + "&s=" + shift;
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
@@ -701,8 +804,8 @@ function loadStudents(url, classcounter, title) {
 	xhttp.send();
 }
 
-function removeTrs(old_tr) {
-	for(let l = old_tr.length-1; l > 0; l--) {
+function removeTrs(old_tr, num=1) {
+	for(let l = old_tr.length-1; l > num-1; l--) {
 		old_tr[l].parentElement.removeChild(old_tr[l]);
 	}
 }
@@ -830,7 +933,7 @@ function removeAttendance(url, button_element, attendanceID) {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				button_element.disabled=true;
-				loadHistory(courseID);
+				loadHistory(courseID,null,currentShift);
 				switchView(0);
 			} else {
 				console.log("Error removing attendance:", this.status);
@@ -994,19 +1097,19 @@ function copyISTIDToAddStudent(button) {
 function switchView(arg){
 	switch(arg) {
 		case -1:
+			loadShiftsByCourseID();
 			document.getElementById("showShifts").style.display = "";
 			document.getElementById("showHistoryofProfessor").style.display = "none";
 			document.getElementById("showStudentsHistory").style.display = "none";
 			document.getElementById("showFingerprintHistory").style.display = "none";
 			document.getElementById("showFingerprintHistory").style.display = "none";
-
+			break;
 		case 0:
 			document.getElementById("showShifts").style.display = "none";
 			document.getElementById("showHistoryofProfessor").style.display = "";
 			document.getElementById("showStudentsHistory").style.display = "none";
 			document.getElementById("showFingerprintHistory").style.display = "none";
 			document.getElementById("showFingerprintHistory").style.display = "none";
-
 			break;
 		case 1:
 			document.getElementById("showShifts").style.display = "none";
@@ -1028,5 +1131,6 @@ function switchView(arg){
 
 loadName("/api/name");
 loadProfessorsByCourse(courseID);
+loadShiftsByCourseID();
 
 </script>

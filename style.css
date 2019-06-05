@@ -157,6 +157,10 @@ table th {
 	text-align: center;
 }
 
+.clickable_different:hover {
+	cursor: pointer;
+}
+
 .clickable:hover {
 	background-color: #bfbfbf !important;
 	opacity: 1;

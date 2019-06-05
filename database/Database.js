@@ -51,6 +51,22 @@ database.prototype.isProfessor = function(ist_id, callback) {
 
 }
 
+database.prototype.getShiftsByCourseID = function(courseID, callback) {
+	var sql = "SELECT * from Shift WHERE courseID = ?";
+	var args = [courseID];
+
+	this.pool.query(sql, args, function (err, rows, fields) {
+		if (err){
+			console.log("Error getting shifts information by courseID.", err);
+			callback(err);
+		}
+		else {
+			callback(err, rows);
+		}
+	});
+
+}
+
 database.prototype.insertProfessorandCourse = function(ist_id, courseID, courseName, academicTerm, fenix_id, callback) {
 	var date = moment().format('YYYY-MM-DD HH:mm:ss');
 	var sql = "CALL InsertProfessorandCourse(?,?,?,?,?,?);";
@@ -454,15 +470,15 @@ database.prototype.getCourseName = function(courseID, callback) {
 	})
 };
 
-database.prototype.getAttendanceHistory = function(ist_id, courseID, callback) {
+database.prototype.getAttendanceHistory = function(ist_id, courseID, shift, callback) {
 	var sql = "SELECT date, a.number, a.code_type, a.code_length, a.total_time_s, a.consecutive_codes, a.attendanceID, c.courseName, a.title, a.is_extra, \
 					count(distinct ah.ist_id) as count FROM Attendance a, AttendanceHistory ah , Course c \
 					WHERE a.ist_id = ? and a.attendanceID = ah.attendanceID AND a.courseID = ? \
-						AND c.courseID = a.courseID AND a.attendanceID \
+						AND c.courseID = a.courseID AND shift_id = ? AND a.attendanceID \
 							NOT IN (SELECT ar.attendanceID FROM AttendancesRemoved ar where ar.ist_id = ?) \
 					group by a.attendanceID";
 	
-	var arg = [ist_id, courseID, ist_id];
+	var arg = [ist_id, courseID, shift, ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if(err) {
