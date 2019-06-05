@@ -22,13 +22,51 @@
 
 </ul>
 <!-- Top banner -->
+<!-- Shift's table -->
+<div class="container inlineblock" id="showShifts">
+	<div class="menu-container">
+		<div class="menu-item item-left menu-button">
+			<a href="/professor/classes" class="previous round">&#8249;</a>
+		</div>
+
+		<div class="menu-item item-left menu-title" id="courseName_id"></div>
+	</div>
+
+	<div id="shiftOn" class="">
+		Type:
+		<select id="shift_select" onchange="">
+	  		<template id="shiftOnTemplate">
+	  			<option></option>
+	  		</template>
+		</select>
+	</div>
+
+	<table id="shiftTable" class="table-margin">
+		<tr>
+			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(1)')">Shift ID</th>
+			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(2)')">Campus</th>
+			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(3)')">Schedule</th>
+		</tr>
+		
+		<template id="shiftTemplate">
+			<tr class="clickable">
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</template>
+	</table>
+
+</div>
+
+
 
 <!-- Course's table -->
 <div class="container inlineblock" id="showHistoryofProfessor">
 	<!-- back button -->
 	<div class="menu-container">
 		<div class="menu-item item-left menu-button">
-			<a href="/professor/classes" class="previous round">&#8249;</a>
+			<a onclick="switchView(-1);" class="previous round">&#8249;</a>
 		</div>
 
 		<div class="menu-item item-left menu-title" id="courseName_id">
@@ -889,7 +927,7 @@ function loadShifts() {
 			}
 		}
 	};
-	
+
 	json = {};
 	json.courseID = courseID;
 	var json_string = JSON.stringify(json);
@@ -955,7 +993,15 @@ function copyISTIDToAddStudent(button) {
 
 function switchView(arg){
 	switch(arg) {
+		case -1:
+			document.getElementById("showShifts").style.display = "";
+			document.getElementById("showHistoryofProfessor").style.display = "none";
+			document.getElementById("showStudentsHistory").style.display = "none";
+			document.getElementById("showFingerprintHistory").style.display = "none";
+			document.getElementById("showFingerprintHistory").style.display = "none";
+
 		case 0:
+			document.getElementById("showShifts").style.display = "none";
 			document.getElementById("showHistoryofProfessor").style.display = "";
 			document.getElementById("showStudentsHistory").style.display = "none";
 			document.getElementById("showFingerprintHistory").style.display = "none";
@@ -963,11 +1009,13 @@ function switchView(arg){
 
 			break;
 		case 1:
+			document.getElementById("showShifts").style.display = "none";
 			document.getElementById("showHistoryofProfessor").style.display = "none";
 			document.getElementById("showStudentsHistory").style.display = "";
 			document.getElementById("showFingerprintHistory").style.display = "none";
 			break;
 		case 2:
+			document.getElementById("showShifts").style.display = "none";
 			document.getElementById("showHistoryofProfessor").style.display = "none";
 			document.getElementById("showStudentsHistory").style.display = "none";
 			document.getElementById("showFingerprintHistory").style.display = "";

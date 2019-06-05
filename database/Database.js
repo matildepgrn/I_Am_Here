@@ -302,7 +302,6 @@ database.prototype.insertCourseShiftInfo = function(fenix_id, shift_id, type, we
 	var sql = "INSERT IGNORE INTO Shift (fenix_id, shift_id, type, week_day, start, end, campus, room, courseID)\
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	var arg = [fenix_id, shift_id, type, week_day, start, end, campus, room, courseID];
-	console.log(arg);
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
 			console.log("Error inserting course shifts information.");

@@ -443,10 +443,10 @@ Service.prototype.insertCourseShiftInfo = function(db, courseID, callback) {
 				callback(error);
 			} else {
 				fenix_api.requestCourseShift(fenix_id,
-				function(error, body) {
-					let shifts = body["shifts"];
-					auxShifts_insertCourseShiftInfo(db, shifts, 0, courseID, fenix_id, callback);
-				});
+					function(error, body) {
+						let shifts = body["shifts"];
+						auxShifts_insertCourseShiftInfo(db, shifts, 0, courseID, fenix_id, callback);
+					});
 			}
 		}
 	);
