@@ -436,6 +436,68 @@ Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
 	);
 };
 
+Service.prototype.insertCourseShiftInfo = function(db, courseID, callback) {
+	db.getFenixIDByCourseID(courseID,
+		function(error, fenix_id) {
+			if(error) {
+				callback(error);
+			} else {
+				fenix_api.requestCourseShift(fenix_id,
+				function(error, body) {
+					let shifts = body["shifts"];
+					auxShifts_insertCourseShiftInfo(db, shifts, 0, courseID, fenix_id, callback);
+				});
+			}
+		}
+	);
+}
+
+function auxShifts_insertCourseShiftInfo(db, shifts, si, courseID, fenix_id, callback) {
+	if(si < shifts.length) {
+		let s = shifts[si];
+		let shift_id = s["name"];
+		let type = s["types"][0];
+		auxLessons_insertCourseShiftInfo(db, s["lessons"], 0, courseID, fenix_id, shift_id, type,
+			function(error) {
+				if(error) {
+					console.log("Error in auxShifts_insertCourseShiftInfo");
+					callback(error);
+				} else {
+					auxShifts_insertCourseShiftInfo(db, shifts, si+1, courseID, fenix_id, callback);
+				}
+			}
+		);
+	} else {
+		callback(undefined);
+	}
+}
+
+function auxLessons_insertCourseShiftInfo(db, lessons, li, courseID, fenix_id, shift_id, type, callback) {
+	if(li < lessons.length) {
+		let l = lessons[li];
+		let start = new Date(l["start"]);
+		let end = l["end"].split(" ")[1];
+		let week_day = start.getDay();
+		start = l["start"].split(" ")[1];
+		let room = l["room"]["name"];
+		let campus = l["room"]["topLevelSpace"]["name"];
+
+		db.insertCourseShiftInfo(fenix_id, shift_id, type, week_day, start, end, campus, room, courseID,
+			function(error) {
+				if(error) {
+					console.log("Error in insertCourseShiftInfo (Service).");
+					callback(error);
+				} else {
+					auxLessons_insertCourseShiftInfo(db, lessons, li+1, courseID, fenix_id, shift_id, type, callback);
+				}
+			}
+		);	
+	} else {
+		callback(undefined);
+	}
+
+}
+
 Service.prototype.studentAttendanceChecked = function(db, ist_id, randomID, callback) {
 	db.studentAttendanceChecked(ist_id, randomID, function(err, isChecked) {
 		if(err) {
@@ -536,7 +598,9 @@ Service.prototype.getCourseInfo = function(db, res, fenix_code, access_token, re
 			} else {
 				for(let k = 0; k < info_teaching.length; k++) {
 					db.insertCourse(info_teaching[k]["acronym"], info_teaching[k]["name"], info_teaching[k]["academicTerm"],
-						function(error) {}
+						function(error) {
+							//todo
+						}
 					);
 				}
 			}	//todo handle better
@@ -544,7 +608,6 @@ Service.prototype.getCourseInfo = function(db, res, fenix_code, access_token, re
 		}
 	);
 }
-
 
 //TODO
 Service.prototype.verifyLogin = function(db, iamhere_token, callback) {

@@ -203,16 +203,17 @@ CREATE TABLE AttendancesRemoved (
 );
 
 CREATE TABLE Shift (
-	id										int auto_increment,
 	shift_id								varchar(255),
 	courseID							varchar(255),
     fenix_id							varchar(255),
 	type									varchar(255),
-	week_day						varchar(255),
+	week_day						int(1),
 	start								time,
 	end									time,
-
-	PRIMARY KEY(id)
+    campus							varchar(255),
+    room								varchar(255),
+    
+    primary key(shift_id, courseID, fenix_id, type, week_day, start, end, campus, room)
 );
 
 DELIMITER //
@@ -291,13 +292,13 @@ END
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE InsertProfessorandCourse(ist_id varchar(255), courseID varchar(255), courseName varchar(255), academicTerm varchar(255), fenix_id varchar(255))
+CREATE PROCEDURE InsertProfessorandCourse(ist_id varchar(255), courseID varchar(255), courseName varchar(255), academicTerm varchar(255), fenix_id varchar(255), date date)
 BEGIN
 	INSERT IGNORE INTO Professor (ist_id)
 		VALUES (ist_id);
 		
-	INSERT IGNORE INTO Course (courseID, courseName, academicTerm, fenix_id)
-		VALUES(courseID, courseName, academicTerm, fenix_id);
+	INSERT IGNORE INTO Course (courseID, courseName, academicTerm, fenix_id, last_updated)
+		VALUES(courseID, courseName, academicTerm, fenix_id, date);
 
 	INSERT IGNORE INTO ProfessorTeachesCourse (ist_id, courseID)
 		VALUES(ist_id, courseID);

@@ -2,6 +2,7 @@ module.exports = {
 	requestAccessToken: requestAccessToken,
 	getUserInfo: getUserInfo,
 	getCourseInfo: getCourseInfo,
+	requestCourseShift: requestCourseShift,
 };
 
 var request = require('request');
@@ -97,3 +98,18 @@ function refreshAccessToken(refresh_token, callback){
 		);
 
 }
+
+function requestCourseShift(fenix_id, callback) {
+	request
+		({url:'https://fenix.tecnico.ulisboa.pt/api/fenix/v1/courses/' + fenix_id + '/schedule'
+			, json: true}
+			, function(error, response, body) {
+				if(!error && response.statusCode == 200) {
+					callback(error, body);
+				} else {
+					callback(error);
+					console.log('Erro no requestCourseShift().', response.statusCode, error, body);
+				}
+			});
+}
+

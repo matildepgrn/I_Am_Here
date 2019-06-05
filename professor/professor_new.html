@@ -166,6 +166,8 @@
 		</template>
 	</table>
 
+	<button onclick="loadShifts()">Load shifts</button>
+
 	<p id="historyTable_error"></p>
 	</div>
 </div>
@@ -871,6 +873,25 @@ function loadisLate(url, json, td) {
 			}
 		}
 	};
+	var json_string = JSON.stringify(json);
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);
+}
+
+function loadShifts() {
+	var url = "/api/loadshifts";
+
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+			} else {
+			}
+		}
+	};
+	
+	json = {};
+	json.courseID = courseID;
 	var json_string = JSON.stringify(json);
 	xhttp.open("POST", url, true);
 	xhttp.send(json_string);

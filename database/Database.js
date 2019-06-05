@@ -52,8 +52,9 @@ database.prototype.isProfessor = function(ist_id, callback) {
 }
 
 database.prototype.insertProfessorandCourse = function(ist_id, courseID, courseName, academicTerm, fenix_id, callback) {
-	var sql = "CALL InsertProfessorandCourse(?,?,?,?,?);";
-	var args = [ist_id, courseID, courseName, academicTerm, fenix_id];
+	var date = moment().format('YYYY-MM-DD HH:mm:ss');
+	var sql = "CALL InsertProfessorandCourse(?,?,?,?,?,?);";
+	var args = [ist_id, courseID, courseName, academicTerm, fenix_id, date];
 
 	this.pool.query(sql, args, function (err, result) {
 		if (err){
@@ -121,6 +122,21 @@ database.prototype.getUserByToken = function(iamhere_token, callback) {
 		}
 		else {
 			callback(err, rows[0].ist_id);
+		}
+	})
+};
+
+database.prototype.getFenixIDByCourseID = function(courseID, callback) {
+	var sql = "SELECT fenix_id FROM Course WHERE courseID = ?;";
+	var arg = [courseID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error getting the fenix_id by courseID.");
+			callback(err);
+		}
+		else {
+			callback(err, rows[0].fenix_id);
 		}
 	})
 };
@@ -274,6 +290,22 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
 			console.log("Error inserting server code.", attendanceID);
+			callback(err);
+		}
+		else{
+			callback(err);
+		}
+	})
+};
+
+database.prototype.insertCourseShiftInfo = function(fenix_id, shift_id, type, week_day, start, end, campus, room, courseID, callback) {
+	var sql = "INSERT IGNORE INTO Shift (fenix_id, shift_id, type, week_day, start, end, campus, room, courseID)\
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	var arg = [fenix_id, shift_id, type, week_day, start, end, campus, room, courseID];
+	console.log(arg);
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error inserting course shifts information.");
 			callback(err);
 		}
 		else{

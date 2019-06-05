@@ -683,6 +683,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 		case "/api/createAttendanceSession":
 		case "/api/status":
 		case "/api/getcode":
+		case "/api/loadshifts":
 		case "/api/importstudents":
 		case "/api/getcode/stop":
 		case "/api/addmanually":
@@ -720,6 +721,18 @@ function handlePost(req, res, cookies, parsedURL, data) {
 										sendText(res, "Could not updateStudentNameAndNumber", 500);
 									} else{
 										sendText(res, "Student(s) imported.");	
+									}
+								}
+							);
+							break;
+						case "/api/loadshifts":
+							var courseID = json.courseID;
+							service.insertCourseShiftInfo(db, courseID,
+								function(error) {
+									if(error) {
+										sendText(res, "Could not insertCourseShiftInfo", 500);
+									} else {
+										sendText(res, "Shift(s) inserted.");
 									}
 								}
 							);
