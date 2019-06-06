@@ -34,7 +34,7 @@
 
 	<div id="shiftOn" class="">
 		Type:
-		<select id="shift_select" onchange="">
+		<select id="shift_select" onchange="changeShift(this)">
 	  		<template id="shiftOnTemplate">
 	  			<option></option>
 	  		</template>
@@ -43,21 +43,19 @@
 
 	<table id="shiftTable" class="table-margin">
 		<tr>
-			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(1)')">Shift ID</th>
-			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(2)')">Campus</th>
-			<th rowspan="2" class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(2)')">Type</th>
+			<th rowspan="2">Shift ID</th>
+			<th rowspan="2">Campus</th>
 			<th colspan="3">Schedule</th>
 			<th rowspan="2">Room</th>
 		</tr>
 		<tr>
-			<th class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(3)')">Day</th>
-			<th class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(4)')">Start</th>
-			<th class="th-sortable" onclick="w3.sortHTML('#historyTable', '.clickable', 'td:nth-child(5)')">End</th>
+			<th>Day</th>
+			<th>Start</th>
+			<th>End</th>
 		</tr>
 		
 		<template id="shiftTemplate">
 			<tr class="clickable_different">
-				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -519,6 +517,7 @@ function cancelImport() {
 	isImportingAttendance = false;
 }
 
+
 function loadShiftsByCourseID() {
 	var url = "/api/getshifts?c=" + courseID;
 	var xhttp = new XMLHttpRequest();
@@ -526,7 +525,7 @@ function loadShiftsByCourseID() {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				var shifts = JSON.parse(this.responseText);
-				showShifts(shifts);
+				updateSelectShift(shifts);
 			} else {
 				console.log("Error loading shifts:", this.status);
 			}
@@ -536,13 +535,46 @@ function loadShiftsByCourseID() {
 	xhttp.send();
 }
 
-function showShifts(shifts_wrapper) {
+let global_shifts_wrapper;
+
+function updateSelectShift(shifts) {
+	global_shifts_wrapper = shifts;
+	var template = document.getElementById("shiftOnTemplate");
+	var select = document.getElementById("shift_select");
+	let types = [];
+	for(let s of shifts) {
+		if(!types.includes(s.type)) {
+			types.push(s.type);
+		}
+	}
+
+	console.log(types);
+
+	for(let i = 0; i < types.length; i++) {
+		var option = template.content.querySelector("option").cloneNode(true);
+		option.value = option.innerText = types[i];
+		select.appendChild(option);
+
+		if(types[i] == "TEORICA") {
+			select.selectedIndex = i;
+		}
+	}
+
+	changeShift(select);
+}
+
+function changeShift(select) {
+	showShifts(select.value);
+}
+
+function showShifts(myType = "TEORICA") {
 	var template = document.getElementById("shiftTemplate");
 	var table = document.getElementById("shiftTable");
-	var shifts = shifts_wrapper;
+	var shifts = global_shifts_wrapper;
 	removeTrs(table.getElementsByTagName("tr"), 2);
 	var ids_consecutive = 0;
-
+	var select = document.getElementById("shift_select");
+	
 	if(shifts.length > 0) {
 		for(let i = 1; i < shifts.length; i++) {
 			if(shifts[i].shift_id == shifts[i-1].shift_id) {
@@ -562,7 +594,9 @@ function showShifts(shifts_wrapper) {
 		}
 		for(let i = 0; i < shifts.length; i++) {
 			let shifts_i = shifts[i];
-			addShifts(table, template, shifts_i, shifts_i.shift_id, shifts_i.campus, shifts_i.type, shifts_i.week_day, shifts_i.start, shifts_i.end, shifts_i.room);
+			if(shifts_i.type == myType) {
+				addShifts(table, template, shifts_i, shifts_i.shift_id, shifts_i.campus, shifts_i.week_day, shifts_i.start, shifts_i.end, shifts_i.room);
+			}
 		} 
 	} else {
 		document.getElementById("invisible-info-shifts").style.display = "";
@@ -573,20 +607,12 @@ function showShifts(shifts_wrapper) {
 
 var week_day_list = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-function addShifts(table, template, shifts_i, id, campus, type, week_day, start, end, room) {
+function addShifts(table, template, shifts_i, id, campus, week_day, start, end, room) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 	tr_clone.shift_id = id;
 	week_day = week_day_list[week_day];
 
-	switch(type) {
-		case "LABORATORIAL":
-			type = "Lab";
-			break;
-		case "TEORICA":
-			type = "T";
-			break;
-	}
 	start = start.substring(0,5);
 	end = end.substring(0,5);
 	
@@ -594,10 +620,12 @@ function addShifts(table, template, shifts_i, id, campus, type, week_day, start,
 		tds[x].innerText = arguments[x+3];
 	}
 
-	if(shifts_i.first_index) {
+	if(shifts_i.first_index != undefined) {
+		tds[1].parentElement.removeChild(tds[1]);		// remove 1o a coluna CAMPUS
 		tds[0].parentElement.removeChild(tds[0]);
 	} else if(shifts_i.repeatedCount) {
 		tds[0].rowSpan = shifts_i.repeatedCount;
+		tds[1].rowSpan = shifts_i.repeatedCount;
 	}
 
 	tr_clone.onclick = function() {
