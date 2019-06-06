@@ -548,8 +548,6 @@ function updateSelectShift(shifts) {
 		}
 	}
 
-	console.log(types);
-
 	for(let i = 0; i < types.length; i++) {
 		var option = template.content.querySelector("option").cloneNode(true);
 		option.value = option.innerText = types[i];

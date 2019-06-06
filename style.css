@@ -32,7 +32,10 @@ ul {
 	background: #d9d9d9;
 }
 
-#teacherOn {
+#teacherOn, 
+#shiftOn,
+#courseOn
+ {
 	margin-left: 74px;
 	text-align: left;
 	margin-bottom: 10px;
