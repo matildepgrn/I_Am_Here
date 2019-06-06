@@ -544,6 +544,9 @@ function updateSelectShift(shifts) {
 	var template = document.getElementById("shiftOnTemplate");
 	var select = document.getElementById("shift_select");
 	let types = [];
+
+	removeSelectOptions("shift_select");
+
 	for(let s of shifts) {
 		if(!types.includes(s.type)) {
 			types.push(s.type);
@@ -758,6 +761,13 @@ function showProfessors(json) {
 		}
 	}
 };
+
+function removeSelectOptions(id) {
+	var x = document.getElementById(id);
+	for(let l = x.length-1; l >= 0; l--) {
+		x.remove(l);
+	}
+}
 
 
 function showHistory(history_wrapper) {
