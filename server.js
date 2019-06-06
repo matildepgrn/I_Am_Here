@@ -210,7 +210,8 @@ function handleRequest(req, res) {
 						case "/api/classattendancefile":
 							var courseID = parsedURL.query.c;
 							var attendanceID = parsedURL.query.a;
-							service.getAttendancesByCourseProfessorClass(db, courseID, ist_id, attendanceID,
+							var shift = parsedURL.query.s;
+							service.getAttendancesByCourseProfessorClass(db, courseID, ist_id, attendanceID, shift,
 									function(error, result) {
 										if(error) {
 											sendText(res, "Could not getAttendancesByCourseProfessorClass.", 500);

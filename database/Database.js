@@ -687,9 +687,9 @@ database.prototype.getAttendancesByCourseAndProfessor = function(courseID, ist_i
 	})
 };
 
-database.prototype.getAttendancesByCourseProfessorClass = function(courseID, ist_id, attendanceID, callback) {
-	var sql = "CALL GetAttendanceInformation(?,?,?);";
-	var arg = [courseID, ist_id, attendanceID];
+database.prototype.getAttendancesByCourseProfessorClass = function(courseID, ist_id, attendanceID, shift, callback) {
+	var sql = "CALL GetAttendanceInformation(?,?,?,?);";
+	var arg = [courseID, ist_id, attendanceID, shift];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){

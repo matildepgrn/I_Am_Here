@@ -504,9 +504,9 @@ END
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE GetAttendanceInformation(my_courseID varchar(255), my_ist_id varchar(255), my_attendanceID int)
+CREATE PROCEDURE GetAttendanceInformation(my_courseID varchar(255), my_ist_id varchar(255), my_attendanceID int, my_shift varchar(255))
 BEGIN
-select a.ist_id, u.ist_id as std_number, u.name, ah.late, ah.manually, a.number, a.is_extra
+select a.ist_id, u.ist_id as fenix_number, u.name, u.short_name, u.std_number as std_number, ah.late, ah.manually, a.number, a.is_extra
 	from Attendance a
 		join AttendanceHistory ah
 			on ah.attendanceID = a.attendanceID
@@ -514,7 +514,8 @@ select a.ist_id, u.ist_id as std_number, u.name, ah.late, ah.manually, a.number,
 			on ah.ist_id = u.ist_id
 	where a.ist_id = my_ist_id
 		and a.courseID = my_courseID
-		and a.attendanceID = my_attendanceID;
+		and a.attendanceID = my_attendanceID
+        and a.shift_id = my_shift;
 END
 //
 DELIMITER ;

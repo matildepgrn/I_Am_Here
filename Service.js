@@ -721,8 +721,8 @@ Service.prototype.getAttendancesByCourseAndProfessor = function(db, courseID, is
 	);
 }
 
-Service.prototype.getAttendancesByCourseProfessorClass = function(db, courseID, ist_id, attendanceID, callback) {
-	db.getAttendancesByCourseProfessorClass(courseID, ist_id, attendanceID, function(error, rows) {
+Service.prototype.getAttendancesByCourseProfessorClass = function(db, courseID, ist_id, attendanceID, shift, callback) {
+	db.getAttendancesByCourseProfessorClass(courseID, ist_id, attendanceID, shift, function(error, rows) {
 			let result = appendToFile_general(rows);
 			callback(error, result);
 		}
@@ -771,8 +771,9 @@ function appendToFile_general(rows) {
 	}
 	for(i = 0; i < rows.length; i ++) {
 		let line = rows[i].ist_id + CSV_SEPARATOR +
+					rows[i].fenix_number + CSV_SEPARATOR +
 					rows[i].std_number + CSV_SEPARATOR +
-					rows[i].name + CSV_SEPARATOR +
+					(rows[i].short_name ? rows[i].short_name : rows[i].name) + CSV_SEPARATOR +
 					ontime;
 		if(rows[i].late == 1) {
 			line += " (late)";

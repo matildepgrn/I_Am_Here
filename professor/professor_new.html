@@ -685,7 +685,7 @@ function loadAttendanceInformation(url, attendanceID) {
 						document.getElementById("addIsExtra").checked = 0;
 					}
 					document.getElementById("addClassCounter").value = attendanceInfo.number;
-					document.getElementById("tsv_export_class").href = "/api/classattendancefile?c="+courseID+"&a="+attendanceID;
+					document.getElementById("tsv_export_class").href = "/api/classattendancefile?c="+courseID+"&a="+attendanceID+"&s="+currentShift;
 					document.getElementById("currentClass").innerHTML = attendanceInfo.number;
 					document.getElementById("currentTitle").innerHTML = attendanceInfo.title;
 
