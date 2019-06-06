@@ -41,6 +41,13 @@ ul {
 	margin-bottom: 10px;
 }
 
+.subTitle {
+	margin-top: 0px;
+	text-align: left;
+	font-weight: bold;
+	margin-bottom: 3px;
+}
+
 #courseOn {
 	margin-bottom: 10px;
 }
@@ -90,7 +97,7 @@ ul {
 }
 
 .menu-title {
-	font-size: 20px;
+	font-size: 17px;
 }
 
 .download {
@@ -148,7 +155,7 @@ ul {
 	transition-property: width, background-color;
 }
 
-#courseName_id {
+#courseName_id, #courseName_id2 {
 	font-weight: bold;	
 }
 

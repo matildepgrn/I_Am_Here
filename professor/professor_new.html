@@ -33,6 +33,7 @@
 	</div>
 
 	<div id="shiftOn" class="">
+		<p class="subTitle">Shifts</p>
 		Type:
 		<select id="shift_select" onchange="changeShift(this)">
 	  		<template id="shiftOnTemplate">
@@ -83,7 +84,7 @@
 			<a onclick="switchView(-1)" class="previous round">&#8249;</a>
 		</div>
 
-		<div class="menu-item item-left menu-title" id="courseName_id">
+		<div class="menu-item item-left menu-title" id="courseName_id2">
 		</div>
 
 		<div class="menu-item item-right menu-button">
@@ -117,6 +118,7 @@
 	</h6>
 
 	<div id="teacherOn" class="">
+		<p class="subTitle" id="attendancesTitle">Attendances</p>
 		Professor:
 		<select id="professor_select" onchange="changeProfessor(this)">
 	  		<template id="teacherOnTemplate">
@@ -765,9 +767,11 @@ function showHistory(history_wrapper) {
 	table.ist_id = history_wrapper.history.ist_id;
 	removeTrs(table.getElementsByTagName("tr"));
 	document.getElementById("courseName_id").innerHTML = history_wrapper.courseName;
+	document.getElementById("courseName_id2").innerHTML = history_wrapper.courseName;
 	if(history.length > 0) {
 		document.getElementById("export_button").style.display = "";
 		document.getElementById("noAttendancesText").style.display = "none";
+		document.getElementById("attendancesTitle").style.display = "";
 		document.getElementById("historyTable").style.display = "";
 		for(let i = 0; i < history.length; i++) {
 			let hist_i = history[i];
@@ -777,6 +781,7 @@ function showHistory(history_wrapper) {
 		document.getElementById("export_button").style.display = "none";
 		document.getElementById("historyTable").style.display = "none";
 		document.getElementById("noAttendancesText").style.display = "";
+		document.getElementById("attendancesTitle").style.display = "none";
 	}
 	
 };
