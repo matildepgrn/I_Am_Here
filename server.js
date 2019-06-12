@@ -757,7 +757,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 							if(json.is_extra == "is_extra") {
 								isExtra = 1;
 							}
-							service.createandinsertstudents(db, json.courseID, json.professor_number, isExtra, json.mytitle, json.class_number, json.file_input,
+							service.createandinsertstudents(db, json.courseID, json.professor_number, isExtra, json.mytitle, json.class_number, json.file_input, json.shift,
 								function(error) {
 									if(error) {
 										sendText(res, "Error in /api/importattendance", 500);

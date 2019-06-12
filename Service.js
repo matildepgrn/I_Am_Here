@@ -95,8 +95,8 @@ Service.prototype.getShiftsByCourseID = function(db, courseID, callback) {
 }
 
 
-Service.prototype.createandinsertstudents = function(db, courseID, ist_id, is_extra, title, number, text, callback) {
-	db.generateRandomAttendanceCode(ist_id, 0, null, null, null, null, courseID, is_extra, title, number,
+Service.prototype.createandinsertstudents = function(db, courseID, ist_id, is_extra, title, number, text, shift, callback) {
+	db.generateRandomAttendanceCode(ist_id, 0, null, null, null, null, courseID, is_extra, title, number, shift,
 		function(error, attendanceID) {
 			if(error) {
 				callback(error);
