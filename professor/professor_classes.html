@@ -59,7 +59,7 @@
 				<a id="importstudentsbutton" class="previous round" href="#"
 					onclick="toggleEdit()"
 					title="Import students">
-					<span class="importbutton">&#8595;</span>
+					<span class="import">&#x2B07;</span>
 				</a>
 			</div>
 		</div>
@@ -146,7 +146,6 @@ function toggleEdition() {
 	document.getElementById("normal_menu").style.display = "none";
 	document.getElementById("courseOn").style.display = "none";
 	document.getElementById("courseListTable").style.display = "none";
-	document.getElementById("b_addcourse").style.display = "none";
 	document.getElementById("importstudentsbutton").classList.add("active");
 
 	isImportingStudents = true;
@@ -157,7 +156,6 @@ function cancelImport() {
 	document.getElementById("normal_menu").style.display = "";
 	document.getElementById("courseOn").style.display = "";
 	document.getElementById("courseListTable").style.display = "";
-	document.getElementById("b_addcourse").style.display = "";
 	document.getElementById("importstudentsbutton").classList.remove("active");
 
 	isImportingStudents = false;

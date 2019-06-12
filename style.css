@@ -116,13 +116,13 @@ ul {
 	display: inline-block;
 }
 
+.active span {
+	border-color: white !important;
+}
+
 .active {
 	color: white !important;
 	background-color: #008CBA !important;
-}
-
-.active span {
-	border-color: white !important;
 }	
 
 .goBack {
