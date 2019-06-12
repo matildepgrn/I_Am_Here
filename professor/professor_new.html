@@ -149,6 +149,14 @@
 					</tr>
 					<tr>
 						<td>
+							Shift:
+						</td> 
+						<td>
+							<input id="importattendance_shift" name="shift" type="text"></input>
+						</td>
+					</tr>
+					<tr>
+						<td>
 							Class number:
 						</td> 
 						<td>
@@ -713,6 +721,7 @@ function loadHistory(mycourseID, ist_id, shift) {
 	let url = "/api/history?c=" + mycourseID + (ist_id ? ("&i=" + ist_id) : "") + "&s=" + shift;
 	currentShift = shift;
 	document.getElementById("currentShift_display").innerHTML = currentShift;
+	document.getElementById("importattendance_shift").value = currentShift;
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
