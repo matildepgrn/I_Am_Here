@@ -104,6 +104,10 @@ ul {
 	border-top: 2px solid black;
 }
 
+.import {
+	border-bottom: 2px solid black;
+}
+
 .marginTop {
 	margin-top: 20px;
 }
