@@ -34,7 +34,8 @@ ul {
 
 #teacherOn, 
 #shiftOn,
-#courseOn
+#courseOn,
+.on
  {
 	margin-left: 74px;
 	text-align: left;
