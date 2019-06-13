@@ -29,7 +29,7 @@
 		</div>
 
 		<div class="menu-item item-right item-last menu-button">
-			<a id="tsv_export_by_secret" onclick="return showLink(this, event)" href="" class="previous round" title="Export">
+			<a id="tsv_export_by_secret" onclick="return showLink(this, event)" href="" class="previous round" title="Permanent link to all attendances">
 				<span>&#x1f517;</span>
 			</a>
 		</div>
@@ -100,11 +100,11 @@
 			</a>
 		</div>
 
-		<div class="menu-item item-right menu-button" id="export_button">
+		<!--div class="menu-item item-right menu-button" id="export_button">
 			<a id="tsv_export" href="" class="previous round" title="Export">
 				<span>&#x1f517;</span>
 			</a>
-		</div>
+		</div-->
 
 		<div class="menu-item item-right menu-button">
 			<a id="b_attendance" class="previous round" href="#"
@@ -259,11 +259,11 @@
 		</div>
 
 		<!-- TSV file with all classes -->
-		<div class="menu-item item-right item-last menu-button">
+		<!--div class="menu-item item-right item-last menu-button">
 			<a id="tsv_export_class" href="" class="previous round" title="Export">
 				<span>&#x1f517;</span>
 			</a>
-		</div>
+		</div-->
 
 		<div class="menu-item item-right menu-button">
 			<a id="editButton" onclick="toggleEdit(this)" class="previous round">
@@ -428,7 +428,7 @@ let currentShift;
 if(courseID) {
 	historyTable_error.innerHTML = "";
 	loadHistory(courseID,"",currentShift);
-	document.getElementById("tsv_export").href = "/api/attendancefile?c="+courseID;
+	//document.getElementById("tsv_export").href = "/api/attendancefile?c="+courseID;
 } else {
 	historyTable_error.innerHTML = "CourseID not defined.";
 	document.getElementById("historyTable").style.display = "none";
@@ -699,7 +699,7 @@ function loadAttendanceInformation(url, attendanceID) {
 						document.getElementById("addIsExtra").checked = 0;
 					}
 					document.getElementById("addClassCounter").value = attendanceInfo.number;
-					document.getElementById("tsv_export_class").href = "/api/classattendancefile?c="+courseID+"&a="+attendanceID+"&s="+currentShift;
+					//document.getElementById("tsv_export_class").href = "/api/classattendancefile?c="+courseID+"&a="+attendanceID+"&s="+currentShift;
 					document.getElementById("currentClass").innerHTML = attendanceInfo.number;
 					document.getElementById("currentTitle").innerHTML = attendanceInfo.title;
 
@@ -803,7 +803,7 @@ function showHistory(history_wrapper) {
 	document.getElementById("tsv_export_by_secret").href = link;
 
 	if(history.length > 0) {
-		document.getElementById("export_button").style.display = "";
+		//document.getElementById("export_button").style.display = "";
 		document.getElementById("noAttendancesText").style.display = "none";
 		document.getElementById("attendancesTitle").style.display = "";
 		document.getElementById("historyTable").style.display = "";
@@ -812,7 +812,7 @@ function showHistory(history_wrapper) {
 			addHistory(table, template, hist_i.attendanceID, hist_i.number, hist_i.title, hist_i.date, hist_i.code_type, hist_i.code_length, hist_i.total_time_s, hist_i.consecutive_codes, hist_i.count, hist_i.is_extra);
 		} 
 	} else {
-		document.getElementById("export_button").style.display = "none";
+		//document.getElementById("export_button").style.display = "none";
 		document.getElementById("historyTable").style.display = "none";
 		document.getElementById("noAttendancesText").style.display = "";
 		document.getElementById("attendancesTitle").style.display = "none";
