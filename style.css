@@ -39,6 +39,7 @@ ul {
 	margin-left: 74px;
 	text-align: left;
 	margin-bottom: 10px;
+	margin-top: 10px;
 }
 
 .subTitle {
@@ -66,14 +67,15 @@ ul {
 }
 
 .menu-item {
+	padding: 4px;
 	height: 74px;
 	vertical-align: middle;
-	line-height: 74px;
+	line-height: 66px;
 }
 
 .menu-button {
 	font-family: monospace;
-	width: 80px;
+	width: 74px;
 }
 
 .link-margin {
@@ -326,7 +328,7 @@ tr {
 a.previous {
   text-decoration: none;
   display: inline-block;
-  padding: 0px 32px;
+  width: 66px;
   font-size: 20px;
 }
 
