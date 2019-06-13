@@ -22,17 +22,96 @@
 
 <div class="container inlineblock" id="attendance_personalization">
 	<div class="menu-container">
-		<div class="menu-item item-left menu-button">
+		<div id="backbutton" class="menu-item item-left menu-button">
 			<a href="/professor/new" id="goBackToHistoryTable" class="previous round">&#8249;</a>
 		</div>
 
-		<div class="menu-item item-left menu-title">
+		<div class="menu-item item-right menu-button">
+			<a class="previous round" href="#"
+				onclick="toggleImport()" id="import_button"
+				title="Import attendance">
+				<span class="import">&#x2B07;</span>
+			</a>
+		</div>
+
+		<div id="importattedancetitle" style="display:none" class="menu-item item-left menu-title">
+				Import an attendance:
+		</div>
+
+		<div id="infotitle" class="menu-item item-left menu-title">
 			<span>
 				Personalize the attendance checking:
 			</span>
 		</div>
 
 	</div>
+
+	<div id="importAttendanceDiv" style="display:none">
+		<p>Format: <span class="mono">student_number, type of attendance (ok or late)</span><p>
+			<form id="importAttendanceID" method="post">
+				<table class="invisible-table" style="margin-bottom: 4px">
+					<tr>
+						<td >Example (on time):</td>
+						<td class="mono">ist182083,ok</td>
+					</tr>
+					<tr>
+						<td>Example (late):</td>
+						<td class="mono">ist182083,late</td>
+					</tr>
+					<tr>
+						<td>
+							Professor:
+						</td> 
+						<td>
+							<input id="professor_number" name="professor_number" pattern="^ist\d\d\d\d\d\d$" type="text" placeholder="istXXXXXX"></input>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Shift:
+						</td> 
+						<td>
+							<input id="importattendance_shift" name="shift" type="text"></input>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Class number:
+						</td> 
+						<td>
+							<input id="" name="class_number" type="number"></input>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							Title:
+						</td> 
+						<td>
+							<input id="" name="mytitle" type="text" placeholder="(optional)"></input>
+						</td>
+					</tr>
+
+					<tr title="Invited lecture or extraordinary class">
+						<td></td>
+						<td>
+							<input type="checkbox" id="addIsExtra" name="is_extra" value="is_extra"> Extra Class
+						</td>
+					</tr>
+
+					<tr>
+						<td colspan="2">
+							<textarea oninput="verifyTextArea()" name="file_input" id="myFile_attendances" class="textarea_input"></textarea>
+						</td>
+					</tr>
+					
+				</table>
+
+				<button type="button" id="sendImportAttendance" onclick="sendFileAsForm();" disable>Import</button>
+				<button type="button" onclick="cancelImport()">Cancel</button>
+				
+			</form>
+		</div>
 
 		<table id="attendancePersonalization" class="table-margin">
 		<form id="formId" method="post">
@@ -104,7 +183,7 @@
 		</form>
 		</table>
 
-		<div style="text-align: center">
+		<div id="createses_button" style="text-align: center">
 			<button class="Bigbutton" id="attendance-button"
 				onclick="sendForm()" title="Create a session">
 					Create session
@@ -187,7 +266,10 @@
 
 const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
+let isImportingAttendance = false;
 let shift = urlParams.get("s");
+document.getElementById("importattendance_shift").value = shift;
+var regex_line = /^ist\d\d\d\d\d\d,(ok|late)$/;
 
 if(courseID && courseID != 'undefined') {
 	var goBackToHistoryTable = document.getElementById("goBackToHistoryTable");
@@ -199,6 +281,78 @@ var students_count = 0;
 function goTo(url) {
 	url += window.location.search;
 	window.location.replace(url);
+}
+
+function toggleImport() {
+	if(isImportingAttendance) {
+		return cancelImport();
+	} else {
+		return importAttendance();
+	}
+}
+
+function importAttendance(){
+	document.getElementById("importattedancetitle").style.display = "";
+	document.getElementById("infotitle").style.display = "none";
+	document.getElementById("createses_button").style.display = "none";
+	document.getElementById("import_button").classList.add("active");
+	document.getElementById("backbutton").style.display = "none";
+	document.getElementById("attendancePersonalization").style.display = "none";
+	document.getElementById("importAttendanceDiv").style.display = "";
+	isImportingAttendance = true;
+}
+
+function cancelImport() {
+	document.getElementById("importattedancetitle").style.display = "none";
+	document.getElementById("infotitle").style.display = "";
+	document.getElementById("createses_button").style.display = "";
+	document.getElementById("import_button").classList.remove("active");
+	document.getElementById("backbutton").style.display = "";
+	document.getElementById("attendancePersonalization").style.display = "";
+	document.getElementById("importAttendanceDiv").style.display = "none";
+	isImportingAttendance = false;
+}
+
+var myFile_attendances = document.getElementById("myFile_attendances");
+var sendImportAttendance = document.getElementById("sendImportAttendance");
+
+function verifyTextArea() {
+	var text = myFile_attendances.value;
+	var lines = text.split('\n');
+
+	for(let l of lines) {
+		if(!l.match(regex_line)) {
+			console.log('Invalid line:', l);
+			myFile_attendances.classList.add("invalidLine");
+			sendImportAttendance.disabled = true;
+			return;
+		}
+	}
+	sendImportAttendance.disabled = false;
+	myFile_attendances.classList.remove("invalidLine");
+}
+
+function sendFileAsForm(){
+	var formEl = document.getElementById("importAttendanceID");
+	var data = new FormData(formEl);
+	var o = {};
+	for(var e of data) {
+		o[e[0]] = e[1];
+	}
+	o.courseID = courseID;
+	
+	var json_string = JSON.stringify(o);
+	var xhttp = new XMLHttpRequest();
+	var url = "/api/importattendance";
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				toggleImport();
+				formEl.reset();
+				goTo("/professor/new");	
+			}
+	}
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);
 }
 
 var qrcode;
