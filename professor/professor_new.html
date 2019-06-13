@@ -28,6 +28,12 @@
 			<a href="/professor/classes" class="previous round">&#8249;</a>
 		</div>
 
+		<div class="menu-item item-right item-last menu-button">
+			<a id="tsv_export_by_secret" onclick="return showLink(this, event)" href="" class="previous round" title="Export">
+				<span>&#x1f517;</span>
+			</a>
+		</div>
+
 		<div class="menu-item item-left menu-title" id="courseName_id"></div>
 	</div>
 
@@ -96,7 +102,7 @@
 
 		<div class="menu-item item-right menu-button" id="export_button">
 			<a id="tsv_export" href="" class="previous round" title="Export">
-				<span class="download">&#x2B06;</span>
+				<span>&#x1f517;</span>
 			</a>
 		</div>
 
@@ -255,7 +261,7 @@
 		<!-- TSV file with all classes -->
 		<div class="menu-item item-right item-last menu-button">
 			<a id="tsv_export_class" href="" class="previous round" title="Export">
-				<span class="download">&#x2B06;</span>
+				<span>&#x1f517;</span>
 			</a>
 		</div>
 
@@ -791,6 +797,11 @@ function showHistory(history_wrapper) {
 	document.getElementById("professor_select").value = table.ist_id;
 	document.getElementById("courseName_id").innerHTML = history_wrapper.courseName;
 	document.getElementById("courseName_id2").innerHTML = history_wrapper.courseName;
+	let secret = history_wrapper.secret;
+
+	let link = window.location.protocol + "//" + window.location.host + "/tsv/course?s=" +  secret;
+	document.getElementById("tsv_export_by_secret").href = link;
+
 	if(history.length > 0) {
 		document.getElementById("export_button").style.display = "";
 		document.getElementById("noAttendancesText").style.display = "none";
@@ -999,6 +1010,11 @@ function removeAttendance(url, button_element, attendanceID) {
 	};
 	xhttp.open("POST", url, true);
 	xhttp.send(JSON.stringify({}));
+}
+
+function showLink(element, event) {
+	prompt("Copy the link:", element.href);
+	event.preventDefault();
 }
 
 function removeStudent(url, button_element, attendanceID, classcounter) {

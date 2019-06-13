@@ -33,7 +33,23 @@ function handleRequest(req, res) {
 	}
 
 	switch(parsedURL.pathname) {
+		case "/client":
+			sendFile(res, 'client/prof.html');
+			break;
 		case "/api/H6YsZVWpIkXKeORd291yYLvEFfowzTcP3O5tRp9m/":
+			break;
+		case "/tsv/course":
+			var secret = parsedURL.query.s;
+			service.getAttendancesByCourseSecret(db, secret,
+				function(error, result) {
+					if(error) {
+						sendText(res, "Could not load PCM1819 attendances.", 500);
+					} else {
+						sendText(res, result, 200,
+							'text/tab-separated-values; charset=utf-8');
+					}
+				}
+			);
 			break;
 		case "/api/H6YsZVWpIkXKeORd291yYLvEFfowzTcP3O5tRp9m/pcm1819_attendance.tsv":
 			service.getAttendances(db,
@@ -153,20 +169,6 @@ function handleRequest(req, res) {
 							service.getAllAcademicTerms(db, ist_id,
 									function(error, rows) {
 										sendJSON(res, rows);
-									}
-								);
-							break;
-						case "/api/attendancefile":
-							var courseID = parsedURL.query.c;
-							service.getAttendancesByCourseAndProfessor(db, courseID, ist_id,
-									function(error, result) {
-										if(error) {
-											sendText(res, "Could not getAttendancesByCourseAndProfessor.", 500);
-										} else {
-											sendText(res, result, 200,
-												'text/tab-separated-values; charset=utf-8', 
-												'attachment; filename="'+ist_id+courseID+'.tsv"');
-										}
 									}
 								);
 							break;

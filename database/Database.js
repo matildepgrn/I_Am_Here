@@ -69,8 +69,9 @@ database.prototype.getShiftsByCourseID = function(courseID, callback) {
 
 database.prototype.insertProfessorandCourse = function(ist_id, courseID, courseName, academicTerm, fenix_id, callback) {
 	var date = moment().format('YYYY-MM-DD HH:mm:ss');
-	var sql = "CALL InsertProfessorandCourse(?,?,?,?,?,?);";
-	var args = [ist_id, courseID, courseName, academicTerm, fenix_id, date];
+	var secret = randomInt(16);
+	var sql = "CALL InsertProfessorandCourse(?,?,?,?,?,?,?);";
+	var args = [ist_id, courseID, courseName, academicTerm, fenix_id, date, secret];
 
 	this.pool.query(sql, args, function (err, result) {
 		if (err){
@@ -457,7 +458,7 @@ database.prototype.createClass = function(ist_id, courseID, callback) {
 };
 
 database.prototype.getCourseName = function(courseID, callback) {
-	var sql = "SELECT courseName from Course where courseID = ?";
+	var sql = "SELECT courseName, secret from Course where courseID = ?";
 	var arg = [courseID];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
@@ -672,9 +673,9 @@ database.prototype.getAttendances = function(callback) {
 	})
 };
 
-database.prototype.getAttendancesByCourseAndProfessor = function(courseID, ist_id, callback) {
-	var sql = "CALL GetAttendances(?,?);";
-	var arg = [courseID, ist_id];
+database.prototype.getAttendancesByCourseSecret = function(secret, callback) {
+	var sql = "CALL GetAttendances(?);";
+	var arg = [secret];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){

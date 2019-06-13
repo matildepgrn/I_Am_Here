@@ -292,13 +292,13 @@ END
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE InsertProfessorandCourse(ist_id varchar(255), courseID varchar(255), courseName varchar(255), academicTerm varchar(255), fenix_id varchar(255), date date)
+CREATE PROCEDURE InsertProfessorandCourse(ist_id varchar(255), courseID varchar(255), courseName varchar(255), academicTerm varchar(255), fenix_id varchar(255), date date, secret varchar(255))
 BEGIN
 	INSERT IGNORE INTO Professor (ist_id)
 		VALUES (ist_id);
 		
-	INSERT IGNORE INTO Course (courseID, courseName, academicTerm, fenix_id, last_updated)
-		VALUES(courseID, courseName, academicTerm, fenix_id, date);
+	INSERT IGNORE INTO Course (courseID, courseName, academicTerm, fenix_id, last_updated, secret)
+		VALUES(courseID, courseName, academicTerm, fenix_id, date, secret);
 
 	INSERT IGNORE INTO ProfessorTeachesCourse (ist_id, courseID)
 		VALUES(ist_id, courseID);
@@ -403,18 +403,18 @@ END
 //
 DELIMITER ;
 
-
 DELIMITER //
-CREATE PROCEDURE GetAttendances(my_courseID varchar(255), my_ist_id varchar(255))
+CREATE PROCEDURE GetAttendances(my_secret varchar(255))
 BEGIN
-select a.ist_id, u.ist_id as std_number, u.name, ah.late, ah.manually, a.number, a.is_extra
+select a.ist_id, u.ist_id as std_number, u.name, ah.late, ah.manually, a.number, a.is_extra, a.shift_id
 	from Attendance a
 		join AttendanceHistory ah
 			on ah.attendanceID = a.attendanceID
 		join User u
 			on ah.ist_id = u.ist_id
-	where a.ist_id = my_ist_id
-		and a.courseID = my_courseID
+		join Course c
+			on c.courseID = a.courseID
+		and c.secret = my_secret
 		order by a.attendanceID;
 END
 //

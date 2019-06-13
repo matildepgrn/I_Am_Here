@@ -541,7 +541,8 @@ Service.prototype.getAttendanceHistory = function(db, ist_id, courseID, shift, c
 					callback(err1);
 				} else {
 					var json = {history: res,
-								courseName: res1.courseName};
+								courseName: res1.courseName,
+								secret: res1.secret};
 
 					callback(err1, json);
 				}
@@ -713,8 +714,8 @@ Service.prototype.getInactiveCourses = function(db, ist_id, callback) {
 	); 
 }
 
-Service.prototype.getAttendancesByCourseAndProfessor = function(db, courseID, ist_id, callback) {
-	db.getAttendancesByCourseAndProfessor(courseID, ist_id, function(error, rows) {
+Service.prototype.getAttendancesByCourseSecret = function(db, secret, callback) {
+	db.getAttendancesByCourseSecret(secret, function(error, rows) {
 			let result = appendToFile_general(rows);
 			callback(error, result);
 		}
@@ -785,6 +786,7 @@ function appendToFile_general(rows) {
 		}
 		
 		line += rows[i].number + "\n";
+		line += rows[i].shift_id + "\n";
 		res += line;
 	}
 	return res;
