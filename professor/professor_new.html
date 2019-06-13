@@ -518,6 +518,7 @@ function toggleImport() {
 }
 
 function importAttendance(){
+	document.getElementById("b_attendance").style.display = "none";
 	document.getElementById("import_button").classList.add("active");
 	document.getElementById("teacherOn").style.display = "none";
 	document.getElementById("historyTable").style.display = "none";
@@ -526,6 +527,7 @@ function importAttendance(){
 }
 
 function cancelImport() {
+	document.getElementById("b_attendance").style.display = "";
 	document.getElementById("import_button").classList.remove("active");
 	document.getElementById("teacherOn").style.display = "";
 	document.getElementById("historyTable").style.display = "";
