@@ -862,13 +862,17 @@ database.prototype.updateClassInformation = function(attendanceID, j, callback) 
 };
 
 database.prototype.getStudentsHistoryByClass = function(ist_id, courseID, callback) {
-	var sql = "SELECT a.number, f.ip, f.useragent FROM FingerprintData f\
+	var sql = "	SELECT distinct * from\
+	(SELECT a.number, f.ip, f.useragent, a.shift_id, s.campus\
+					FROM FingerprintData f\
 					join Attendance a\
 							on f.attendanceID = a.attendanceID\
-				            WHERE a.courseID = ? and\
+					join Shift s\
+						on a.shift_id = s.shift_id\
+                            WHERE a.courseID = ? and\
 				            f.ist_id = ? and\
 				            f.ist_id != 'ist182083'\
-				            order by a.attendanceID;";
+				            order by a.attendanceID) as asd;"
 	var arg = [courseID, ist_id];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
