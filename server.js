@@ -384,12 +384,15 @@ function handleRequest(req, res) {
 								user_ip = req.connection.remoteAddress;
 							}
 							service.verifyRandomID(db, randomID_int, ist_id, useragent, user_ip,
-								function(error, isValid, isChecked){
+								function(error, isValid, isChecked, canAccess){
 									if(error) {
 										console.log("Error in verifyRandomID (probably while saving fingerprint; page still served).");
 									}
 									if(isValid){
-										if(isChecked) {
+										if(!canAccess) {
+											sendText(res, 'You are not enrolled in this course. Please talk to the professor at the end of the class.');
+										}
+										else if(isChecked) {
 											sendText(res, 'Attendance already checked for this session.');
 										} else {
 											let code_type = service.getAttendanceTypeByRandomID(randomID_int);
@@ -841,14 +844,14 @@ function handlePost(req, res, cookies, parsedURL, data) {
 									sendJSON(res, status);
 								}
 							);
-						break;
+							break;
 						case "/api/getcode":
 							service.generateCode(ist_id, randomID,
 								function(status) {
 									sendJSON(res, status);
 								}
 							);
-						break;
+							break;
 						case "/api/validatecode":
 							var client_code = json.input_code;
 							service.validateCode(db, res, randomID, client_code, ist_id,
@@ -860,20 +863,23 @@ function handlePost(req, res, cookies, parsedURL, data) {
 									}
 								}
 							);
-						break;
+							break;
 						case "/api/createAttendanceSession":
 							var json = JSON.parse(data);
 							let is_extra = json.is_extra == "is_extra" ? 1 : 0;
-							
-							service.getAttendanceRandomID(db, ist_id, json.code_type, json.code_length, json.time, json.consecutivecodes, json.courseID, is_extra, json.title, json.number, json.shift,
-								function(error, randomID, attendanceID) {
-									var json_res = {};
-									json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;
-									json_res.url_complete = config.WEBSITE_URL_COMPLETE + "/a?c=" + randomID;
-									json_res.randomID = randomID;
-									sendJSON(res, json_res);
-								}
-							);
+							if(json.onlyEnrolledStudents == "true") {
+								service.getFenixIDByCourseID(db, json.courseID,
+									function(error1, fenix_id) {
+										service.getStudentsEnrolled(db, fenix_id, json.courseID,
+											function(error2, studentsEnrolled) {
+												createAttendance(db, res, ist_id, json, is_extra, studentsEnrolled);
+											}
+										);
+									}
+								);
+							} else {
+								createAttendance(db, res, ist_id, json, is_extra);
+							}
 							break;
 						case "/api/addmanually":
 							var json = JSON.parse(data);
@@ -910,6 +916,19 @@ function handlePost(req, res, cookies, parsedURL, data) {
 			console.log("POST not found:",req.url);
 			break;
 	}
+}
+
+function createAttendance(db, res, ist_id, json, is_extra, studentsEnrolled) {
+	var requiresAccess = (json.onlyEnrolledStudents == "true");
+	service.getAttendanceRandomID(db, ist_id, json.code_type, json.code_length, json.time, json.consecutivecodes, json.courseID, is_extra, json.title, json.number, json.shift, requiresAccess, studentsEnrolled,
+		function(error, randomID, attendanceID) {
+			var json_res = {};
+			json_res.url = config.WEBSITE_URL + "/a?c=" + randomID;
+			json_res.url_complete = config.WEBSITE_URL_COMPLETE + "/a?c=" + randomID;
+			json_res.randomID = randomID;
+			sendJSON(res, json_res);
+		}
+	);
 }
 
 

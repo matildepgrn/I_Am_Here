@@ -67,6 +67,24 @@ database.prototype.getShiftsByCourseID = function(courseID, callback) {
 
 }
 
+
+database.prototype.getStudentsByCourseID = function(courseID, callback) {
+	var sql = "SELECT ist_id from StudentsEnrolled WHERE courseID = ?";
+	var args = [courseID];
+
+	this.pool.query(sql, args, function (err, rows) {
+		if(err){
+			console.log("Error getting ist_id by courseID.", err);
+			callback(err);
+		}
+		else {
+			callback(err, rows);
+		}
+	});
+
+}
+
+
 database.prototype.insertProfessorandCourse = function(ist_id, courseID, courseName, academicTerm, fenix_id, callback) {
 	var date = moment().format('YYYY-MM-DD HH:mm:ss');
 	var secret = randomInt(16);
@@ -76,6 +94,20 @@ database.prototype.insertProfessorandCourse = function(ist_id, courseID, courseN
 	this.pool.query(sql, args, function (err, result) {
 		if (err){
 			console.log("Error in the insertion of a professor and course:", err);
+			callback(err);
+		}
+		else{
+			callback(err);
+		}
+	});
+}
+
+database.prototype.insertStudentsEnrolled = function(studentsenrolled, callback) {
+	var sql = "INSERT IGNORE INTO StudentsEnrolled(ist_id, courseID) VALUES ?;";
+
+	this.pool.query(sql, [studentsenrolled], function (err, result) {
+		if (err){
+			console.log("Error in the insertion of student's enrolled:", err);
 			callback(err);
 		}
 		else{
@@ -268,10 +300,10 @@ database.prototype.closeAttendance = function(randomID, callback) {
 	})
 };
 
-database.prototype.generateRandomAttendanceCode = function(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, number, shift, callback) {
-	var sql = "CALL AttendanceMapping(?,?,?,?,?,?,?,?,?,?,?,?,?);";
+database.prototype.generateRandomAttendanceCode = function(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, number, shift, requiresAccess, callback) {
+	var sql = "CALL AttendanceMapping(?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 	var date = moment().format('YYYY-MM-DD HH:mm:ss');
-	var arg = [ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, true, courseID, is_extra, title, number, shift];
+	var arg = [ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, true, courseID, is_extra, title, number, shift, requiresAccess];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){

@@ -14,6 +14,8 @@ var Code = function(db, randomID, attendanceID) {
 	this.code_counter = 0;
 	this.db = db;
 	this.studentsList = [];
+	this.requiresEnrolement = false;
+	this.enrolledStudentsList = [];		// enrolled in the course
 };
 
 var CSV_SEPARATOR = ",";
@@ -74,12 +76,21 @@ Code.prototype.randomCode = function() {
 	return text;
 }
 
-Code.prototype.customizeTest = function(num_char, code_type, time, consecutive_codes){
+Code.prototype.customizeTest = function(num_char, code_type, time, consecutive_codes, requiresEnrolement, studentsEnrolled){
 	this.NUM_CHAR = num_char;
 	this.CODE_TYPE = code_type;
 	this.INTERVAL = time*1000;
 	this.repetitions = consecutive_codes;
-} 
+	this.requiresEnrolement = requiresEnrolement;
+	this.enrolledStudentsList = studentsEnrolled || [];
+}
+
+Code.prototype.canStudentAccess = function(ist_id) {
+	if(!this.requiresEnrolement) {
+		return true;
+	}
+	return this.enrolledStudentsList.includes(ist_id);
+}
 
 Code.prototype.status = function() {
 	

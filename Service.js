@@ -13,6 +13,7 @@ Service.prototype.verifyRandomID = function(db, randomID, ist_id, useragent, ip,
 		return;
 	}
 	var attendanceID = code.getAttendanceID();
+	var canAccess = code.canStudentAccess(ist_id);
 	var that = this;
 	this.studentAttendanceChecked(db, ist_id, randomID,
 		function(error, isChecked) {
@@ -21,7 +22,7 @@ Service.prototype.verifyRandomID = function(db, randomID, ist_id, useragent, ip,
 			} else {
 				that.insertFingerprintData(db, ist_id, useragent, ip, attendanceID,
 					function(error){
-						callback(error, code != undefined, false);
+						callback(error, code != undefined, false, canAccess);
 					}
 				);
 			}
@@ -192,33 +193,52 @@ Service.prototype.deserializedAttendancesFromLastDay = function(db, callback) {
 						return;
 					} 
 					var attendances = [];
-					for(let i = 0; i < rows.length; i++) {
-						let at = rows[i];
-						if(!(at.code_length && at.code_type && at.total_time_s && at.consecutive_codes)) {
-							continue;
+					aux_deserializedAttendancesFromLastDay(db, 0, rows, rows1, attendances,
+						function() {
+							callback(error, attendances);
 						}
-						attendances.push(at.attendanceID);
-						var code = new Code(db, at.randomID, at.attendanceID);
-						for(let k of rows1) {
-							if(k.attendanceID == at.attendanceID) {
-								code.code_counter = k.sequence;
-								break;
-							}
-						}
-
-						code.customizeTest(at.code_length, at.code_type, at.total_time_s, at.consecutive_codes);
-						codeByRandomID.set(at.randomID, code);
-
-						if(at.open == 1) {
-							code.startProcess();
-						}
-					}
-					callback(error, attendances);
+					);
 				}
-
 			);
 		}
 	); 
+}
+
+function aux_deserializedAttendancesFromLastDay (db, i, rows, rows1, attendances, callback) {
+	if(i >= rows.length) {
+		callback();
+		return;
+	}
+	let at = rows[i];
+	db.getStudentsByCourseID(at.courseID,
+		function(error2, studentsEnrolled) {
+			let list = [];
+			for(let q = 0; q < studentsEnrolled.length; q++) {
+				list.push(studentsEnrolled[q].ist_id);
+			}
+
+			if(error2) {
+				callback(error2);
+			} else if((at.code_length && at.code_type && at.total_time_s && at.consecutive_codes)) {
+				attendances.push(at.attendanceID);
+				var code = new Code(db, at.randomID, at.attendanceID);
+				for(let k of rows1) {
+					if(k.attendanceID == at.attendanceID) {
+						code.code_counter = k.sequence;
+						break;
+					}
+				}
+
+				code.customizeTest(at.code_length, at.code_type, at.total_time_s, at.consecutive_codes, at.requiresAccess, list);
+				codeByRandomID.set(at.randomID, code);
+
+				if(at.open == 1) {
+					code.startProcess();
+				}
+			}
+			aux_deserializedAttendancesFromLastDay(db, i+1, rows, rows1, attendances, callback);
+		}
+	);			
 }
 
 Service.prototype.manuallyInsertStudent = function(db, ist_id, attendanceID, callback) {
@@ -379,7 +399,7 @@ Service.prototype.getCode = function(db, ist_id, randomID, callback) {
 				} else {
 					if(rows[0]){
 						var code = new Code(db, randomID, rows[0].attendanceID);
-						code.customizeTest(rows[0].code_length, rows[0].code_type, rows[0].total_time_s, rows[0].consecutive_codes);
+						code.customizeTest(rows[0].code_length, rows[0].code_type, rows[0].total_time_s, rows[0].consecutive_codes, rows[0].requiresAccess);
 						codeByRandomID.set(randomID, code);
 						code.startProcess();
 						callback(null, code);
@@ -447,6 +467,19 @@ Service.prototype.getAccessToken = function(db, res, fenix_code, callback) {
 		}
 	);
 };
+
+Service.prototype.getFenixIDByCourseID = function(db, courseID, callback) {
+	db.getFenixIDByCourseID(courseID,
+		function(error, fenix_id) {
+			if(error) {
+				callback(error);
+			} else {
+				callback(error, fenix_id);
+			}
+		}
+	);
+}
+
 
 Service.prototype.insertCourseShiftInfo = function(db, courseID, callback) {
 	db.getFenixIDByCourseID(courseID,
@@ -639,17 +672,17 @@ Service.prototype.getUserName = function(db, ist_id, callback) {
 	); 
 }
 
-Service.prototype.getAttendanceRandomID = function(db, ist_id, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, number, shift, callback) {
+Service.prototype.getAttendanceRandomID = function(db, ist_id, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, number, shift, requiresAccess, studentsEnrolled, callback) {
 	var randomID;
 	do {
 		randomID = Math.floor(Math.random() * Math.floor(999999));
 	} while(codeByRandomID.has(randomID));
 	codeByRandomID.set(randomID, null);
 
-	db.generateRandomAttendanceCode(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, number, shift,
+	db.generateRandomAttendanceCode(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, number, shift, requiresAccess,
 		function(error, attendanceID) {
 			var new_code = new Code(db, randomID, attendanceID);
-			new_code.customizeTest(code_length, code_type, total_time_s, consecutive_codes);
+			new_code.customizeTest(code_length, code_type, total_time_s, consecutive_codes, requiresAccess, studentsEnrolled);
 			codeByRandomID.set(randomID, new_code);
 			callback(error, randomID, attendanceID);
 		}
@@ -902,6 +935,34 @@ Service.prototype.getStudentsHistoryByClass = function(db, ist_id, courseID, cal
 			callback(error, rows);
 		}
 	); 
+}
+
+Service.prototype.getStudentsEnrolled = function(db, fenix_id, courseID, callback) {
+	fenix_api.requestStudentsEnrolled(fenix_id,
+		function(error, info) {
+			var info_students = info["students"];
+			if(!info_students || !info_students.length || info_students.length == 0) {
+				callback(error);
+			} else {
+				let result_studentsenrolled = [];
+				let studentsEnrolled = [];
+				for(let k = 0; k < info_students.length; k++) {
+					let enrolled_username = info_students[k]["username"];
+					result_studentsenrolled.push([enrolled_username, courseID]);
+					studentsEnrolled.push(enrolled_username);
+				}
+				db.insertStudentsEnrolled(result_studentsenrolled,
+					function(error) {
+						if(error) {
+							callback(error);
+						} else {
+							callback(error, studentsEnrolled);
+						}
+					}
+				);
+			}
+		}
+	);
 }
 
 

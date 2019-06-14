@@ -1,5 +1,6 @@
 use ist182083;
 
+drop procedure if exists InsertStudentEnrolled;
 drop procedure if exists InsertShiftInfor;
 drop procedure if exists GetAttendanceInformation;
 drop procedure if exists updateFingerprintData;
@@ -17,6 +18,7 @@ drop PROCEDURE if exists InsertProfessorandCourse;
 DROP FUNCTION IF EXISTS CheckAttendance;
 drop PROCEDURE if exists AttendanceMapping;
 drop PROCEDURE if exists RemoveStudentFromAttendance;
+drop table if exists StudentsEnrolled;
 drop table if exists AttendancesRemoved;
 drop table if exists StudentsManuallyRemoved;
 drop table if exists Evaluation;
@@ -216,6 +218,23 @@ CREATE TABLE Shift (
     primary key(shift_id, courseID, fenix_id, type, week_day, start, end, campus, room)
 );
 
+CREATE TABLE StudentsEnrolled (
+    ist_id varchar(255),
+    courseID varchar(255),
+    
+    FOREIGN KEY (courseID) REFERENCES Course(courseID),
+	PRIMARY KEY(ist_id, courseID)
+);
+
+DELIMITER //
+CREATE PROCEDURE InsertStudentEnrolled (my_ist_id varchar(255), my_courseID varchar(255))
+BEGIN
+INSERT IGNORE INTO StudentsEnrolled(ist_id, courseID)
+		VALUES(my_ist_id, my_courseID);
+END
+//
+DELIMITER ;
+
 DELIMITER //
 CREATE PROCEDURE RemoveStudentFromAttendance (my_ist_id varchar(255), my_attendanceID int)
 BEGIN
@@ -228,11 +247,11 @@ END
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE AttendanceMapping (ist_id varchar(255), randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, date varchar(255), open boolean, my_courseID varchar(255), my_is_extra varchar(255), my_title varchar(255), my_number int, my_shift varchar(255))
+CREATE PROCEDURE AttendanceMapping (ist_id varchar(255), randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, date varchar(255), open boolean, my_courseID varchar(255), my_is_extra varchar(255), my_title varchar(255), my_number int, my_shift varchar(255), my_access boolean)
 BEGIN
 
-INSERT INTO Attendance(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, number, courseID, is_extra, title, shift_id)
-		VALUES(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, my_number, my_courseID, my_is_extra, my_title, my_shift);
+INSERT INTO Attendance(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, number, courseID, is_extra, title, shift_id, requiresAccess)
+		VALUES(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, my_number, my_courseID, my_is_extra, my_title, my_shift, my_access);
 
 SELECT LAST_INSERT_ID() AS attendanceID;
 END
