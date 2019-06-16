@@ -535,7 +535,7 @@ function disableCache(res) {
 
 
 function redirectURL(res, url) {
-	res.writeHead(301,
+	res.writeHead(302,
 		{Location: url}
 	);
 	res.end();
@@ -628,16 +628,22 @@ function sendFile(res, filename, type = 'text/html', moreText = "", disposition 
     readStream.pipe(res, {end: moreText.length == 0});
     if(moreText.length != 0){
     	readStream.on("end", () => {
-    		res.write(moreText);
-    		res.end();
+    		res.write(moreText,
+    			function(err) {
+    				res.end();
+    			}
+    		);
     	});
     }
 }
 
 function sendJSON(res, json, status = 200) {
 	res.writeHead(status, {'Content-Type': 'application/json'});
-	res.write(JSON.stringify(json));
-	res.end();
+	res.write(JSON.stringify(json),
+		function(err) {
+			res.end();
+		}
+	);
 }
 
 function getPostData(req, res, cookies, parsedURL) {

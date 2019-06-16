@@ -319,8 +319,8 @@ BEGIN
 	INSERT IGNORE INTO Course (courseID, courseName, academicTerm, fenix_id, last_updated, secret)
 		VALUES(courseID, courseName, academicTerm, fenix_id, date, secret);
 
-	INSERT IGNORE INTO ProfessorTeachesCourse (ist_id, courseID)
-		VALUES(ist_id, courseID);
+	INSERT IGNORE INTO ProfessorTeachesCourse (ist_id, courseID, in_use)
+		VALUES(ist_id, courseID, 0);
 END
 //
 DELIMITER ;
