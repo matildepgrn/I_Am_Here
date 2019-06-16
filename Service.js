@@ -41,6 +41,10 @@ Service.prototype.getAttendanceTypeByRandomID = function(randomID) {
 Service.prototype.validateCode = function(db, res, randomID, client_code, ist_id, callback) {
 	var code = codeByRandomID.get(randomID);
 	if(code){
+		if(!code.canStudentAccess(ist_id)) {
+			callback("You are not enrolled");
+			return;
+		}
 		code.clientInput(client_code, ist_id, 
 			function(error, result) {
 				if(error){

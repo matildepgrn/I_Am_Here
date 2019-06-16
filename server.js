@@ -679,6 +679,9 @@ function handlePost(req, res, cookies, parsedURL, data) {
 							service.validateCode(db, res, randomID, client_code, ist_id,
 								function(error, result) {
 									if(error) {
+										if(typeof error == 'string') {
+											sendText(res, "Haha. You are not enrolled.", 403);
+										}
 										sendText(res, "Error validating code.", 500);
 									} else {
 										sendJSON(res, result);	
