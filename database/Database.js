@@ -301,9 +301,10 @@ database.prototype.closeAttendance = function(randomID, callback) {
 };
 
 database.prototype.generateRandomAttendanceCode = function(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, courseID, is_extra, title, number, shift, requiresAccess, callback) {
-	var sql = "CALL AttendanceMapping(?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+	var sql = "CALL AttendanceMapping(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 	var date = moment().format('YYYY-MM-DD HH:mm:ss');
-	var arg = [ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, true, courseID, is_extra, title, number, shift, requiresAccess];
+	var secret = randomInt(16);
+	var arg = [ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, true, courseID, is_extra, title, number, shift, requiresAccess, secret];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
@@ -348,9 +349,10 @@ database.prototype.insertCodeServer = function(server_code, sequence, attendance
 };
 
 database.prototype.insertCourseShiftInfo = function(fenix_id, shift_id, type, week_day, start, end, campus, room, courseID, callback) {
-	var sql = "INSERT IGNORE INTO Shift (fenix_id, shift_id, type, week_day, start, end, campus, room, courseID)\
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	var arg = [fenix_id, shift_id, type, week_day, start, end, campus, room, courseID];
+	var secret = randomInt(16);
+	var sql = "INSERT IGNORE INTO Shift (fenix_id, shift_id, type, week_day, start, end, campus, room, courseID, secret)\
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	var arg = [fenix_id, shift_id, type, week_day, start, end, campus, room, courseID, secret];
 	this.pool.query(sql, arg, function(err, rows, fields) {
 		if (err){
 			console.log("Error inserting course shifts information.");
@@ -504,7 +506,7 @@ database.prototype.getCourseName = function(courseID, callback) {
 };
 
 database.prototype.getAttendanceHistory = function(ist_id, courseID, shift, callback) {
-	var sql = "SELECT date, a.number, a.code_type, a.code_length, a.total_time_s, a.consecutive_codes, a.attendanceID, c.courseName, a.title, a.is_extra, \
+	var sql = "SELECT date, a.number, a.code_type, a.code_length, a.total_time_s, a.consecutive_codes, a.attendanceID, c.courseName, a.title, a.is_extra, a.secret, \
 					count(distinct ah.ist_id) as count FROM Attendance a, AttendanceHistory ah , Course c \
 					WHERE a.ist_id = ? and a.attendanceID = ah.attendanceID AND a.courseID = ? \
 						AND c.courseID = a.courseID AND shift_id = ? AND a.attendanceID \
@@ -707,6 +709,36 @@ database.prototype.getAttendances = function(callback) {
 
 database.prototype.getAttendancesByCourseSecret = function(secret, callback) {
 	var sql = "CALL GetAttendances(?);";
+	var arg = [secret];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error getting all attendances data", err);
+			callback(err);
+		}
+		else{
+			callback(err, rows[0]);
+		}
+	})
+};
+
+database.prototype.getAttendancesByShiftSecret = function(secret, callback) {
+	var sql = "CALL GetShiftAttendances(?);";
+	var arg = [secret];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error getting all attendances data", err);
+			callback(err);
+		}
+		else{
+			callback(err, rows[0]);
+		}
+	})
+};
+
+database.prototype.getAttendancesByClassSecret = function(secret, callback) {
+	var sql = "CALL GetClassAttendances(?);";
 	var arg = [secret];
 
 	this.pool.query(sql, arg, function(err, rows, fields) {

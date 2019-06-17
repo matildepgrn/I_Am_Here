@@ -38,6 +38,32 @@ function handleRequest(req, res) {
 			break;
 		case "/api/H6YsZVWpIkXKeORd291yYLvEFfowzTcP3O5tRp9m/":
 			break;
+		case "/tsv/course/class":
+			var secret = parsedURL.query.s;
+			service.getAttendancesByClassSecret(db, secret,
+				function(error, result) {
+					if(error) {
+						sendText(res, "Could not load PCM1819 attendances.", 500);
+					} else {
+						sendText(res, result, 200,
+							'text/tab-separated-values; charset=utf-8');
+					}
+				}
+			);
+			break;
+		case "/tsv/course/shift":
+			var secret = parsedURL.query.s;
+			service.getAttendancesByShiftSecret(db, secret,
+				function(error, result) {
+					if(error) {
+						sendText(res, "Could not load PCM1819 attendances.", 500);
+					} else {
+						sendText(res, result, 200,
+							'text/tab-separated-values; charset=utf-8');
+					}
+				}
+			);
+			break;
 		case "/tsv/course":
 			var secret = parsedURL.query.s;
 			service.getAttendancesByCourseSecret(db, secret,

@@ -29,7 +29,7 @@
 		</div>
 
 		<div class="menu-item item-right menu-button">
-			<a id="tsv_export_by_secret" onclick="return showLink(this, event)" href="" class="previous round" title="Permanent link to all attendances">
+			<a id="tsv_export_by_secret" onclick="return showLink(this, event)" href="" class="previous round" title="Permanent link to all attendances for this course">
 				<span>&#x1f517;</span>
 			</a>
 		</div>
@@ -111,12 +111,20 @@
 		</div-->
 
 		<div class="menu-item item-right menu-button">
+			<a id="tsv_export_shift_by_secret" onclick="return showLink(this, event)" href="" class="previous round" title="Permanent link to this shift's attendances">
+				<span>&#x1f517;</span>
+			</a>
+		</div>
+
+		<div class="menu-item item-right menu-button">
 			<a id="b_attendance" class="previous round" href="#"
 				onclick="goTo('/professor/attendance?c='+courseID+'&s='+currentShift)"
 				title="Generate a new sequence">
 				<span>+</span>
 			</a>
 		</div>
+
+
 	</div>
 	
 	<!-- Class number and title -->
@@ -268,6 +276,14 @@
 				<span>&#x1f517;</span>
 			</a>
 		</div-->
+
+		<div class="menu-item item-right menu-button">
+			<a id="tsv_export_class_by_secret" onclick="return showLink(this, event)" href="" class="previous round" title="Permanent link to this attendance">
+				<span>&#x1f517;</span>
+			</a>
+		</div>
+
+
 
 		<div class="menu-item item-right menu-button">
 			<a id="editButton" onclick="toggleEdit(this)" class="previous round">
@@ -622,7 +638,7 @@ function showShifts(myType = "TEORICA") {
 		for(let i = 0; i < shifts.length; i++) {
 			let shifts_i = shifts[i];
 			if(shifts_i.type == myType) {
-				addShifts(table, template, shifts_i, shifts_i.shift_id, shifts_i.campus, shifts_i.week_day, shifts_i.start, shifts_i.end, shifts_i.room);
+				addShifts(table, template, shifts_i, shifts_i.secret, shifts_i.shift_id, shifts_i.campus, shifts_i.week_day, shifts_i.start, shifts_i.end, shifts_i.room);
 			}
 		} 
 	} else {
@@ -634,17 +650,18 @@ function showShifts(myType = "TEORICA") {
 
 var week_day_list = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-function addShifts(table, template, shifts_i, id, campus, week_day, start, end, room) {
+function addShifts(table, template, shifts_i, secret, id, campus, week_day, start, end, room) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 	tr_clone.shift_id = id;
+	tr_clone.secret = secret;
 	week_day = week_day_list[week_day];
 
 	start = start.substring(0,5);
 	end = end.substring(0,5);
 	
 	for(let x = 0; x < tds.length; x++) {
-		tds[x].innerText = arguments[x+3];
+		tds[x].innerText = arguments[x+4];
 	}
 
 	if(shifts_i.first_index != undefined) {
@@ -659,6 +676,8 @@ function addShifts(table, template, shifts_i, id, campus, week_day, start, end, 
 		loadHistory(courseID, null, this.shift_id);
 		switchView(0);
 		currentShift = this.shift_id;
+		let link = window.location.protocol + "//" + window.location.host + "/tsv/course/shift?s=" + this.secret;
+		document.getElementById("tsv_export_shift_by_secret").href = link;
 	};
 	table.appendChild(tr_clone);
 }
@@ -819,7 +838,7 @@ function showHistory(history_wrapper) {
 		document.getElementById("historyTable").style.display = "";
 		for(let i = 0; i < history.length; i++) {
 			let hist_i = history[i];
-			addHistory(table, template, hist_i.attendanceID, hist_i.number, hist_i.title, hist_i.date, hist_i.code_type, hist_i.code_length, hist_i.total_time_s, hist_i.consecutive_codes, hist_i.count, hist_i.is_extra);
+			addHistory(table, template, hist_i.secret, hist_i.attendanceID, hist_i.number, hist_i.title, hist_i.date, hist_i.code_type, hist_i.code_length, hist_i.total_time_s, hist_i.consecutive_codes, hist_i.count, hist_i.is_extra);
 		} 
 	} else {
 		//document.getElementById("export_button").style.display = "none";
@@ -830,20 +849,24 @@ function showHistory(history_wrapper) {
 	
 };
 
-function addHistory(table, template, attendanceID, classcounter, mytitle, date, code_type, code_length, total_time_s, consecutive_codes, count, is_extra) {
+function addHistory(table, template, secret, attendanceID, classcounter, mytitle, date, code_type, code_length, total_time_s, consecutive_codes, count, is_extra) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 	tr_clone.myattendanceID = attendanceID;
 	tr_clone.classcounter = classcounter;
 	tr_clone.mytitle = mytitle;
+	tr_clone.secret = secret;
 	tds[0].innerText = (is_extra == 1) ? "-" : classcounter;
 	
 	for(let x = 1; x < tds.length - 1; x++) {	//a partir de "date"
-		tds[x].innerText = arguments[x+3];
+		tds[x].innerText = arguments[x+4];
 	}
 	tr_clone.onclick = function() {
 		loadStudents("/api/getattendancehistory?rid="+this.myattendanceID, this.classcounter, mytitle);
 		switchView(1);
+
+		let link = window.location.protocol + "//" + window.location.host + "/tsv/course/class?s=" + this.secret;
+		document.getElementById("tsv_export_class_by_secret").href = link;
 	};
 	table.appendChild(tr_clone);
 }

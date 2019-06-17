@@ -759,6 +759,22 @@ Service.prototype.getAttendancesByCourseSecret = function(db, secret, callback) 
 	);
 }
 
+Service.prototype.getAttendancesByShiftSecret = function(db, secret, callback) {
+	db.getAttendancesByShiftSecret(secret, function(error, rows) {
+			let result = appendToFile_general(rows);
+			callback(error, result);
+		}
+	);
+}
+
+Service.prototype.getAttendancesByClassSecret = function(db, secret, callback) {
+	db.getAttendancesByClassSecret(secret, function(error, rows) {
+			let result = appendToFile_general(rows);
+			callback(error, result);
+		}
+	);
+}
+
 Service.prototype.getAttendancesByCourseProfessorClass = function(db, courseID, ist_id, attendanceID, shift, callback) {
 	db.getAttendancesByCourseProfessorClass(courseID, ist_id, attendanceID, shift, function(error, rows) {
 			let result = appendToFile_general(rows);

@@ -247,11 +247,11 @@ END
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE AttendanceMapping (ist_id varchar(255), randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, date varchar(255), open boolean, my_courseID varchar(255), my_is_extra varchar(255), my_title varchar(255), my_number int, my_shift varchar(255), my_access boolean)
+CREATE PROCEDURE  (ist_id varchar(255), randomID int, code_type varchar(255), code_length int, total_time_s int, consecutive_codes int, date varchar(255), open boolean, my_courseID varchar(255), my_is_extra varchar(255), my_title varchar(255), my_number int, my_shift varchar(255), my_access boolean, my_secret varchar(255))
 BEGIN
 
-INSERT INTO Attendance(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, number, courseID, is_extra, title, shift_id, requiresAccess)
-		VALUES(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, my_number, my_courseID, my_is_extra, my_title, my_shift, my_access);
+INSERT INTO Attendance(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, number, courseID, is_extra, title, shift_id, requiresAccess, secret)
+		VALUES(ist_id, randomID, code_type, code_length, total_time_s, consecutive_codes, date, open, my_number, my_courseID, my_is_extra, my_title, my_shift, my_access, my_secret);
 
 SELECT LAST_INSERT_ID() AS attendanceID;
 END
@@ -544,6 +544,40 @@ CREATE PROCEDURE InsertShiftInfor(my_shift_id varchar(255), my_courseID varchar(
 BEGIN
 	INSERT IGNORE INTO Shift(shift_id, courseID, fenix_id, type, week_day, start, end)
 		VALUES (my_shift_id, my_courseID, my_fenix_id, my_type, my_week_day, my_start, my_end);
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE GetShiftAttendances(my_secret varchar(255))
+BEGIN
+select a.ist_id, u.ist_id as std_number, u.name, ah.late, ah.manually, a.number, a.is_extra, a.shift_id
+	from Attendance a
+		join AttendanceHistory ah
+			on ah.attendanceID = a.attendanceID
+		join User u
+			on ah.ist_id = u.ist_id
+		join Course c
+			on c.courseID = a.courseID
+		join Shift s
+			on s.courseID = c.courseID
+		and s.secret = my_secret
+		order by a.attendanceID;
+END
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE GetClassAttendances(my_secret varchar(255))
+BEGIN
+select a.ist_id, u.ist_id as std_number, u.name, ah.late, ah.manually, a.number, a.is_extra, a.shift_id
+	from Attendance a
+		join AttendanceHistory ah
+			on ah.attendanceID = a.attendanceID
+		join User u
+			on ah.ist_id = u.ist_id
+		and a.secret = my_secret
+		order by a.attendanceID;
 END
 //
 DELIMITER ;
