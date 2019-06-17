@@ -825,7 +825,7 @@ function appendToFile_general(rows) {
 	}
 	for(i = 0; i < rows.length; i ++) {
 		let line = rows[i].ist_id + CSV_SEPARATOR +
-					rows[i].fenix_number + CSV_SEPARATOR +
+					(rows[i].fenix_number || "-") + CSV_SEPARATOR +
 					rows[i].std_number + CSV_SEPARATOR +
 					(rows[i].short_name ? rows[i].short_name : rows[i].name) + CSV_SEPARATOR +
 					ontime;
@@ -837,8 +837,12 @@ function appendToFile_general(rows) {
 		} else {
 			line += CSV_SEPARATOR + CSV_SEPARATOR;
 		}
-		
-		line += rows[i].number + "\n";
+		if(typeof rows[i].number == "number") {
+			line += rows[i].number + CSV_SEPARATOR;;
+		} else {
+			line += "-" + CSV_SEPARATOR;;
+		}
+
 		line += rows[i].shift_id + "\n";
 		res += line;
 	}
