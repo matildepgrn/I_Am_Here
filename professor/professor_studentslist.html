@@ -30,6 +30,14 @@
 			<a href="/professor/classes" class="previous round">&#8249;</a>
 		</div>
 
+		<div id="downloaddiv" class="menu-item item-right menu-button">
+			<a class="previous round" href='#'
+				onclick="loadFromServer('/api/attendanceflow?c='+courseID, '/api/attendanceflow', true)"
+				title="Download students' attendance flow table">
+				<span class="download">&#x2B06;</span>
+			</a>
+		</div>
+
 		<div class="menu-item item-left menu-title">
 			<span id="courseName_id"></span>
 		</div>
@@ -46,9 +54,9 @@
 
 		<table id="allStudentsTable" class="table-margin">
 			<tr>
-				<th class="th-sortable" onclick="w3.sortHTML('#allStudentsTable', '.clickable', 'td:nth-child(1)')">IST ID</th>
-				<th class="th-sortable" onclick="w3.sortHTML('#allStudentsTable', '.clickable', 'td:nth-child(2)')">Name</th>
-				<th class="th-sortable" onclick="w3.sortHTML('#allStudentsTable', '.clickable', 'td:nth-child(3)')">#</th>
+				<th class="th-sortable" onclick="sortTables(1)">IST ID</th>
+				<th class="th-sortable" onclick="sortTables(2)">Name</th>
+				<th class="th-sortable" onclick="sortTables(3)">#</th>
 			</tr>
 			
 			<template id="allStudentsTemplate">
@@ -73,15 +81,10 @@
 		</div>
 
 		<div class="menu-item item-left menu-title">
-			You do not have attendances for this course. Start one now!
+			You do not have attendances for this course.
 		</div>
 
 	</div>
-	
-	<button id="b_attendance" type="button"
-		onclick="goTo('/professor/attendance?c='+courseID)"
-		title="Generate a new sequence">Start new attendance
-	</button>
 </div>
 
 <div class="margin_bottom"></div>
@@ -101,11 +104,27 @@ const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
 let historyTable_error = document.getElementById("historyTable_error");
 
+let TSV_SEPARATOR = "\t";
+
 function goTo(url) {
 	window.location.replace(url);
 }
 
-function loadFromServer(url, url_short) {
+function sortTables(column_nr) {
+	return w3.sortHTML('#allStudentsTable', '.clickable', 'td:nth-child(' + column_nr + ')');
+}
+
+function jsonToTSV(json) {
+	let tsv_flow = "";
+	for(let k = 0; k < json.length; k++) {
+		json_k = json[k];
+		tsv_flow += json[k].ist_id + TSV_SEPARATOR + json[k].name + TSV_SEPARATOR + json[k].c + "\n";
+	}
+
+	window.open("data:text/tab-separated-values;charset=utf-16," + encodeURI(tsv_flow), "_blank");
+}
+
+function loadFromServer(url, url_short, isToExport = false) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4) {
@@ -115,7 +134,11 @@ function loadFromServer(url, url_short) {
 						document.getElementById("IST_NAME").innerHTML = this.responseText;
 						break;
 					case "/api/attendanceflow":
-						showTable(JSON.parse(this.responseText), "/api/attendanceflow");
+						if(isToExport) {
+							jsonToTSV(JSON.parse(this.responseText));
+						} else {
+							showTable(JSON.parse(this.responseText), "/api/attendanceflow");
+						}
 						break;
 				}
 			} else {
@@ -142,6 +165,7 @@ function showTable(responseText, request) {
 			if(responseText.length > 0) {
 				// to get the course name
 				document.getElementById("courseName_id").innerHTML = responseText[0].courseName;
+				document.getElementById("downloaddiv").style.display = "";
 				document.getElementById("noAttendances").style.display = "none";
 				document.getElementById("studentslist").style.display = "";
 				for(let i = 0; i < responseText.length; i++){
@@ -150,6 +174,7 @@ function showTable(responseText, request) {
 				}				
 			} else {
 				document.getElementById("noAttendances").style.display = "";
+				document.getElementById("downloaddiv").style.display = "none";
 				document.getElementById("studentslist").style.display = "none";				
 
 			}
