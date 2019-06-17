@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+<script src="https://www.w3schools.com/lib/w3.js"></script>
 
 <ul>
 	<a href="/professor/courses" style="">
@@ -45,13 +46,13 @@
 
 		<table id="allStudentsTable" class="table-margin">
 			<tr>
-				<th>IST ID</th>
-				<th>Name</th>
-				<th>#</th>
+				<th class="th-sortable" onclick="w3.sortHTML('#allStudentsTable', '.clickable', 'td:nth-child(1)')">IST ID</th>
+				<th class="th-sortable" onclick="w3.sortHTML('#allStudentsTable', '.clickable', 'td:nth-child(2)')">Name</th>
+				<th class="th-sortable" onclick="w3.sortHTML('#allStudentsTable', '.clickable', 'td:nth-child(3)')">#</th>
 			</tr>
 			
 			<template id="allStudentsTemplate">
-				<tr>
+				<tr class="clickable">
 					<td></td>
 					<td></td>
 					<td></td>
