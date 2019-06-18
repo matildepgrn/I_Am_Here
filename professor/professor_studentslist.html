@@ -52,6 +52,10 @@
 			<p>Number of attendances by student:</p>
 		</div>
 
+		<div id="loading_sorting" style="display:none">
+			<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+			<p>Sorting...</p>
+		</div>
 		<table id="allStudentsTable" class="table-margin">
 			<tr>
 				<th class="th-sortable" onclick="sortTables(1)">IST ID</th>
@@ -111,7 +115,12 @@ function goTo(url) {
 }
 
 function sortTables(column_nr) {
-	return w3.sortHTML('#allStudentsTable', '.clickable', 'td:nth-child(' + column_nr + ')');
+	let loading_sorting = document.getElementById("loading_sorting");
+	loading_sorting.style.display = "";
+	setTimeout(function(){
+		w3.sortHTML('#allStudentsTable', '.clickable', 'td:nth-child(' + column_nr + ')');
+		loading_sorting.style.display = "none";
+	}, 200);
 }
 
 function jsonToTSV(json) {
