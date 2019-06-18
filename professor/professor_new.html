@@ -525,6 +525,10 @@ function toggleShowNewShift() {
 
 function insertShiftForm(){
 	var formEl = document.getElementById("insertShift");
+	if(!formEl.checkValidity()) {
+		formEl.reportValidity();
+		return;
+	}
 	var data = new FormData(formEl);
 	var o = {};
 	o.courseID = courseID;
