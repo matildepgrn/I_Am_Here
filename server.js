@@ -747,6 +747,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 		case "/api/updateClassInformation":
 		case "/api/manuallyRemoveAttendance":
 		case "/api/importattendance":
+		case "/api/insertshift":
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
 					if(false == is_professor){
@@ -776,6 +777,17 @@ function handlePost(req, res, cookies, parsedURL, data) {
 										sendText(res, "Could not updateStudentNameAndNumber", 500);
 									} else{
 										sendText(res, "Student(s) imported.");	
+									}
+								}
+							);
+							break;
+						case "/api/insertshift":
+							service.insertShift(db, json.shift_id, json.type, json.day, json.start, json.end, json.campus, json.room, json.courseID,
+								function(error) {
+									if(error) {
+										sendText(res, "Could not insertShift", 500);
+									} else {
+										sendText(res, "Shift(s) inserted.");
 									}
 								}
 							);

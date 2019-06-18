@@ -33,7 +33,6 @@
 				<span>&#x1f517;</span>
 			</a>
 		</div>
-
 		<div class="menu-item item-left menu-title" id="courseName_id"></div>
 	</div>
 
@@ -47,34 +46,75 @@
 		</select>
 	</div>
 
-	<table id="shiftTable" class="table-margin">
-		<tr>
-			<th rowspan="2">Shift ID</th>
-			<th rowspan="2">Campus</th>
-			<th colspan="3">Schedule</th>
-			<th rowspan="2">Room</th>
-		</tr>
-		<tr>
-			<th>Day</th>
-			<th>Start</th>
-			<th>End</th>
-		</tr>
-		
-		<template id="shiftTemplate">
-			<tr class="clickable_different">
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
+	<table class="table-margin">
+		<tbody id="shiftTable">
+			<tr>
+				<th rowspan="2">Shift ID</th>
+				<th rowspan="2">Campus</th>
+				<th colspan="3">Schedule</th>
+				<th rowspan="2">Room</th>
+				<th rowspan="2" id="shift_th_type" style="display: none">Type</th>
 			</tr>
-		</template>
+			<tr>
+				<th>Day</th>
+				<th>Start</th>
+				<th>End</th>
+			</tr>
+			
+			<template id="shiftTemplate">
+				<tr class="clickable_different">
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</template>
+			<form id="insertShift">
+				<tr id="insertShift_tr" style="display: none">
+					<td><input type="text" name="shift_id" placeholder="AP34T01" required> </td>
+					<td>
+						<select name="campus" required>
+							<option value="Alameda">Alameda</option>
+							<option value="Taguspark">Taguspark</option>
+						</select>
+					</td>
+					<td>
+						<select name="day" required>
+							<option value="1">Mon</option>
+							<option value="2">Tue</option>
+							<option value="3">Wed</option>
+							<option value="4">Thu</option>
+							<option value="5">Fri</option>
+							<option value="6">Sat</option>
+							<option value="7">Sun</option>
+						</select>
+					</td>
+					<td><input type="time" name="start" required></td>
+					<td><input type="time" name="end" required></td>
+					<td><input type="text" name="room" placeholder="FA2" required></td>
+					<td>
+						<select name="type" required>
+							<option value="Teórica">Teórica</option>
+							<option value="Laboratorial">Laboratorial</option>
+							<option value="Seminário">Seminário</option>
+							<option value="Prática">Prática</option>
+						</select>
+					</td>
+				</tr>
+			</form>
+		</tbody>
 	</table>
 
 	<div id="invisible-info-shifts" style="display:none">
-		<p>Currently, you do not have shifts. Load now!</p>
-		<button onclick="loadShifts()">Load shifts</button>
+		<p>Currently, you do not have shifts. Load now from fénix or add one yourself!</p>
+		<button onclick="loadShifts()">Load shift(s)</button>
+	</div>
+
+	<div style="margin-top: 20px" >
+		<button id="toggle_button" onclick="toggleShowNewShift()">Add shift</button>
+		<button style="display:none" id="create_add_shift" onclick="insertShiftForm()">Create shift</button>
 	</div>
 
 </div>
@@ -448,6 +488,7 @@ const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
 let historyTable_error = document.getElementById("historyTable_error");
 let currentShift;
+let isAddingShift = false;
 
 if(courseID) {
 	historyTable_error.innerHTML = "";
@@ -457,6 +498,52 @@ if(courseID) {
 	historyTable_error.innerHTML = "CourseID not defined.";
 	document.getElementById("historyTable").style.display = "none";
 	document.getElementById("b_attendance").style.display = "none";
+}
+
+let insertShift_tr = document.getElementById("insertShift_tr");
+let create_add_shift = document.getElementById("create_add_shift");
+let shift_th_type = document.getElementById("shift_th_type");
+let invisible_info_shifts = document.getElementById("invisible-info-shifts");
+let toggle_button = document.getElementById("toggle_button");
+function toggleShowNewShift() {
+	if(isAddingShift) {
+		insertShift_tr.style.display = "none";
+		shift_th_type.style.display = "none";
+		create_add_shift.style.display = "none";
+		toggle_button.innerText = "Add new shift";
+		invisible_info_shifts.style.display = invisible_info_shifts.old_style_display;
+	} else {
+		insertShift_tr.style.display = "";
+		shift_th_type.style.display = "";
+		create_add_shift.style.display = "";
+		toggle_button.innerText = "Cancel";
+		invisible_info_shifts.old_style_display = invisible_info_shifts.style.display;
+		invisible_info_shifts.style.display = "none";
+	}
+	isAddingShift = !isAddingShift;
+}
+
+function insertShiftForm(){
+	var formEl = document.getElementById("insertShift");
+	var data = new FormData(formEl);
+	var o = {};
+	o.courseID = courseID;
+	for(var e of data) {
+		o[e[0]] = e[1];
+	}
+	
+	var json_string = JSON.stringify(o);
+	var xhttp = new XMLHttpRequest();
+	var url = "/api/insertshift";
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4 && this.status == 200) {
+			toggleShowNewShift();
+			loadShiftsByCourseID();
+		}
+	}
+
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);
 }
 
 function goTo(url) {
@@ -614,7 +701,7 @@ function showShifts(myType = "TEORICA") {
 	var template = document.getElementById("shiftTemplate");
 	var table = document.getElementById("shiftTable");
 	var shifts = global_shifts_wrapper;
-	removeTrs(table.getElementsByTagName("tr"), 2);
+	removeTrs(table.getElementsByTagName("tr"), 2, 1);
 	var ids_consecutive = 0;
 	var select = document.getElementById("shift_select");
 	
@@ -644,7 +731,6 @@ function showShifts(myType = "TEORICA") {
 	} else {
 		document.getElementById("invisible-info-shifts").style.display = "";
 		document.getElementById("shiftOn").style.display = "none";
-		document.getElementById("shiftTable").style.display = "none";
 	}
 };
 
@@ -679,7 +765,8 @@ function addShifts(table, template, shifts_i, secret, id, campus, week_day, star
 		let link = window.location.protocol + "//" + window.location.host + "/tsv/course/shift?s=" + this.secret;
 		document.getElementById("tsv_export_shift_by_secret").href = link;
 	};
-	table.appendChild(tr_clone);
+	//table.appendChild(tr_clone);
+	table.insertBefore(tr_clone, table.childNodes[table.childNodes.length-2]);
 }
 
 
@@ -904,8 +991,8 @@ function loadStudents(url, classcounter, title) {
 	xhttp.send();
 }
 
-function removeTrs(old_tr, num=1) {
-	for(let l = old_tr.length-1; l > num-1; l--) {
+function removeTrs(old_tr, num=1, leaveEnd=0) {
+	for(let l = old_tr.length-1-leaveEnd; l > num-1; l--) {
 		old_tr[l].parentElement.removeChild(old_tr[l]);
 	}
 }
