@@ -175,7 +175,7 @@
 	</h6>
 
 	<div id="teacherOn" class="">
-		<p class="subTitle" id="attendancesTitle"><span id="currentShift_display"></span>: attendances</p>
+		<p class="subTitle" id="attendancesTitle"><span id="currentShift_display"></span> (<span id="currentCampus_display"></span>): attendances</p>
 		Professor:
 		<select id="professor_select" onchange="changeProfessor(this)">
 	  		<template id="teacherOnTemplate">
@@ -296,7 +296,7 @@
 <div class="container inlineblock" id="showStudentsHistory" style="display: none">
 	<div class="menu-container">
 		<div class="menu-item item-left menu-button">
-			<a onclick="switchView(0);cancelAction();loadHistory(courseID,null,currentShift)"	class="previous round">&#8249;</a>
+			<a onclick="switchView(0);cancelAction();loadHistory(courseID,null,currentShift,currentCampus)"	class="previous round">&#8249;</a>
 		</div>
 
 		<!-- Not editing mode -->
@@ -488,11 +488,12 @@ const urlParams = new URLSearchParams(window.location.search);
 let courseID = urlParams.get("c");
 let historyTable_error = document.getElementById("historyTable_error");
 let currentShift;
+let currentCampus;
 let isAddingShift = false;
 
 if(courseID) {
 	historyTable_error.innerHTML = "";
-	loadHistory(courseID,"",currentShift);
+	loadHistory(courseID,"",currentShift, currentCampus);
 	//document.getElementById("tsv_export").href = "/api/attendancefile?c="+courseID;
 } else {
 	historyTable_error.innerHTML = "CourseID not defined.";
@@ -590,7 +591,7 @@ function sendFileAsForm(){
 			if(this.readyState == 4 && this.status == 200) {
 				toggleImport();
 				formE1.reset;
-				loadHistory(courseID,null,currentShift);
+				loadHistory(courseID,null,currentShift,currentCampus);
 			}
 	}
 	xhttp.open("POST", url, true);
@@ -745,6 +746,7 @@ function addShifts(table, template, shifts_i, secret, id, campus, week_day, star
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
 	tr_clone.shift_id = id;
+	tr_clone.campus = campus;
 	tr_clone.secret = secret;
 	week_day = week_day_list[week_day];
 
@@ -764,9 +766,10 @@ function addShifts(table, template, shifts_i, secret, id, campus, week_day, star
 	}
 
 	tr_clone.onclick = function() {
-		loadHistory(courseID, null, this.shift_id);
+		loadHistory(courseID, null, this.shift_id, this.campus);
 		switchView(0);
 		currentShift = this.shift_id;
+		currentCampus = this.campus;
 		let link = window.location.protocol + "//" + window.location.host + "/tsv/course/shift?s=" + this.secret;
 		document.getElementById("tsv_export_shift_by_secret").href = link;
 	};
@@ -842,13 +845,14 @@ function loadAttendanceInformation(url, attendanceID) {
 
 function changeProfessor() {
 	var select = document.getElementById("professor_select");
-	loadHistory(courseID, select.value, currentShift);
+	loadHistory(courseID, select.value, currentShift, currentCampus);
 }
 
-function loadHistory(mycourseID, ist_id, shift) {
+function loadHistory(mycourseID, ist_id, shift, campus) {
 	let url = "/api/history?c=" + mycourseID + (ist_id ? ("&i=" + ist_id) : "") + "&s=" + shift;
 	currentShift = shift;
 	document.getElementById("currentShift_display").innerHTML = currentShift;
+	document.getElementById("currentCampus_display").innerHTML = campus;
 	document.getElementById("importattendance_shift").value = currentShift;
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
@@ -1125,7 +1129,7 @@ function removeAttendance(url, button_element, attendanceID) {
 		if(this.readyState == 4) {
 			if(this.status == 200) {
 				button_element.disabled=true;
-				loadHistory(courseID,null,currentShift);
+				loadHistory(courseID,null,currentShift,currentCampus);
 				switchView(0);
 			} else {
 				console.log("Error removing attendance:", this.status);
