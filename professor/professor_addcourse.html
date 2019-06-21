@@ -83,7 +83,7 @@
 				<tr title="Type of code">
 					<td>Course name:</td>
 					<td>
-						<input type="text" name="courseName" placeholder="Advanced Programming" checked>
+						<input type="text" name="courseName" placeholder="Advanced Programming" required>
 					</td>
 				</tr>
 				<tr>
@@ -91,7 +91,7 @@
 						Course ID:
 					</td>
 					<td>
-						<input type="text" name="courseID" placeholder="AP201819" checked>
+						<input type="text" name="courseID" placeholder="AP201819" required>
 					</td>
 				</tr>
 				<tr>
@@ -99,7 +99,11 @@
 						Academic Term:
 					</td>
 					<td>
-						<input type="text" name="academicTerm" placeholder="1ºSemestre 2018/2019" checked>
+						<select id="academicTerm_select" name="academicTerm" onchange="">
+		  					<template id="academicTermTemplate">
+		  						<option></option>
+		  					</template>
+						</select>
 					</td>
 				</tr>
 				
@@ -136,6 +140,33 @@ function removeTrs(old_tr) {
 function goTo(url) {
 	window.location.replace(url);
 }
+
+function showAcademicYear() {
+	let currentYear = new Date().getFullYear();
+	let previousYear = currentYear - 1;
+	let nextYear = currentYear + 1;
+	let termcombo = ["1ºSemestre ", "2ºSemestre "];
+	let yearcombo = [];
+	yearcombo.push(previousYear + "/" + currentYear);
+	yearcombo.push(currentYear + "/" + nextYear);
+	let academictermcombo = [];
+
+	for(let y of yearcombo) {
+		for(let t of termcombo) {
+			academictermcombo.push(t + y);
+		}
+	}
+
+	var template = document.getElementById("academicTermTemplate");
+	var select = document.getElementById("academicTerm_select");
+
+	for(let i = 0; i < academictermcombo.length; i++) {
+		var option = template.content.querySelector("option").cloneNode(true);
+		option.value = academictermcombo[i];
+		option.innerText = academictermcombo[i];
+		select.appendChild(option);
+	}
+};
 
 function loadInnactiveCourses(url) {
 	var xhttp = new XMLHttpRequest();
@@ -212,6 +243,10 @@ function addInnactiveCourses(table, template, courseName, courseID) {
 
 function sendForm(){
 	var formEl = document.getElementById("formId");
+	if(!formEl.checkValidity()) {
+		formEl.reportValidity();
+		return;
+	}
 	var data = new FormData(formEl);
 	var o = {};
 
@@ -282,5 +317,6 @@ function switchView(arg){
 
 loadName("/api/name");
 loadInnactiveCourses("/api/inactiveCourses");
+showAcademicYear();
 
 </script>
