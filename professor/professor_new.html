@@ -143,7 +143,7 @@
 						<input type="text" name="name" placeholder="Matilde Paraíso Nascimento" required> </td>
 					</td>
 					<td>
-						<button onclick="">+</button>
+						<button type="button" onclick="insertProfessorIntoCourse()">+</button>
 					</td>
 				</tr>
 			</form>
@@ -617,8 +617,33 @@ function toggleShowNewShift() {
 }
 
 function editShift(tr) {
+}
 
+function insertProfessorIntoCourse() {
+var formEl = document.getElementById("insertProfessor");
+	if(!formEl.checkValidity()) {
+		formEl.reportValidity();
+		return;
+	}
+	var data = new FormData(formEl);
+	var o = {};
+	o.courseID = courseID;
+	for(var e of data) {
+		o[e[0]] = e[1];
+	}
+	
+	var json_string = JSON.stringify(o);
+	var xhttp = new XMLHttpRequest();
+	var url = "/api/insertprofessor";
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4 && this.status == 200) {
+			toggleEditProfessors();
+			loadShiftsByCourseID();
+		}
+	}
 
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);	
 }
 
 function insertShiftForm(){
@@ -642,6 +667,7 @@ function insertShiftForm(){
 			invisible_info_shifts.old_style_display = "none";
 			toggleShowNewShift();
 			loadShiftsByCourseID();
+			loadProfessorsByCourse(courseID);
 		}
 	}
 

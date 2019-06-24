@@ -582,6 +582,20 @@ END
 //
 DELIMITER ;
 
+DELIMITER //
+CREATE PROCEDURE InsertProfessorToSystem(ist_id varchar(255), name varchar(255), courseID varchar(255))
+BEGIN
+	INSERT IGNORE INTO User(ist_id, name) VALUES (ist_id, name);
+    
+	INSERT IGNORE INTO Professor (ist_id)
+		VALUES (ist_id);
+
+	INSERT IGNORE INTO ProfessorTeachesCourse (ist_id, courseID, in_use)
+		VALUES(ist_id, courseID, 1);
+END
+//
+DELIMITER ;
+
 INSERT INTO User(ist_id) VALUES ('ist182083');
 INSERT INTO Professor(ist_id) VALUES ('ist182083');
 

@@ -807,7 +807,13 @@ Service.prototype.setCourseToInUse = function(db, ist_id, courseID, callback) {
 	); 
 }
 
-
+Service.prototype.insertManuallyProfessor = function(db, ist_id, name, courseID, callback) {
+	db.insertManuallyProfessor(ist_id, name, courseID,
+		function(error) {
+			callback(error);
+		}
+	); 
+}
 
 Service.prototype.insertProfessorandCourse = function(db, ist_id, courseID, courseName, academicTerm, fenix_id, callback) {
 	db.insertProfessorandCourse(ist_id, courseID, courseName, academicTerm, fenix_id,

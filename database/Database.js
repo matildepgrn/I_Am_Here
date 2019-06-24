@@ -131,6 +131,21 @@ database.prototype.setCourseToInUse = function(ist_id, courseID, callback) {
 	});
 }
 
+database.prototype.insertManuallyProfessor = function(ist_id, name, courseID, callback) {
+	var sql = "CALL InsertProfessorToSystem(?,?,?);";
+	var args = [ist_id, name, courseID];
+
+	this.pool.query(sql, args, function (err, result) {
+		if (err){
+			console.log("Error in insertManuallyProfessor:", err);
+			callback(err);
+		}
+		else{
+			callback(err);
+		}
+	});
+}
+
 database.prototype.updateAccessToken = function(access_token, refresh_token, newAccessToken, callback) {
 	var sql = "UPDATE User SET access_token = ? WHERE access_token = ? AND refresh_token = ?;";
 	var args = [newAccessToken, access_token, refresh_token];

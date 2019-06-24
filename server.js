@@ -748,6 +748,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 		case "/api/manuallyRemoveAttendance":
 		case "/api/importattendance":
 		case "/api/insertshift":
+		case "/api/insertprofessor":
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
 					if(false == is_professor){
@@ -757,6 +758,17 @@ function handlePost(req, res, cookies, parsedURL, data) {
 					var json = JSON.parse(data);
 					var randomID = json.randomID;
 					switch(parsedURL.pathname) {
+						case "/api/insertprofessor":
+							service.insertManuallyProfessor(db, json.ist_id, json.name, json.courseID,
+								function(error){
+									if(error) {
+										sendText(res, "Could not insertManuallyProfessor", 500);
+									} else{
+										sendText(res, "Professor inserted.");	
+									}
+								}
+							);
+							break;
 						case "/api/manuallyRemoveAttendance":
 							var attendanceID_int = parseInt(parsedURL.query.a);
 							var prof_id = parsedURL.query.i;
