@@ -604,6 +604,17 @@ function loadClassNumber(url) {
 	xhttp.send();
 }
 
+window.onbeforeunload = function (e) {
+	e = e || window.event;
+
+	if(e) {
+		e.returnValue = "Sure?";
+	}
+
+	return "Sure?";
+};
+
+
 loadName("/api/name");
 loadClassNumber("/api/getnextclassnumber?c="+courseID);
 
