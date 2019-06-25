@@ -658,11 +658,13 @@ function removeProfessorFromCourse(button_element) {
 	var json_string = JSON.stringify(o);
 	var xhttp = new XMLHttpRequest();
 	var url = "/api/removeprofessor";
-	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4 && this.status == 200) {
-			toggleEditProfessors();
-			loadShiftsByCourseID();
-			loadProfessorsByCourse(courseID);
+	if(confirm("Are you sure you want to remove this professor from lecturing this course?")) {
+		xhttp.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				toggleEditProfessors();
+				loadShiftsByCourseID();
+				loadProfessorsByCourse(courseID);
+			}
 		}
 	}
 
