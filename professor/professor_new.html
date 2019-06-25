@@ -50,6 +50,7 @@
 		<div class="menu-item item-left menu-title" id="courseName_id"></div>
 	</div>
 
+	<p id="prof_title" style="display: none" class="subTitle on">Professor(s) lecturing:</p>
 	<div id="shiftOn" class="">
 		<p class="subTitle">Shifts</p>
 		Type:
@@ -133,7 +134,7 @@
 				<tr class="">
 					<td></td>
 					<td></td>
-					<td><button onclick="">-</button></td>
+					<td><button type="button" onclick="removeProfessorFromCourse(this)">-</button></td>
 				</tr>
 			</template>
 			<form id="insertProfessor">
@@ -556,9 +557,11 @@ let shifttable_main = document.getElementById("shifttable_main");
 let editprofessors = document.getElementById("editprofessors");
 let tsv_export_by_secret = document.getElementById("tsv_export_by_secret");
 let professors = document.getElementById("professors");
+let prof_title = document.getElementById("prof_title");
 
 function toggleEditProfessors() {
 	if(isEditingProfessors) {
+		prof_title.style.display = "none";
 		shiftOn.style.display = "";
 		shifttable_main.style.display = "";
 		plus_shift.style.display = "";
@@ -566,6 +569,7 @@ function toggleEditProfessors() {
 		professors.style.display = "none";
 		editprofessors.classList.remove("active");
 	} else {
+		prof_title.style.display = "";
 		professors.style.display = "";
 		shiftOn.style.display = "none";
 		shifttable_main.style.display = "none";
@@ -620,7 +624,7 @@ function editShift(tr) {
 }
 
 function insertProfessorIntoCourse() {
-var formEl = document.getElementById("insertProfessor");
+	var formEl = document.getElementById("insertProfessor");
 	if(!formEl.checkValidity()) {
 		formEl.reportValidity();
 		return;
@@ -639,6 +643,26 @@ var formEl = document.getElementById("insertProfessor");
 		if(this.readyState == 4 && this.status == 200) {
 			toggleEditProfessors();
 			loadShiftsByCourseID();
+		}
+	}
+
+	xhttp.open("POST", url, true);
+	xhttp.send(json_string);	
+}
+
+function removeProfessorFromCourse(button_element) {
+	var o = {};
+	o.courseID = courseID;
+	o.ist_id = button_element.parentElement.parentElement.ist_id;
+	
+	var json_string = JSON.stringify(o);
+	var xhttp = new XMLHttpRequest();
+	var url = "/api/removeprofessor";
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4 && this.status == 200) {
+			toggleEditProfessors();
+			loadShiftsByCourseID();
+			loadProfessorsByCourse(courseID);
 		}
 	}
 
@@ -1035,6 +1059,7 @@ function showProfessors(json) {
 function addProfessor(table, template, ist_id, name) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	var tds = tr_clone.children;
+	tr_clone.ist_id = ist_id;
 	
 	for(let x = 0; x < tds.length - 1; x++) {
 		tds[x].innerText = arguments[x+2];

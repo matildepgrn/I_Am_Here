@@ -749,6 +749,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 		case "/api/importattendance":
 		case "/api/insertshift":
 		case "/api/insertprofessor":
+		case "/api/removeprofessor":
 			isLoggedInAsProf(res, cookies, parsedURL,
 				function(ist_id, is_professor){
 					if(false == is_professor){
@@ -765,6 +766,17 @@ function handlePost(req, res, cookies, parsedURL, data) {
 										sendText(res, "Could not insertManuallyProfessor", 500);
 									} else{
 										sendText(res, "Professor inserted.");	
+									}
+								}
+							);
+							break;
+						case "/api/removeprofessor":
+							service.removeProfessorFromCourse(db, json.ist_id, json.courseID,
+								function(error){
+									if(error) {
+										sendText(res, "Could not removeProfessorFromCourse", 500);
+									} else{
+										sendText(res, "Professor removed.");	
 									}
 								}
 							);

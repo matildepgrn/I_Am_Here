@@ -277,6 +277,14 @@ Service.prototype.manuallyRemoveAttendance = function(db, attendanceID, ist_id, 
 	); 
 }
 
+Service.prototype.removeProfessorFromCourse = function(db, ist_id, courseID, callback) {
+	db.removeProfessorFromCourse(ist_id, courseID,
+		function(error) {
+			callback(error);
+		}
+	); 
+}
+
 Service.prototype.getProfessorsByCourse = function(db, courseID, ist_id, callback) {
 	db.getProfessorsByCourse(courseID,
 		function(error, rows) {

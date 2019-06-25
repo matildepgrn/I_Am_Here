@@ -440,6 +440,21 @@ database.prototype.manuallyRemoveStudent = function(ist_id, attendanceID, callba
 	})
 };
 
+database.prototype.removeProfessorFromCourse = function(ist_id, courseID, callback) {
+	var sql = "DELETE FROM ProfessorTeachesCourse WHERE ist_id =  ? and courseID = ?;";
+	var arg = [ist_id, courseID];
+
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error removing professor from course.", err);
+			callback(err);
+		}
+		else{
+			callback(err);
+		}
+	})
+};
+
 database.prototype.manuallyRemoveAttendance = function(attendanceID, ist_id, callback) {
 	var sql = "CALL RemoveAttendanceFromProfessor(?,?)";
 	var arg = [attendanceID, ist_id];
