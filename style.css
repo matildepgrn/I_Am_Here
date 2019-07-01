@@ -222,6 +222,8 @@ th {
 	background: #008CBA; /*#a4c1da;*/
 	color: #f3f3f3;
 	padding: 4px 4px;
+	position: sticky;
+	top: 73px;
 }
 
 #b_newcourse {
@@ -373,6 +375,9 @@ td {
 .menu-container {
 	margin-top: 5px;
 	height: 74px;
+	background: white;
+	position: sticky;
+	top: 0;
 }
 
 .container {
