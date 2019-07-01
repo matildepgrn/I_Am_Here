@@ -372,6 +372,16 @@ td {
 	height: 500px;
 }
 
+#formStudentContainer {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	left: 0;
+	padding: 15px;
+	background: white;
+	box-shadow: 0 -5px 5px white;
+}
+
 .menu-container {
 	margin-top: 5px;
 	height: 74px;

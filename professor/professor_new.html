@@ -439,18 +439,18 @@
 			</template>
 		</table>
 		
-		<form id="formStudent" method="post" style="margin-top: 20px;margin-bottom: 90px">
+		<div id="formStudentContainer">
+			<form id="formStudent" method="post">
+				<input id="inputadd_student" name="ist_id" placeholder="IST ID (ist1XXXXX)">
 
-			<tr title="ist_id">
-				<td>
-					<input id="inputadd_student" name="ist_id" placeholder="IST ID (ist1XXXXX)">
+				<input id="late_checkbox" type="checkbox" name="late" value="late">Late
+				<button id="add_student" type="button" onclick="sendForm();" 
+						title="">Add student</button>
+			</form>
+		</div>
 
-					  <input id="late_checkbox" type="checkbox" name="late" value="late">Late
-					<button id="add_student" type="button" onclick="sendForm();" 
-							title="">Add student</button>
-				</td>
-			</tr>
-		</form>
+
+
 		</div>
 
 		<!-- Student's that failed table -->
