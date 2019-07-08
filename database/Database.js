@@ -379,6 +379,22 @@ database.prototype.insertCourseShiftInfo = function(fenix_id, shift_id, type, we
 	})
 };
 
+database.prototype.addCourseShiftInfo = function(fenix_id, shift_id, type, week_day, start, end, campus, room, courseID, prof_id, codetype, codelength, consecutive, time, callback) {
+	var secret = randomInt(16);
+	var sql = "INSERT IGNORE INTO Shift (fenix_id, shift_id, type, week_day, start, end, campus, room, courseID, secret, prof_id, codetype, codelength, time, consecutive)\
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?);";
+	var arg = [fenix_id, shift_id, type, week_day, start, end, campus, room, courseID, secret, prof_id, codetype, codelength, time, consecutive];
+	this.pool.query(sql, arg, function(err, rows, fields) {
+		if (err){
+			console.log("Error inserting course shifts information.", err);
+			callback(err);
+		}
+		else{
+			callback(err);
+		}
+	})
+};
+
 database.prototype.insertFingerprintData = function(ist_id, useragent, ip, attendanceID, callback) {
 	//var sql = "INSERT INTO FingerprintData(ist_id, useragent, ip, attendanceID) VALUES(?,?,?,?);";
 	var sql = "CALL InsertFingerprint(?,?,?,?);"

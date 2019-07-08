@@ -806,7 +806,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 							);
 							break;
 						case "/api/insertshift":
-							service.insertShift(db, json.shift_id, json.type, json.day, json.start, json.end, json.campus, json.room, json.courseID,
+							service.insertShift(db, json.shift_id, json.type, json.day, json.start, json.end, json.campus, json.room, json.courseID, json.professor_id, json.code_type, json.code_length, json.consecutivecodes, json.time,
 								function(error) {
 									if(error) {
 										sendText(res, "Could not insertShift", 500);

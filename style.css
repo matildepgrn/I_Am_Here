@@ -18,6 +18,14 @@ ul {
 	background: #fdd;
 }
 
+.hide .shift_th_type {
+	display: none;
+}
+
+input[type="text"] {
+	width:100px;
+}
+
 .mono {
 	font-family: monospace;
 }

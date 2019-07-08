@@ -492,8 +492,10 @@ Service.prototype.getFenixIDByCourseID = function(db, courseID, callback) {
 	);
 }
 
-Service.prototype.insertShift = function(db, shift_id, type, week_day, start, end, campus, room, courseID, callback) {
-	db.insertCourseShiftInfo(null, shift_id, type, week_day, start, end, campus, room, courseID,
+
+
+Service.prototype.insertShift = function(db, shift_id, type, week_day, start, end, campus, room, courseID, prof_id, codetype, codelength, consecutive, time, callback) {
+	db.addCourseShiftInfo(null, shift_id, type, week_day, start, end, campus, room, courseID, prof_id, codetype, codelength, consecutive, time,
 		function(error) {
 			callback(error);
 		}
