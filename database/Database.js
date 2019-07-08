@@ -67,6 +67,22 @@ database.prototype.getShiftsByCourseID = function(courseID, callback) {
 
 }
 
+database.prototype.getShiftsInfo = function(shiftid, callback) {
+	var sql = "SELECT * from Shift WHERE shift_id = ?";
+	var args = [shiftid];
+
+	this.pool.query(sql, args, function (err, rows, fields) {
+		if (err){
+			console.log("Error getting shifts information by shiftid.", err);
+			callback(err);
+		}
+		else {
+			callback(err, rows[0]);
+		}
+	});
+
+}
+
 
 database.prototype.getStudentsByCourseID = function(courseID, callback) {
 	var sql = "SELECT ist_id from StudentsEnrolled WHERE courseID = ?";

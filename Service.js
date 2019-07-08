@@ -99,6 +99,18 @@ Service.prototype.getShiftsByCourseID = function(db, courseID, callback) {
 	); 
 }
 
+Service.prototype.getShiftsInfo = function(db, shiftid, callback) {
+	db.getShiftsInfo(shiftid,
+		function(error, rows) {
+			if(error) {
+				callback(error);
+			} else {
+				callback(error, rows);	
+			}
+		}
+	); 
+}
+
 
 Service.prototype.createandinsertstudents = function(db, courseID, ist_id, is_extra, title, number, text, shift, callback) {
 	db.generateRandomAttendanceCode(ist_id, 0, null, null, null, null, courseID, is_extra, title, number, shift,

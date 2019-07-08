@@ -171,6 +171,7 @@ function handleRequest(req, res) {
 		case "/api/students/attendanceHistory":
 		case "/api/PCM1819/attendanceflow":
 		case "/api/attendanceinfo":
+		case "/api/shiftinfo":
 		case "/api/attendancefile":
 		case "/api/classattendancefile":
 		case "/api/studentshistory":
@@ -206,6 +207,18 @@ function handleRequest(req, res) {
 											sendText(res, "Could not getShiftsByCourseID.", 500);
 										} else {
 											sendJSON(res, rows);
+										}
+									}
+								);
+							break;
+						case "/api/shiftinfo":
+							var shiftid = parsedURL.query.s;
+							service.getShiftsInfo(db, shiftid,
+									function(error, result) {
+										if(error) {
+											sendText(res, "Could not getShiftsInfo.", 500);
+										} else {
+											sendJSON(res, result);
 										}
 									}
 								);

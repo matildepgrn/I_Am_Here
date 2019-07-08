@@ -134,7 +134,7 @@
 
 			<tr title="Type of code">
 				<td>Type:</td>
-				<td>
+				<td id="code_type">
 					<input type="radio" name="code_type" value="L" checked>Letters
 					<input type="radio" name="code_type" value="N">Numbers
 					<input type="radio" name="code_type" value="LN">Letters + Numbers
@@ -144,7 +144,7 @@
 			<tr title="Number of characters of each code">
 				<td>Length:</td>
 				<td>
-					<select name="code_length" required>
+					<select name="code_length" id="code_length" required>
 						<option value="3">3</option>
 						<option value="4">4</option>
 						<option value="5">5</option>
@@ -158,7 +158,7 @@
 			<tr title="Time to type each code in seconds">	
 				<td>Time for each code:</td>
 				<td>
-					<select name="time" required>
+					<select id="timetocomplete" name="time" required>
 						<option value="8">8</option>
 						<option value="9">9</option>
 						<option value="10" selected="selected">10</option>
@@ -171,7 +171,7 @@
 			<tr title="Number of consecutive codes that the students will need to type">
 				<td>Consecutive codes:</td>
 				<td>
-					<select name="consecutivecodes" required>
+					<select id="consecutivecodesrequired" name="consecutivecodes" required>
 						<option value="2">2</option>
 						<option value="3" selected="selected">3</option>
 						<option value="4">4</option>
@@ -604,6 +604,44 @@ function loadClassNumber(url) {
 	xhttp.send();
 }
 
+function mySetValue(id, value) {
+	if(value) {
+		document.getElementById(id).value = value;	
+	}
+}
+
+function loadShiftInfo(url) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if(this.readyState == 4) {
+			if(this.status == 200) {
+				var json = JSON.parse(this.responseText);
+				console.log(json);
+				mySetValue("consecutivecodesrequired", json.consecutive);
+				mySetValue("timetocomplete", json.time);
+				mySetValue("code_length", json.codelength);
+				checkRadio("code_type", json.codetype);
+			}
+			else {
+				console.log("Error in loading shift info:", this.responseText);
+			}
+		}
+	};
+
+	xhttp.open("GET", url, true);
+	xhttp.send();
+}
+
+function checkRadio(id, myValue) {
+	let els = document.getElementById(id).querySelectorAll("input");
+	for(e of els) {
+		if(e.value == myValue) {
+			e.checked = true;
+			return;
+		}
+	}
+}
+
 window.onbeforeunload = function (e) {
 	e = e || window.event;
 
@@ -617,5 +655,6 @@ window.onbeforeunload = function (e) {
 
 loadName("/api/name");
 loadClassNumber("/api/getnextclassnumber?c="+courseID);
+loadShiftInfo("/api/shiftinfo?s="+shift);
 
 </script>
