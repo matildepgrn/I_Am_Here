@@ -68,6 +68,16 @@
 		<form id="importStudents" method="post">
 			<p>Format: <span style="font-family: monospace;">student_ist_id,student_number,student_name</span></p>
 			<p>Line format: <span style="font-family: monospace;">ist182083,68083,Matilde Nascimento</span></p>
+
+			<div id="courseIDOn">
+				Course: 
+				<select id="courseID_select" name="courseID">
+			  		<template id="courseIDOnTemplate">
+			  			<option></option>
+			  		</template>
+				</select>
+			</div>
+
 			<table class="invisible-table" style="margin-bottom: 4px">
 				<tr>
 					<td>
@@ -227,6 +237,7 @@ function loadCourses(url, academicTerm) {
 			if(this.status == 200) {
 				var courses = JSON.parse(this.responseText);
 				showCourses(courses);
+				showCourseID(courses);
 			} else {
 				//todo
 				console.log("Error loading courses:", this.status);
@@ -237,6 +248,19 @@ function loadCourses(url, academicTerm) {
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
+
+function showCourseID(json) {
+	var courseID = json;
+	var template = document.getElementById("courseIDOnTemplate");
+	var select = document.getElementById("courseID_select");
+
+	for(let i = 0; i < courseID.length; i++) {
+		var option = template.content.querySelector("option").cloneNode(true);
+		option.value = courseID[i].courseID;
+		option.innerText = courseID[i].courseName + " (" + courseID[i].courseID + ")";
+		select.appendChild(option);
+	}
+};
 
 function loadName(url) {
 	var xhttp = new XMLHttpRequest();

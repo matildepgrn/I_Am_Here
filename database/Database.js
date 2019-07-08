@@ -160,12 +160,12 @@ database.prototype.updateAccessToken = function(access_token, refresh_token, new
 	});
 }
 
-database.prototype.updateStudentNameAndNumber = function(short_name, std_number, ist_id, callback) {
-	var sql = "UPDATE User SET short_name = ?, std_number = ? WHERE ist_id = ?;";
-	var args = [short_name, std_number, ist_id];
+database.prototype.updateStudentNameAndNumber = function(short_name, std_number, ist_id, courseID, callback) {
+	var sql = "Call InsertStudent(?,?,?,?)";
+	var args = [short_name, std_number, ist_id, courseID];
 	this.pool.query(sql, args, function (err, result) {
 		if (err){
-			console.log("Error in updateStudentNameAndNumber (database).");
+			console.log("Error in updateStudentNameAndNumber (database).",err);
 		}
 		callback(err);
 	});

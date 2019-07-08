@@ -596,6 +596,18 @@ END
 //
 DELIMITER ;
 
+DELIMITER //
+CREATE PROCEDURE InsertStudent(my_short_name varchar(255), my_std_number varchar(255), my_ist_id varchar(255), my_courseID varchar(255))
+BEGIN
+
+UPDATE User SET short_name = my_short_name, std_number = my_std_number WHERE ist_id = my_ist_id;
+
+INSERT IGNORE INTO StudentsEnrolled(ist_id, courseID) VALUES (my_ist_id,my_courseID);
+
+END
+//
+DELIMITER ;
+
 INSERT INTO User(ist_id) VALUES ('ist182083');
 INSERT INTO Professor(ist_id) VALUES ('ist182083');
 

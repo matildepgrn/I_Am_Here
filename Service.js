@@ -148,20 +148,20 @@ function aux_manuallyInsertStudent(db, attendanceID, line, split_text, callback)
 
 
 
-Service.prototype.updateStudentNameAndNumber = function(db, text, callback) {
+Service.prototype.updateStudentNameAndNumber = function(db, text, courseID, callback) {
 	let split_text = text.split('\n');
 	let line = 0;
-	aux_updateStudentNameAndNumber(db, line, split_text, callback);
+	aux_updateStudentNameAndNumber(db, line, split_text, courseID, callback);
 }
 
-function aux_updateStudentNameAndNumber(db, line, split_text, callback) {
+function aux_updateStudentNameAndNumber(db, line, split_text, courseID, callback) {
 	if(line < split_text.length) {
 		let split_line = split_text[line].split(',');
-		db.updateStudentNameAndNumber(split_line[2], split_line[1], split_line[0],
+		db.updateStudentNameAndNumber(split_line[2], split_line[1], split_line[0], courseID,
 			function(error) {
 				line++;
 				if(line < split_text.length) {
-					aux_updateStudentNameAndNumber(db, line, split_text, callback);
+					aux_updateStudentNameAndNumber(db, line, split_text, courseID, callback);
 				} else {
 					callback(error);
 				}

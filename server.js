@@ -795,7 +795,7 @@ function handlePost(req, res, cookies, parsedURL, data) {
 							);
 							break;
 						case "/api/importstudents":
-							service.updateStudentNameAndNumber(db, json.file_input,
+							service.updateStudentNameAndNumber(db, json.file_input, json.courseID,
 								function(error){
 									if(error) {
 										sendText(res, "Could not updateStudentNameAndNumber", 500);
