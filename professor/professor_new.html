@@ -81,7 +81,7 @@
 				<th class="shift_th_type">Consecutive</th>
 				<th class="shift_th_type">Time</th>
 			</tr>
-			
+
 			<template id="shiftTemplate">
 				<tr class="clickable_different myeditable">
 					<td></td>
@@ -90,6 +90,78 @@
 					<td></td>
 					<td></td>
 					<td></td>
+					<td class="shift_th_type"></td>
+					<td class="shift_th_type"></td>
+					<td class="shift_th_type"></td>
+					<td class="shift_th_type"></td>
+					<td class="shift_th_type"></td>
+					<td class="shift_th_type"></td>
+				</tr>
+			</template>
+			
+			<template id="shiftEditTemplate">
+				<tr>
+					<td><input type="text" name="shift_id" placeholder="AP34T01" required> </td>
+					<td>
+						<select name="campus" required>
+							<option value="Alameda">Alameda</option>
+							<option value="Taguspark">Taguspark</option>
+						</select>
+					</td>
+					<td>
+						<select name="day" required>
+							<option value="1">Mon</option>
+							<option value="2">Tue</option>
+							<option value="3">Wed</option>
+							<option value="4">Thu</option>
+							<option value="5">Fri</option>
+							<option value="6">Sat</option>
+							<option value="0">Sun</option>
+						</select>
+					</td>
+					<td><input type="time" name="start" required></td>
+					<td><input type="time" name="end" required></td>
+					<td><input type="text" name="room" placeholder="FA2" required></td>
+					<td class="shift_th_type"><select class="professor_select_all" name="professor_id">
+						</select>
+					</td>
+					<td class="shift_th_type"><select name="code_type" required>
+						<option value="L" selected="selected">L</option>
+						<option value="N">N</option>
+						<option value="LN">L + N</option>
+					</select></td>
+					<td class="shift_th_type"><select name="code_length" required>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6" selected="selected">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						</select></td>
+					<td class="shift_th_type"><select name="consecutivecodes" required>
+						<option value="2">2</option>
+						<option value="3" selected="selected">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+					</select></td>
+					<td class="shift_th_type"><select name="time" required>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10" selected="selected">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+					</select> 
+						
+					</td>
+					<td class="shift_th_type">
+						<select name="type" required>
+							<option value="TEORICA">Teórica</option>
+							<option value="LABORATORIAL">Laboratorial</option>
+							<option value="SIMARIO">Seminário</option>
+							<option value="PRATICA">Prática</option>
+						</select>
+					</td>
 				</tr>
 			</template>
 			<form id="insertShift">
@@ -109,7 +181,7 @@
 							<option value="4">Thu</option>
 							<option value="5">Fri</option>
 							<option value="6">Sat</option>
-							<option value="7">Sun</option>
+							<option value="0">Sun</option>
 						</select>
 					</td>
 					<td><input type="time" name="start" required></td>
@@ -596,6 +668,7 @@ let editprofessors = document.getElementById("editprofessors");
 let tsv_export_by_secret = document.getElementById("tsv_export_by_secret");
 let professors = document.getElementById("professors");
 let prof_title = document.getElementById("prof_title");
+let shift_select = document.getElementById("shift_select");
 
 function toggleEditProfessors() {
 	if(isEditingProfessors) {
@@ -656,6 +729,8 @@ function toggleShowNewShift() {
 		invisible_info_shifts.style.display = "none";
 	}
 	isAddingShift = !isAddingShift;
+	shift_select.disabled = isAddingShift;
+	showShifts(current_shift_type, isAddingShift);
 }
 
 function editShift(tr) {
@@ -886,12 +961,15 @@ function updateSelectShift(shifts) {
 	changeShift(select);
 }
 
+let current_shift_type;
+
 function changeShift(select) {
+	current_shift_type = select.value;
 	showShifts(select.value);
 }
 
-function showShifts(myType = "TEORICA") {
-	var template = document.getElementById("shiftTemplate");
+function showShifts(myType = "TEORICA", edit = false) {
+	var template = document.getElementById(edit ? "shiftEditTemplate" : "shiftTemplate");
 	var table = document.getElementById("shiftTable");
 	var shifts = global_shifts_wrapper;
 	removeTrs(table.getElementsByTagName("tr"), 2, 1);
@@ -918,7 +996,7 @@ function showShifts(myType = "TEORICA") {
 		for(let i = 0; i < shifts.length; i++) {
 			let shifts_i = shifts[i];
 			if(shifts_i.type == myType) {
-				addShifts(table, template, shifts_i, shifts_i.secret, shifts_i.shift_id, shifts_i.campus, shifts_i.week_day, shifts_i.start, shifts_i.end, shifts_i.room);
+				addShifts(table, template, shifts_i, shifts_i.secret, shifts_i.shift_id, shifts_i.campus, shifts_i.week_day, shifts_i.start, shifts_i.end, shifts_i.room, shifts_i.prof_id, shifts_i.codetype, shifts_i.codelength, shifts_i.consecutive, shifts_i.time, shifts_i.type, edit);
 			}
 		} 
 	} else {
@@ -929,37 +1007,47 @@ function showShifts(myType = "TEORICA") {
 
 var week_day_list = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-function addShifts(table, template, shifts_i, secret, id, campus, week_day, start, end, room) {
+function addShifts(table, template, shifts_i, secret, id, campus, week_day, start, end, room, professor, c_type, length, consecutive, time, s_type, edit) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
-	var tds = tr_clone.children;
+	if(edit) {
+		var tds = tr_clone.querySelectorAll("input,select");
+	}else {
+		var tds = tr_clone.children;
+	}
 	tr_clone.shift_id = id;
 	tr_clone.campus = campus;
 	tr_clone.secret = secret;
-	week_day = week_day_list[week_day];
 
 	start = start.substring(0,5);
 	end = end.substring(0,5);
+
+	if(edit) {
+		for(let x = 0; x < tds.length; x++) {
+			tds[x].value = arguments[x+4];
+		}
+	} else {
+		week_day = week_day_list[week_day];
+		for(let x = 0; x < tds.length; x++) {
+			tds[x].innerText = arguments[x+4];
+		}
+		if(shifts_i.first_index != undefined) {
+			tds[1].parentElement.removeChild(tds[1]);		// remove 1o a coluna CAMPUS
+			tds[0].parentElement.removeChild(tds[0]);
+		} else if(shifts_i.repeatedCount) {
+			tds[0].rowSpan = shifts_i.repeatedCount;
+			tds[1].rowSpan = shifts_i.repeatedCount;
+		}
+
+		tr_clone.onclick = function() {
+			loadHistory(courseID, null, this.shift_id, this.campus);
+			switchView(0);
+			currentShift = this.shift_id;
+			currentCampus = this.campus;
+			let link = window.location.protocol + "//" + window.location.host + "/tsv/course/shift?s=" + this.secret;
+			document.getElementById("tsv_export_shift_by_secret").href = link;
+		};
+	}
 	
-	for(let x = 0; x < tds.length; x++) {
-		tds[x].innerText = arguments[x+4];
-	}
-
-	if(shifts_i.first_index != undefined) {
-		tds[1].parentElement.removeChild(tds[1]);		// remove 1o a coluna CAMPUS
-		tds[0].parentElement.removeChild(tds[0]);
-	} else if(shifts_i.repeatedCount) {
-		tds[0].rowSpan = shifts_i.repeatedCount;
-		tds[1].rowSpan = shifts_i.repeatedCount;
-	}
-
-	tr_clone.onclick = function() {
-		loadHistory(courseID, null, this.shift_id, this.campus);
-		switchView(0);
-		currentShift = this.shift_id;
-		currentCampus = this.campus;
-		let link = window.location.protocol + "//" + window.location.host + "/tsv/course/shift?s=" + this.secret;
-		document.getElementById("tsv_export_shift_by_secret").href = link;
-	};
 	//table.appendChild(tr_clone);
 	table.insertBefore(tr_clone, table.childNodes[table.childNodes.length-2]);
 }
@@ -1086,14 +1174,18 @@ function showProfessors(json) {
 	removeSelectOptions("professor_select2");
 	removeSelectOptions("professor_select");
 
+	let templ_select = document.querySelector("#shiftEditTemplate").content.querySelector(".professor_select_all")
+
 	for(let i = 0; i < profs.length; i++) {
 		var option = template.content.querySelector("option").cloneNode(true);
 		var option2 = document.createElement("option");
-		option2.value = option.value = profs[i].ist_id;
-		option2.innerText = profs[i].ist_id;
+		var option3 = document.createElement("option");
+		option3.value = option2.value = option.value = profs[i].ist_id;
+		option3.innerText = option2.innerText = profs[i].ist_id;
 		option.innerText = profs[i].name + " (" + profs[i].ist_id + ")";
 		select.appendChild(option);
 		select2.appendChild(option2);
+		templ_select.appendChild(option3);
 
 		if(profs[i].ist_id == json.ist_id) {
 			select.selectedIndex = i;
