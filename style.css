@@ -13,6 +13,18 @@ ul {
 	user-select: none;
 }
 
+.bold {
+	font-weight: bold;
+}
+
+.topalert {
+	background: #f7aeae;
+    padding: 9px;
+    width: 330px;
+    margin: auto;
+    border-radius: 6px;
+}
+
 .invalidLine {
 	border: 2px solid red;
 	background: #fdd;
@@ -75,6 +87,10 @@ input[type="text"] {
 
 .table-margin {
 	margin:3px 70px;
+}
+
+#showShifts .table-margin{
+	margin: auto;
 }
 
 .margin-bottom {

@@ -50,6 +50,7 @@
 		<div class="menu-item item-left menu-title" id="courseName_id"></div>
 	</div>
 
+
 	<p id="prof_title" style="display: none" class="subTitle on">Professor(s) lecturing:</p>
 	<div id="shiftOn" class="">
 		<p class="subTitle">Shifts</p>
@@ -327,6 +328,11 @@
 	<h6 id="noAttendancesText" style="display:none">
 		You do not have an attendance for this course. Start one now!
 	</h6>
+
+	<div style="display:none" class="topalert" id="warningalert">
+		<span class="bold">Warning: </span>
+		<span>This is not your usual shift!</span>
+	</div>
 
 	<div id="teacherOn" class="">
 		<p class="subTitle" id="attendancesTitle"><span id="currentShift_display"></span> (<span id="currentCampus_display"></span>): attendances</p>
@@ -626,6 +632,7 @@
 	</div>
 
 </div>
+
 <!-- Students's fingerprint table end -->
 <!-- GO UP! button -->
 	<div id="goUp_spacer"></div>
@@ -1005,6 +1012,7 @@ function showShifts(myType = "TEORICA", edit = false) {
 	}
 };
 
+let warningalert = document.getElementById("warningalert");
 var week_day_list = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function addShifts(table, template, shifts_i, secret, id, campus, week_day, start, end, room, professor, c_type, length, consecutive, time, s_type, edit) {
@@ -1017,6 +1025,7 @@ function addShifts(table, template, shifts_i, secret, id, campus, week_day, star
 	tr_clone.shift_id = id;
 	tr_clone.campus = campus;
 	tr_clone.secret = secret;
+	tr_clone.responsibleprofessor = professor;
 
 	start = start.substring(0,5);
 	end = end.substring(0,5);
@@ -1043,6 +1052,12 @@ function addShifts(table, template, shifts_i, secret, id, campus, week_day, star
 			switchView(0);
 			currentShift = this.shift_id;
 			currentCampus = this.campus;
+			if(this.responsibleprofessor && this.responsibleprofessor != currentIstID) {
+				warningalert.style.display = "";
+				//alert("Attention: this is not your usual shift!");
+			} else {
+				warningalert.style.display = "none";
+			}
 			let link = window.location.protocol + "//" + window.location.host + "/tsv/course/shift?s=" + this.secret;
 			document.getElementById("tsv_export_shift_by_secret").href = link;
 		};
@@ -1162,6 +1177,7 @@ function loadProfessorsByCourse(courseID) {
 		xhttp.send();
 }
 
+let currentIstID;
 
 function showProfessors(json) {
 	var profs = json.rows;
@@ -1175,6 +1191,8 @@ function showProfessors(json) {
 	removeSelectOptions("professor_select");
 
 	let templ_select = document.querySelector("#shiftEditTemplate").content.querySelector(".professor_select_all")
+
+	currentIstID = json.ist_id;
 
 	for(let i = 0; i < profs.length; i++) {
 		var option = template.content.querySelector("option").cloneNode(true);
