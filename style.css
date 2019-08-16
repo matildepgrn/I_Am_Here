@@ -17,6 +17,7 @@ ul {
 	font-weight: bold;
 }
 
+
 .topalert {
 	background: #f7aeae;
     padding: 9px;
@@ -40,8 +41,12 @@ ul {
 	display: none;
 }
 
-input[type="text"] {
+#shifttable_main input[type="text"] {
 	width:100px;
+}
+
+.inputbigger input[type="text"] {
+	width: 100%;
 }
 
 .mono {

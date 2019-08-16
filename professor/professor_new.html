@@ -62,6 +62,7 @@
 		</select>
 	</div>
 
+	<form id="insertShiftNew">
 	<table id="shifttable_main" class="hide table-margin">
 		<tbody id="shiftTable">
 			<tr>
@@ -100,70 +101,70 @@
 				</tr>
 			</template>
 			
-			<template id="shiftEditTemplate">
+			<template id="shiftEditTemplate">	
 				<tr>
 					<td><input type="text" name="shift_id" placeholder="AP34T01" required> </td>
-					<td>
-						<select name="campus" required>
-							<option value="Alameda">Alameda</option>
-							<option value="Taguspark">Taguspark</option>
-						</select>
-					</td>
-					<td>
-						<select name="day" required>
-							<option value="1">Mon</option>
-							<option value="2">Tue</option>
-							<option value="3">Wed</option>
-							<option value="4">Thu</option>
-							<option value="5">Fri</option>
-							<option value="6">Sat</option>
-							<option value="0">Sun</option>
-						</select>
-					</td>
-					<td><input type="time" name="start" required></td>
-					<td><input type="time" name="end" required></td>
-					<td><input type="text" name="room" placeholder="FA2" required></td>
-					<td class="shift_th_type"><select class="professor_select_all" name="professor_id">
-						</select>
-					</td>
-					<td class="shift_th_type"><select name="code_type" required>
-						<option value="L" selected="selected">L</option>
-						<option value="N">N</option>
-						<option value="LN">L + N</option>
-					</select></td>
-					<td class="shift_th_type"><select name="code_length" required>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6" selected="selected">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
+						<td>
+							<select name="campus" required>
+								<option value="Alameda">Alameda</option>
+								<option value="Taguspark">Taguspark</option>
+							</select>
+						</td>
+						<td>
+							<select name="day" required>
+								<option value="1">Mon</option>
+								<option value="2">Tue</option>
+								<option value="3">Wed</option>
+								<option value="4">Thu</option>
+								<option value="5">Fri</option>
+								<option value="6">Sat</option>
+								<option value="0">Sun</option>
+							</select>
+						</td>
+						<td><input type="time" name="start" required></td>
+						<td><input type="time" name="end" required></td>
+						<td><input type="text" name="room" placeholder="FA2" required></td>
+						<td class="shift_th_type"><select class="professor_select_all" name="professor_id">
+							</select>
+						</td>
+						<td class="shift_th_type"><select name="code_type" required>
+							<option value="L" selected="selected">L</option>
+							<option value="N">N</option>
+							<option value="LN">L + N</option>
 						</select></td>
-					<td class="shift_th_type"><select name="consecutivecodes" required>
-						<option value="2">2</option>
-						<option value="3" selected="selected">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-					</select></td>
-					<td class="shift_th_type"><select name="time" required>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10" selected="selected">10</option>
-						<option value="11">11</option>
-						<option value="12">12</option>
-					</select> 
-						
-					</td>
-					<td class="shift_th_type">
-						<select name="type" required>
-							<option value="TEORICA">Teórica</option>
-							<option value="LABORATORIAL">Laboratorial</option>
-							<option value="SIMARIO">Seminário</option>
-							<option value="PRATICA">Prática</option>
-						</select>
-					</td>
-				</tr>
+						<td class="shift_th_type"><select name="code_length" required>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6" selected="selected">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							</select></td>
+						<td class="shift_th_type"><select name="consecutivecodes" required>
+							<option value="2">2</option>
+							<option value="3" selected="selected">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+						</select></td>
+						<td class="shift_th_type"><select name="time" required>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10" selected="selected">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+						</select> 
+							
+						</td>
+						<td class="shift_th_type">
+							<select name="type" required>
+								<option value="TEORICA">Teórica</option>
+								<option value="LABORATORIAL">Laboratorial</option>
+								<option value="SIMARIO">Seminário</option>
+								<option value="PRATICA">Prática</option>
+							</select>
+						</td>
+					</tr>
 			</template>
 			<form id="insertShift">
 				<tr id="insertShift_tr" style="display: none">
@@ -232,6 +233,7 @@
 			</form>
 		</tbody>
 	</table>
+	</form>
 
 	<table id="professors" class="table-margin" style="display:none">
 		<tbody id="professorstable">
@@ -740,9 +742,6 @@ function toggleShowNewShift() {
 	showShifts(current_shift_type, isAddingShift);
 }
 
-function editShift(tr) {
-}
-
 function insertProfessorIntoCourse() {
 	var formEl = document.getElementById("insertProfessor");
 	if(!formEl.checkValidity()) {
@@ -793,7 +792,9 @@ function removeProfessorFromCourse(button_element) {
 }
 
 function insertShiftForm(){
-	var formEl = document.getElementById("insertShift");
+	//var formEl = document.getElementById("insertShift");
+	var formEl = document.getElementById("insertShiftNew");
+
 	if(!formEl.checkValidity()) {
 		formEl.reportValidity();
 		return;
@@ -1000,10 +1001,11 @@ function showShifts(myType = "TEORICA", edit = false) {
 				}
 			}
 		}
+		let tr_i = 0;
 		for(let i = 0; i < shifts.length; i++) {
 			let shifts_i = shifts[i];
 			if(shifts_i.type == myType) {
-				addShifts(table, template, shifts_i, shifts_i.secret, shifts_i.shift_id, shifts_i.campus, shifts_i.week_day, shifts_i.start, shifts_i.end, shifts_i.room, shifts_i.prof_id, shifts_i.codetype, shifts_i.codelength, shifts_i.consecutive, shifts_i.time, shifts_i.type, edit);
+				addShifts(table, template, shifts_i, shifts_i.secret, shifts_i.shift_id, shifts_i.campus, shifts_i.week_day, shifts_i.start, shifts_i.end, shifts_i.room, shifts_i.prof_id, shifts_i.codetype, shifts_i.codelength, shifts_i.consecutive, shifts_i.time, shifts_i.type, edit, tr_i++);
 			}
 		} 
 	} else {
@@ -1015,7 +1017,7 @@ function showShifts(myType = "TEORICA", edit = false) {
 let warningalert = document.getElementById("warningalert");
 var week_day_list = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-function addShifts(table, template, shifts_i, secret, id, campus, week_day, start, end, room, professor, c_type, length, consecutive, time, s_type, edit) {
+function addShifts(table, template, shifts_i, secret, id, campus, week_day, start, end, room, professor, c_type, length, consecutive, time, s_type, edit, tr_i) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	if(edit) {
 		var tds = tr_clone.querySelectorAll("input,select");
@@ -1033,6 +1035,7 @@ function addShifts(table, template, shifts_i, secret, id, campus, week_day, star
 	if(edit) {
 		for(let x = 0; x < tds.length; x++) {
 			tds[x].value = arguments[x+4];
+			tds[x].name = (tr_i + "." + tds[x].name);
 		}
 	} else {
 		week_day = week_day_list[week_day];
