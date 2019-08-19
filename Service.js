@@ -504,14 +504,62 @@ Service.prototype.getFenixIDByCourseID = function(db, courseID, callback) {
 	);
 }
 
+function checkCourseShiftInfo(info, moreFields = []){
+	let fields = moreFields.concat(["campus", "code_length", "code_type", "consecutivecodes", "week_day", "end", "professor_id", "room", "shift_id", "start", "time", "type"]);
+	for(f of fields){
+		if ((!info[f]) || info[f] == ""){
+			console.log("Invalid field:", f, info[f]);
+			return false;
+		}
+	}
+	return true;
+}
 
+function checkCourseShiftInfoToUpdate(info){
+	return checkCourseShiftInfo(info, ["shift_uid"]);
+}
 
-Service.prototype.insertShift = function(db, shift_id, type, week_day, start, end, campus, room, courseID, prof_id, codetype, codelength, consecutive, time, callback) {
-	db.addCourseShiftInfo(null, shift_id, type, week_day, start, end, campus, room, courseID, prof_id, codetype, codelength, consecutive, time,
+function aux_updateShifts(db, i, courseID, toUpdate, updateResults, callback){
+	// shift_id, type, week_day, start, end, campus, room, courseID, prof_id, codetype, codelength, consecutive, time, shift_uid
+	if(i >= toUpdate.length){
+		callback();
+		return;
+	}
+
+	let row = toUpdate[i];
+	db.updateCourseShiftInfo(row.shift_id, row.type, row.week_day, row.start, row.end, row.campus, row.room, courseID,
+		row.professor_id, row.code_type, row.code_length, row.consecutivecodes, row.time, row.shift_uid,
 		function(error) {
-			callback(error);
+			updateResults[i] = error ? "error" : "ok";
+			return aux_updateShifts(db, i+1, courseID, toUpdate, updateResults, callback);
 		}
 	);
+}
+
+Service.prototype.insertShift = function(db, courseID, toUpdate, toInsert, callback) {
+	/*	Fields:
+		toUpdate: campus, code_length, code_type, consecutivecodes, week_day, end, professor_id, room, shift_id, shift_uid, start, time, type
+		toInsert: same, except shift_uid
+	*/
+	let result = {};
+	result.insertResult = "none";
+	result.updateResults = new Array(toUpdate.length || 0);
+
+	// process all elementos of toUpdate; then take care of toInsert
+	aux_updateShifts(db, 0, courseID, toUpdate, result.updateResults, function(){
+		if(checkCourseShiftInfo(toInsert)){
+			db.addCourseShiftInfo(null, toInsert.shift_id, toInsert.type, toInsert.week_day, toInsert.start, toInsert.end, toInsert.campus, toInsert.room, courseID, toInsert.professor_id, toInsert.code_type, toInsert.code_length, toInsert.consecutivecodes, toInsert.time,
+				function(error) {
+					result.insertResult = error ? "error" : "ok";
+					result.update_AnyError = result.updateResults.reduce((res, el) =>{ res = res || el=="error" });
+					callback(error || result.update_AnyError, result);
+				}
+			);
+		}else{
+			result.insertResult = "invalid_field";
+			callback(true, result);
+		}
+	});
 }
 
 

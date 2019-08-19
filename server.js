@@ -819,13 +819,10 @@ function handlePost(req, res, cookies, parsedURL, data) {
 							);
 							break;
 						case "/api/insertshift":
-							service.insertShift(db, json.shift_id, json.type, json.day, json.start, json.end, json.campus, json.room, json.courseID, json.professor_id, json.code_type, json.code_length, json.consecutivecodes, json.time,
-								function(error) {
-									if(error) {
-										sendText(res, "Could not insertShift", 500);
-									} else {
-										sendText(res, "Shift(s) inserted.");
-									}
+							service.insertShift(db, json.courseID, json.toUpdate, json.toInsert,
+								function(error, result) {
+									console.log(error, result);
+									sendJSON(res, result, error ? 500 : 200);
 								}
 							);
 							break;

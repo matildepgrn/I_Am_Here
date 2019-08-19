@@ -103,7 +103,8 @@
 			
 			<template id="shiftEditTemplate">	
 				<tr>
-					<td><input type="text" name="shift_id" placeholder="AP34T01" required> </td>
+					<td><input type="hidden" name="shift_uid">
+						<input type="text" name="shift_id" placeholder="AP34T01" required> </td>
 						<td>
 							<select name="campus" required>
 								<option value="Alameda">Alameda</option>
@@ -111,7 +112,7 @@
 							</select>
 						</td>
 						<td>
-							<select name="day" required>
+							<select name="week_day" required>
 								<option value="1">Mon</option>
 								<option value="2">Tue</option>
 								<option value="3">Wed</option>
@@ -160,7 +161,7 @@
 							<select name="type" required>
 								<option value="TEORICA">Teórica</option>
 								<option value="LABORATORIAL">Laboratorial</option>
-								<option value="SIMARIO">Seminário</option>
+								<option value="SEMINARIO">Seminário</option>
 								<option value="PRATICA">Prática</option>
 							</select>
 						</td>
@@ -168,15 +169,15 @@
 			</template>
 			<form id="insertShift">
 				<tr id="insertShift_tr" style="display: none">
-					<td><input type="text" name="shift_id" placeholder="AP34T01" required> </td>
+					<td><input type="text" name="shift_id" placeholder="AP34T01"> </td>
 					<td>
-						<select name="campus" required>
+						<select name="campus">
 							<option value="Alameda">Alameda</option>
 							<option value="Taguspark">Taguspark</option>
 						</select>
 					</td>
 					<td>
-						<select name="day" required>
+						<select name="week_day">
 							<option value="1">Mon</option>
 							<option value="2">Tue</option>
 							<option value="3">Wed</option>
@@ -186,18 +187,18 @@
 							<option value="0">Sun</option>
 						</select>
 					</td>
-					<td><input type="time" name="start" required></td>
-					<td><input type="time" name="end" required></td>
-					<td><input type="text" name="room" placeholder="FA2" required></td>
+					<td><input type="time" name="start"></td>
+					<td><input type="time" name="end"></td>
+					<td><input type="text" name="room" placeholder="FA2"></td>
 					<td><select id="professor_select2" name="professor_id">
 						</select>
 					</td>
-					<td><select name="code_type" required>
+					<td><select name="code_type">
 						<option value="L" selected="selected">L</option>
 						<option value="N">N</option>
 						<option value="LN">L + N</option>
 					</select></td>
-					<td><select name="code_length" required>
+					<td><select name="code_length">
 						<option value="3">3</option>
 						<option value="4">4</option>
 						<option value="5">5</option>
@@ -205,14 +206,14 @@
 						<option value="7">7</option>
 						<option value="8">8</option>
 						</select></td>
-					<td><select name="consecutivecodes" required>
+					<td><select name="consecutivecodes">
 						<option value="2">2</option>
 						<option value="3" selected="selected">3</option>
 						<option value="4">4</option>
 						<option value="5">5</option>
 						<option value="6">6</option>
 					</select></td>
-					<td><select name="time" required>
+					<td><select name="time">
 						<option value="8">8</option>
 						<option value="9">9</option>
 						<option value="10" selected="selected">10</option>
@@ -222,7 +223,7 @@
 						
 					</td>
 					<td>
-						<select name="type" required>
+						<select name="type">
 							<option value="Teórica">Teórica</option>
 							<option value="Laboratorial">Laboratorial</option>
 							<option value="Seminário">Seminário</option>
@@ -257,7 +258,7 @@
 						<input type="text" name="name" placeholder="Matilde Paraíso Nascimento"> </td>
 					</td>
 					<td>
-						<button type="button" onclick="insertProfessorIntoCourse()">+</button>
+						<button type="button" onclick="insertProfessorIntoCourse()" type="button">+</button>
 					</td>
 				</tr>
 			</form>
@@ -266,12 +267,12 @@
 
 	<div id="invisible-info-shifts" style="display:none">
 		<p>Currently, you do not have shifts. Load now from fénix or add one yourself!</p>
-		<button onclick="loadShifts()">Load shift(s)</button>
+		<button onclick="loadShifts()" type="button">Load shift(s)</button>
 	</div>
 
 	<div style="margin-top: 20px" >
-		<button id="toggle_button" style="display: none" onclick="toggleShowNewShift()"></button>
-		<button style="display:none" id="create_add_shift" onclick="insertShiftForm()">Update shift(s)</button>
+		<button id="toggle_button" style="display: none" onclick="toggleShowNewShift()" type="button"></button>
+		<button style="display:none" id="create_add_shift" onclick="insertShiftForm(this)" type="button">Update shift(s)</button>
 	</div>
 
 </div>
@@ -791,8 +792,39 @@ function removeProfessorFromCourse(button_element) {
 	xhttp.send(json_string);	
 }
 
-function insertShiftForm(){
+// turn "index.name" into array of objects
+function splitPrefixedName(data){
+	let res_array = [];
+	let default_obj = {};
+
+	for(let e of data) {
+		let name = e[0].split(".");
+		let value = e[1];
+		if(name.length == 1){
+			default_obj[name[0]] = value;
+		}else{
+			if(!res_array[name[0]]){
+				res_array[name[0]] = {};
+			}
+			res_array[name[0]][name[1]] = value;
+		}
+	}
+	return {
+		to_update: res_array,
+		to_insert: default_obj
+	};
+}
+
+function insertShiftForm_after(courseID){
+	invisible_info_shifts.old_style_display = "none";
+	toggleShowNewShift();
+	loadShiftsByCourseID();
+	loadProfessorsByCourse(courseID);
+}
+
+function insertShiftForm(btn){
 	//var formEl = document.getElementById("insertShift");
+	btn.disabled = true;
 	var formEl = document.getElementById("insertShiftNew");
 
 	if(!formEl.checkValidity()) {
@@ -802,19 +834,35 @@ function insertShiftForm(){
 	var data = new FormData(formEl);
 	var o = {};
 	o.courseID = courseID;
-	for(var e of data) {
-		o[e[0]] = e[1];
-	}
+	
+	var data_splitted = splitPrefixedName(data);
+	o.toUpdate = data_splitted.to_update;
+	o.toInsert = data_splitted.to_insert;
 	
 	var json_string = JSON.stringify(o);
 	var xhttp = new XMLHttpRequest();
 	var url = "/api/insertshift";
 	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4 && this.status == 200) {
-			invisible_info_shifts.old_style_display = "none";
-			toggleShowNewShift();
-			loadShiftsByCourseID();
-			loadProfessorsByCourse(courseID);
+		if(this.readyState == 4){
+			btn.disabled = false;
+			/*
+			let responseObj = JSON.parse(this.responseText);
+			let msg = "";
+			if(this.update_AnyError){
+				msg = msg + "Error updating shifts.\n";
+			}
+			if(this.insertResult != "ok"){
+				msg = msg + "Error inserting new shift.\n";
+			}
+
+			if(this.status == 200 ||
+				(this.status == 500 &&
+					!confirm(msg + " \
+						Press OK to continue editing. Press Cancel to exit edit mode."))) {
+				insertShiftForm_after(insertShiftForm_after);
+				
+			}*/
+			insertShiftForm_after(insertShiftForm_after);
 		}
 	}
 
@@ -1005,7 +1053,7 @@ function showShifts(myType = "TEORICA", edit = false) {
 		for(let i = 0; i < shifts.length; i++) {
 			let shifts_i = shifts[i];
 			if(shifts_i.type == myType) {
-				addShifts(table, template, shifts_i, shifts_i.secret, shifts_i.shift_id, shifts_i.campus, shifts_i.week_day, shifts_i.start, shifts_i.end, shifts_i.room, shifts_i.prof_id, shifts_i.codetype, shifts_i.codelength, shifts_i.consecutive, shifts_i.time, shifts_i.type, edit, tr_i++);
+				addShifts(table, template, shifts_i, shifts_i.secret, shifts_i.id, shifts_i.shift_id, shifts_i.campus, shifts_i.week_day, shifts_i.start, shifts_i.end, shifts_i.room, shifts_i.prof_id, shifts_i.codetype, shifts_i.codelength, shifts_i.consecutive, shifts_i.time, shifts_i.type, edit, tr_i++);
 			}
 		} 
 	} else {
@@ -1017,7 +1065,7 @@ function showShifts(myType = "TEORICA", edit = false) {
 let warningalert = document.getElementById("warningalert");
 var week_day_list = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-function addShifts(table, template, shifts_i, secret, id, campus, week_day, start, end, room, professor, c_type, length, consecutive, time, s_type, edit, tr_i) {
+function addShifts(table, template, shifts_i, secret, shift_uid, id, campus, week_day, start, end, room, professor, c_type, length, consecutive, time, s_type, edit, tr_i) {
 	var tr_clone = template.content.querySelector("tr").cloneNode(true);
 	if(edit) {
 		var tds = tr_clone.querySelectorAll("input,select");
@@ -1025,6 +1073,7 @@ function addShifts(table, template, shifts_i, secret, id, campus, week_day, star
 		var tds = tr_clone.children;
 	}
 	tr_clone.shift_id = id;
+	tr_clone.shift_uid = shift_uid;
 	tr_clone.campus = campus;
 	tr_clone.secret = secret;
 	tr_clone.responsibleprofessor = professor;
@@ -1040,7 +1089,7 @@ function addShifts(table, template, shifts_i, secret, id, campus, week_day, star
 	} else {
 		week_day = week_day_list[week_day];
 		for(let x = 0; x < tds.length; x++) {
-			tds[x].innerText = arguments[x+4];
+			tds[x].innerText = arguments[x+5];
 		}
 		if(shifts_i.first_index != undefined) {
 			tds[1].parentElement.removeChild(tds[1]);		// remove 1o a coluna CAMPUS

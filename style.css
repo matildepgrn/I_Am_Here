@@ -677,6 +677,10 @@ li a:hover {
 	margin: 32px 8px;
 }
 
+#create_add_shift:disabled {
+	cursor: progress;
+}
+
 input {
 	padding: 4px;
 }
