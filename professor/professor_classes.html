@@ -308,7 +308,7 @@ function showAcademicTerms(json) {
 
 	for(let i = 0; i < academicTerms.length; i++) {
 		var term_split = academicTerms[i].academicTerm.split(' ');
-		var option_text = term_split[1] + ' ' + term_split[0];
+		var option_text = term_split[2] + ' ' + term_split[0] + term_split[1];
 		
 		sortAcademicTerms.push({value: academicTerms[i].academicTerm, text: option_text});
 	}
