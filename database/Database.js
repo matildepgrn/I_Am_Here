@@ -906,7 +906,7 @@ database.prototype.getInactiveCourses = function(ist_id, callback) {
 				join Course c\
 					on c.courseID = p.courseID \
 				where p.ist_id = ?\
-					and c.academicTerm = '2ºSemestre 2018/2019'  \
+					and c.academicTerm = '2º Semestre 2019/2020'  \
 					and p.in_use != 1;";
 	var arg = [ist_id];
 
